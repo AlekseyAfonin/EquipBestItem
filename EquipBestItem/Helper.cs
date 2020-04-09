@@ -41,37 +41,5 @@ namespace EquipBestItem
             }
             return null;
         }
-
-        public static string SavePath
-        {
-            get
-            {
-                return Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\Mount and Blade II Bannerlord\\EquipBestItem\\";
-            }
-        }
-        
-        public static string LogPath
-        {
-            get
-            {
-                return Helper.SavePath + "EquipBestItem_log.txt";
-            }
-        }
-        
-        public static void ClearLog()
-        {
-            string logPath = Helper.LogPath;
-            if (File.Exists(logPath))
-            {
-                File.Delete(logPath);
-            }
-        }
-        
-        public static void Log(string text)
-        {
-            File.AppendAllText(Helper.LogPath, text + "\n");
-        }
-        
-
     }
 }
