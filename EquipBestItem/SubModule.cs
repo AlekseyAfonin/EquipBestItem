@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
+using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
@@ -37,6 +38,9 @@ namespace EquipBestItem
 
         protected override void OnApplicationTick(float dt)
         {
+            if(ScreenManager.TopScreen is InventoryGauntletScreen)
+            {
+            }
         }
 
 

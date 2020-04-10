@@ -41,7 +41,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
+    <OutputPath>d:\Downloads\Mount &amp; Blade II Bannerlord\Modules\EquipBestItem\bin\Win64_Shipping_Client\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -268,6 +268,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EquipBestItemBehavior.cs" />
+    <Compile Include="EquipBestItemLogic.cs" />
     <Compile Include="EquipBestItemWidget.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="SubModule.cs" />

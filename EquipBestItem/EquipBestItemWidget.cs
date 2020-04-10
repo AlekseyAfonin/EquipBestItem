@@ -35,9 +35,9 @@ namespace EquipBestItem
             _lastInventory = new MBBindingList<SPItemVM>();
 
             RightItemListVMCopy();
-                        
+
         }
-        
+
         public void RightItemListVMCopy()
         {
             _lastInventory.Clear();
@@ -51,6 +51,10 @@ namespace EquipBestItem
         public bool IsRightItemListVMIdentity()
         {
             int i = 0;
+
+            if (_inventory.RightItemListVM.Count < 2 || _lastInventory.Count < 2)
+                return false;
+
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
                 if (!_lastInventory[i].Equals(item))
@@ -58,6 +62,25 @@ namespace EquipBestItem
             }
             return true;
         }
+
+        public void BestItemsClear()
+        {
+            if (_bestHelmet != null || _bestCloak != null || _bestArmor != null || _bestGlove != null || _bestBoot != null || _bestMount != null || _bestHarness != null)
+            _bestHelmet = null;
+            _bestCloak = null;
+            _bestArmor = null;
+            _bestGlove = null;
+            _bestBoot = null;
+            _bestMount = null;
+            _bestHarness = null;
+        }
+
+        public void DisableButtons()
+        {
+            if (this.IsEnabled == true)
+                this.IsEnabled = false;
+        }
+
 
         public int GetFullArmor(SPItemVM item)
         {
@@ -76,8 +99,29 @@ namespace EquipBestItem
             return value;
         }
 
+        public float GetEffectiveness(SPItemVM item)
+        {
+            float value = 0f;
+
+            if (item != null && item.ItemRosterElement.EquipmentElement.Item != null)
+            {
+                value = item.ItemRosterElement.EquipmentElement.Item.Effectiveness;
+            }
+
+            return value;
+        }
+
         protected override void OnUpdate(float dt)
         {
+            base.OnUpdate(dt);
+
+
+            if (_inventory.RightItemListVM.Count == 0)
+            {
+                BestItemsClear();
+                DisableButtons();
+            }
+
             if (_lastCharacterName != _inventory.CurrentCharacterName || !IsRightItemListVMIdentity() || _lastWarSetState != _inventory.IsInWarSet)
             {
                 this.IsEnabled = false;
@@ -103,7 +147,7 @@ namespace EquipBestItem
                     this.IsEnabled = true;
 
                 FindBestMount();
-                if (_bestMount != null && _bestMount.ItemCost > _inventory.CharacterMountSlot.ItemCost && this.Id == "EquipBestItemMountButton")
+                if (_bestMount != null && GetEffectiveness(_bestMount) > GetEffectiveness(_inventory.CharacterMountSlot) && this.Id == "EquipBestItemMountButton")
                     this.IsEnabled = true;
 
                 FindBestHarness();
@@ -116,7 +160,6 @@ namespace EquipBestItem
             }
 
 
-            base.OnUpdate(dt);
         }
         
         protected override void OnClick()
@@ -404,7 +447,7 @@ namespace EquipBestItem
                 {
                     if (_bestMount != null)
                     {
-                        if (item.ItemCost > _bestMount.ItemCost)
+                        if (item.ItemRosterElement.EquipmentElement.Item.Effectiveness > _bestMount.ItemRosterElement.EquipmentElement.Item.Effectiveness)
                         {
                             _bestMount = item;
                         }
@@ -420,7 +463,7 @@ namespace EquipBestItem
                     {
                         if (_bestMount != null)
                         {
-                            if (item.ItemCost > _bestMount.ItemCost)
+                            if (item.ItemRosterElement.EquipmentElement.Item.Effectiveness > _bestMount.ItemRosterElement.EquipmentElement.Item.Effectiveness)
                             {
                                 _bestMount = item;
                             }
