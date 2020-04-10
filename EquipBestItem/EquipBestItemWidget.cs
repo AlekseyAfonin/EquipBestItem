@@ -53,10 +53,27 @@ namespace EquipBestItem
             int i = 0;
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
-                if (_lastInventory[i] != item)
+                if (!_lastInventory[i].Equals(item))
                     return false;
             }
             return true;
+        }
+
+        public int GetFullArmor(SPItemVM item)
+        {
+            int value = 0;
+
+            if (item != null && item.ItemRosterElement.EquipmentElement.Item != null)
+            {
+                value =
+                    item.ItemRosterElement.EquipmentElement.GetArmArmor() +
+                    item.ItemRosterElement.EquipmentElement.GetLegArmor() +
+                    item.ItemRosterElement.EquipmentElement.GetHeadArmor() +
+                    item.ItemRosterElement.EquipmentElement.GetBodyArmorHuman() +
+                    item.ItemRosterElement.EquipmentElement.GetBodyArmorHorse();
+            }
+
+            return value;
         }
 
         protected override void OnUpdate(float dt)
@@ -66,23 +83,23 @@ namespace EquipBestItem
                 this.IsEnabled = false;
 
                 FindBestHelm();
-                if (_bestHelmet != null && _bestHelmet.ItemCost > _inventory.CharacterHelmSlot.ItemCost && this.Id == "EquipBestItemHelmButton")
+                if (_bestHelmet != null && GetFullArmor(_bestHelmet) > GetFullArmor(_inventory.CharacterHelmSlot) && this.Id == "EquipBestItemHelmButton")
                     this.IsEnabled = true;
 
                 FindBestCloak();
-                if (_bestCloak != null && _bestCloak.ItemCost > _inventory.CharacterCloakSlot.ItemCost && this.Id == "EquipBestItemCloakButton")
+                if (_bestCloak != null && GetFullArmor(_bestCloak) > GetFullArmor(_inventory.CharacterCloakSlot) && this.Id == "EquipBestItemCloakButton")
                     this.IsEnabled = true;
 
                 FindBestArmor();
-                if (_bestArmor != null && _bestArmor.ItemCost > _inventory.CharacterTorsoSlot.ItemCost && this.Id == "EquipBestItemArmorButton")
+                if (_bestArmor != null && GetFullArmor(_bestArmor) > GetFullArmor(_inventory.CharacterTorsoSlot) && this.Id == "EquipBestItemArmorButton")
                     this.IsEnabled = true;
 
                 FindBestGlove();
-                if (_bestGlove != null && _bestGlove.ItemCost > _inventory.CharacterGloveSlot.ItemCost && this.Id == "EquipBestItemGloveButton")
+                if (_bestGlove != null && GetFullArmor(_bestGlove) > GetFullArmor(_inventory.CharacterGloveSlot) && this.Id == "EquipBestItemGloveButton")
                     this.IsEnabled = true;
 
                 FindBestBoot();
-                if (_bestBoot != null && _bestBoot.ItemCost > _inventory.CharacterBootSlot.ItemCost && this.Id == "EquipBestItemBootButton")
+                if (_bestBoot != null && GetFullArmor(_bestBoot) > GetFullArmor(_inventory.CharacterBootSlot) && this.Id == "EquipBestItemBootButton")
                     this.IsEnabled = true;
 
                 FindBestMount();
@@ -90,7 +107,7 @@ namespace EquipBestItem
                     this.IsEnabled = true;
 
                 FindBestHarness();
-                if (_bestHarness != null && _bestHarness.ItemCost > _inventory.CharacterMountArmorSlot.ItemCost && this.Id == "EquipBestItemHarnessButton")
+                if (_bestHarness != null && GetFullArmor(_bestHarness) > GetFullArmor(_inventory.CharacterMountArmorSlot) && this.Id == "EquipBestItemHarnessButton")
                     this.IsEnabled = true;
 
                 _lastWarSetState = _inventory.IsInWarSet;
@@ -192,7 +209,7 @@ namespace EquipBestItem
                 {
                     if (_bestHelmet != null)
                     {
-                        if (item.ItemCost > _bestHelmet.ItemCost)
+                        if (GetFullArmor(item) > GetFullArmor(_bestHelmet))
                         {
                             _bestHelmet = item;
                         }
@@ -208,7 +225,7 @@ namespace EquipBestItem
                     {
                         if (_bestHelmet != null)
                         {
-                            if (item.ItemCost > _bestHelmet.ItemCost)
+                            if (GetFullArmor(item) > GetFullArmor(_bestHelmet))
                             {
                                 _bestHelmet = item;
                             }
@@ -231,7 +248,7 @@ namespace EquipBestItem
                 {
                     if (_bestCloak != null)
                     {
-                        if (item.ItemCost > _bestCloak.ItemCost)
+                        if (GetFullArmor(item) > GetFullArmor(_bestCloak))
                         {
                             _bestCloak = item;
                         }
@@ -247,7 +264,7 @@ namespace EquipBestItem
                     {
                         if (_bestCloak != null)
                         {
-                            if (item.ItemCost > _bestCloak.ItemCost)
+                            if (GetFullArmor(item) > GetFullArmor(_bestCloak))
                             {
                                 _bestCloak = item;
                             }
@@ -270,7 +287,7 @@ namespace EquipBestItem
                 {
                     if (_bestArmor != null)
                     {
-                        if (item.ItemCost > _bestArmor.ItemCost)
+                        if (GetFullArmor(item) > GetFullArmor(_bestArmor))
                         {
                             _bestArmor = item;
                         }
@@ -286,7 +303,7 @@ namespace EquipBestItem
                     {
                         if (_bestArmor != null)
                         {
-                            if (item.ItemCost > _bestArmor.ItemCost)
+                            if (GetFullArmor(item) > GetFullArmor(_bestArmor))
                             {
                                 _bestArmor = item;
                             }
@@ -309,7 +326,7 @@ namespace EquipBestItem
                 {
                     if (_bestGlove != null)
                     {
-                        if (item.ItemCost > _bestGlove.ItemCost)
+                        if (GetFullArmor(item) > GetFullArmor(_bestGlove))
                         {
                             _bestGlove = item;
                         }
@@ -325,7 +342,7 @@ namespace EquipBestItem
                     {
                         if (_bestGlove != null)
                         {
-                            if (item.ItemCost > _bestGlove.ItemCost)
+                            if (GetFullArmor(item) > GetFullArmor(_bestGlove))
                             {
                                 _bestGlove = item;
                             }
@@ -348,7 +365,7 @@ namespace EquipBestItem
                 {
                     if (_bestBoot != null)
                     {
-                        if (item.ItemCost > _bestBoot.ItemCost)
+                        if (GetFullArmor(item) > GetFullArmor(_bestBoot))
                         {
                             _bestBoot = item;
                         }
@@ -364,7 +381,7 @@ namespace EquipBestItem
                     {
                         if (_bestBoot != null)
                         {
-                            if (item.ItemCost > _bestBoot.ItemCost)
+                            if (GetFullArmor(item) > GetFullArmor(_bestBoot))
                             {
                                 _bestBoot = item;
                             }
@@ -426,7 +443,7 @@ namespace EquipBestItem
                 {
                     if (_bestHarness != null)
                     {
-                        if (item.ItemCost > _bestHarness.ItemCost)
+                        if (GetFullArmor(item) > GetFullArmor(_bestHarness))
                         {
                             _bestHarness = item;
                         }
@@ -442,7 +459,7 @@ namespace EquipBestItem
                     {
                         if (_bestHarness != null)
                         {
-                            if (item.ItemCost > _bestHarness.ItemCost)
+                            if (GetFullArmor(item) > GetFullArmor(_bestHarness))
                             {
                                 _bestHarness = item;
                             }
