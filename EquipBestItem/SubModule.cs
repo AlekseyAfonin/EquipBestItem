@@ -14,20 +14,27 @@ using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using System.Xml.Serialization;
 
 namespace EquipBestItem
 {
 
-    internal static class Utils
-    {
-        
-    }
-
-
     public class SubModule : MBSubModuleBase
     {
-        //bool currentState = false;
+        public static readonly string ModuleFolderName = "EquipBestItem";
 
+
+        protected override void OnSubModuleLoad()
+        {
+            base.OnSubModuleLoad();
+        }
+
+
+
+        protected override void OnBeforeInitialModuleScreenSetAsRoot()
+        {
+            base.OnBeforeInitialModuleScreenSetAsRoot();
+        }
 
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
@@ -38,9 +45,6 @@ namespace EquipBestItem
 
         protected override void OnApplicationTick(float dt)
         {
-            if(ScreenManager.TopScreen is InventoryGauntletScreen)
-            {
-            }
         }
 
 
