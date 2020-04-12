@@ -1,4 +1,5 @@
-﻿using SandBox.GauntletUI;
+﻿using System;
+using SandBox.GauntletUI;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.Screens;
@@ -7,21 +8,27 @@ using TaleWorlds.Library;
 
 namespace EquipBestItem
 {
-
     public class EquipBestItemWidget : ButtonWidget
     {
         SPInventoryVM _inventory;
-        string _lastCharacterName;
-        MBBindingList<SPItemVM> _lastInventory;
-        bool _lastWarSetState = true;
         InventoryGauntletScreen _inventoryScreen;
-        SPItemVM _bestHelmet;
-        SPItemVM _bestCloak;
-        SPItemVM _bestArmor;
-        SPItemVM _bestGlove;
-        SPItemVM _bestBoot;
-        SPItemVM _bestMount;
-        SPItemVM _bestHarness;
+        public static SPItemVM BestHelmet;
+        public static SPItemVM BestCloak;
+        public static SPItemVM BestArmor;
+        public static SPItemVM BestGlove;
+        public static SPItemVM BestBoot;
+        public static SPItemVM BestMount;
+        public static SPItemVM BestHarness;
+        public static SPItemVM BestWeapon1;
+        public static SPItemVM BestWeapon2;
+        public static SPItemVM BestWeapon3;
+        public static SPItemVM BestWeapon4;
+        public static bool StateItemsWasChanged;
+
+        bool _firstUpdateState = false;
+        bool _leftMouseButtonStatus;
+        bool _rightMouseButtonStatus;
+        int _delay;
 
         public EquipBestItemWidget(UIContext context) : base(context)
         {
@@ -31,56 +38,9 @@ namespace EquipBestItem
                 _inventoryScreen = (InventoryGauntletScreen)ScreenManager.TopScreen;
             }
             _inventory = (SPInventoryVM)_inventoryScreen.GetField("_dataSource");
-
-            _lastInventory = new MBBindingList<SPItemVM>();
-
-            RightItemListVMCopy();
-
+            
         }
-
-        public void RightItemListVMCopy()
-        {
-            _lastInventory.Clear();
-
-            foreach (SPItemVM item in _inventory.RightItemListVM)
-            {
-                _lastInventory.Add(item);
-            }
-        }
-
-        public bool IsRightItemListVMIdentity()
-        {
-            int i = 0;
-
-            if (_inventory.RightItemListVM.Count < 2 || _lastInventory.Count < 2)
-                return false;
-
-            foreach (SPItemVM item in _inventory.RightItemListVM)
-            {
-                if (!_lastInventory[i].Equals(item))
-                    return false;
-            }
-            return true;
-        }
-
-        public void BestItemsClear()
-        {
-            if (_bestHelmet != null || _bestCloak != null || _bestArmor != null || _bestGlove != null || _bestBoot != null || _bestMount != null || _bestHarness != null)
-            _bestHelmet = null;
-            _bestCloak = null;
-            _bestArmor = null;
-            _bestGlove = null;
-            _bestBoot = null;
-            _bestMount = null;
-            _bestHarness = null;
-        }
-
-        public void DisableButtons()
-        {
-            if (this.IsEnabled == true)
-                this.IsEnabled = false;
-        }
-
+        
 
         public int GetFullArmor(SPItemVM item)
         {
@@ -111,57 +71,380 @@ namespace EquipBestItem
             return value;
         }
 
+        public float GetMountEffectiveness(SPItemVM item)
+        {
+            float value = 0f;
+
+            if (item != null && item.ItemRosterElement.EquipmentElement.Item != null)
+            {
+                //value = item.ItemRosterElement.EquipmentElement.Item.Effectiveness;
+                if (item.ItemRosterElement.EquipmentElement.Item.HasHorseComponent)
+                    value = (float)item.ItemRosterElement.EquipmentElement.Item.HorseComponent.Maneuver *
+                        (float)item.ItemRosterElement.EquipmentElement.Item.HorseComponent.Speed +
+                        (float)item.ItemRosterElement.EquipmentElement.Item.HorseComponent.ChargeDamage;
+            }
+
+            return value;
+        }
+
+        bool _latestStateStatus = false;
+
+        private bool StateChanged()
+        {
+
+            if (_rightMouseButtonStatus != _latestStateStatus || _leftMouseButtonStatus != _latestStateStatus)
+            {
+                _latestStateStatus = _rightMouseButtonStatus;
+                _delay = 0;
+                return true;
+            }
+            _delay++;
+            return false;
+        }
+        
+
         protected override void OnUpdate(float dt)
         {
             base.OnUpdate(dt);
 
+            _rightMouseButtonStatus = EventManager.InputContext.IsKeyReleased(TaleWorlds.InputSystem.InputKey.RightMouseButton);
+            _leftMouseButtonStatus = EventManager.InputContext.IsKeyReleased(TaleWorlds.InputSystem.InputKey.LeftMouseButton);
 
-            if (_inventory.RightItemListVM.Count == 0)
+
+            if (StateChanged() || !_firstUpdateState || _delay == 1 || StateItemsWasChanged)
             {
-                BestItemsClear();
-                DisableButtons();
+                //InformationManager.DisplayMessage(new InformationMessage("Update() " + dt, Color.FromUint(4282569842U)));
+                if (this.Id == "EquipBestItemHelmButton") HelmButtonUpdate();
+                if (this.Id == "EquipBestItemCloakButton") CloakButtonUpdate();
+                if (this.Id == "EquipBestItemArmorButton") ArmorButtonUpdate();
+                if (this.Id == "EquipBestItemGloveButton") GloveButtonUpdate();
+                if (this.Id == "EquipBestItemBootButton") BootButtonUpdate();
+                if (this.Id == "EquipBestItemMountButton") MountButtonUpdate();
+                if (this.Id == "EquipBestItemHarnessButton") HarnessButtonUpdate();
+                if (this.Id == "EquipBestItemWeapon1Button") Weapon1ButtonUpdate();
+                if (this.Id == "EquipBestItemWeapon2Button") Weapon2ButtonUpdate();
+                if (this.Id == "EquipBestItemWeapon3Button") Weapon3ButtonUpdate();
+                if (this.Id == "EquipBestItemWeapon4Button") Weapon4ButtonUpdate();
+
+                _firstUpdateState = true;
             }
+        }
 
-            if (_lastCharacterName != _inventory.CurrentCharacterName || !IsRightItemListVMIdentity() || _lastWarSetState != _inventory.IsInWarSet)
-            {
-                this.IsEnabled = false;
+        private bool IsAnyButtonEnable()
+        {
 
-                FindBestHelm();
-                if (_bestHelmet != null && GetFullArmor(_bestHelmet) > GetFullArmor(_inventory.CharacterHelmSlot) && this.Id == "EquipBestItemHelmButton")
-                    this.IsEnabled = true;
+            if (BestArmor != null) return true;
+            if (BestBoot != null) return true;
+            if (BestCloak != null) return true;
+            if (BestGlove != null) return true;
+            if (BestHarness != null) return true;
+            if (BestHelmet != null) return true;
+            if (BestMount != null) return true;
+            if (BestWeapon1 != null) return true;
+            if (BestWeapon2 != null) return true;
+            if (BestWeapon3 != null) return true;
+            if (BestWeapon4 != null) return true;
 
-                FindBestCloak();
-                if (_bestCloak != null && GetFullArmor(_bestCloak) > GetFullArmor(_inventory.CharacterCloakSlot) && this.Id == "EquipBestItemCloakButton")
-                    this.IsEnabled = true;
-
-                FindBestArmor();
-                if (_bestArmor != null && GetFullArmor(_bestArmor) > GetFullArmor(_inventory.CharacterTorsoSlot) && this.Id == "EquipBestItemArmorButton")
-                    this.IsEnabled = true;
-
-                FindBestGlove();
-                if (_bestGlove != null && GetFullArmor(_bestGlove) > GetFullArmor(_inventory.CharacterGloveSlot) && this.Id == "EquipBestItemGloveButton")
-                    this.IsEnabled = true;
-
-                FindBestBoot();
-                if (_bestBoot != null && GetFullArmor(_bestBoot) > GetFullArmor(_inventory.CharacterBootSlot) && this.Id == "EquipBestItemBootButton")
-                    this.IsEnabled = true;
-
-                FindBestMount();
-                if (_bestMount != null && GetEffectiveness(_bestMount) > GetEffectiveness(_inventory.CharacterMountSlot) && this.Id == "EquipBestItemMountButton")
-                    this.IsEnabled = true;
-
-                FindBestHarness();
-                if (_bestHarness != null && GetFullArmor(_bestHarness) > GetFullArmor(_inventory.CharacterMountArmorSlot) && this.Id == "EquipBestItemHarnessButton")
-                    this.IsEnabled = true;
-
-                _lastWarSetState = _inventory.IsInWarSet;
-                _lastCharacterName = _inventory.CurrentCharacterName;
-                RightItemListVMCopy();
-            }
-
-
+            return false;
         }
         
+
+        private void Weapon4ButtonUpdate()
+        {
+            FindBestWeapon4();
+            this.IsEnabled = (BestWeapon4 == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+            
+            StateItemsWasChanged = false;
+        }
+
+        private void Weapon3ButtonUpdate()
+        {
+            FindBestWeapon3();
+            this.IsEnabled = (BestWeapon3 == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+        }
+
+        private void Weapon2ButtonUpdate()
+        {
+            FindBestWeapon2();
+            this.IsEnabled = (BestWeapon2 == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+        }
+
+        private void Weapon1ButtonUpdate()
+        {
+            FindBestWeapon1();
+            this.IsEnabled = (BestWeapon1 == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+        }
+
+        private void HarnessButtonUpdate()
+        {
+            FindBestHarness();
+            this.IsEnabled = (BestHarness == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+        }
+
+        private void MountButtonUpdate()
+        {
+            FindBestMount();
+            this.IsEnabled = (BestMount == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+        }
+
+        private void BootButtonUpdate()
+        {
+            FindBestBoot();
+            this.IsEnabled = (BestBoot == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+        }
+
+        private void GloveButtonUpdate()
+        {
+            FindBestGlove();
+            this.IsEnabled = (BestGlove == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+        }
+
+        private void ArmorButtonUpdate()
+        {
+            FindBestArmor();
+            this.IsEnabled = (BestArmor == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+        }
+
+        private void CloakButtonUpdate()
+        {
+            FindBestCloak();
+            this.IsEnabled = (BestCloak == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+        }
+
+        private void HelmButtonUpdate()
+        {
+            FindBestHelm();
+            this.IsEnabled = (BestHelmet == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+        }
+
+
+
+        private void FindBestWeapon4()
+        {
+            BestWeapon4 = null;
+
+            if (_inventory.CharacterWeapon4Slot == null)
+            {
+                return;
+            }
+
+            foreach (SPItemVM item in _inventory.RightItemListVM)
+            {
+                if (item.TypeId == _inventory.CharacterWeapon4Slot.TypeId &&
+                    GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon4Slot) &&
+                    item.CanCharacterUseItem && 
+                    _inventory.IsInWarSet)
+                {
+                    if (BestWeapon4 != null)
+                    {
+                        if (GetEffectiveness(item) > GetEffectiveness(BestWeapon4))
+                        {
+                            BestWeapon4 = item;
+                        }
+                    }
+                    else
+                    {
+                        BestWeapon4 = item;
+                    }
+                }
+                if (item.TypeId == _inventory.CharacterWeapon4Slot.TypeId &&
+                    GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon4Slot) &&
+                    item.CanCharacterUseItem && 
+                    !_inventory.IsInWarSet)
+                {
+                    if (item.IsCivilianItem)
+                    {
+                        if (BestWeapon4 != null)
+                        {
+                            if (GetEffectiveness(item) > GetEffectiveness(BestWeapon4))
+                            {
+                                BestWeapon4 = item;
+                            }
+                        }
+                        else
+                        {
+                            BestWeapon4 = item;
+                        }
+                    }
+                }
+            }
+            if (GetEffectiveness(_inventory.CharacterWeapon4Slot) >= GetEffectiveness(BestWeapon4))
+            {
+                BestWeapon4 = null;
+            }
+
+        }
+
+        private void FindBestWeapon3()
+        {
+            BestWeapon3 = null;
+
+            if (_inventory.CharacterWeapon3Slot == null)
+            {
+                return;
+            }
+
+            foreach (SPItemVM item in _inventory.RightItemListVM)
+            {
+                if (item.TypeId == _inventory.CharacterWeapon3Slot.TypeId &&
+                    GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon3Slot) &&
+                    item.CanCharacterUseItem && 
+                    _inventory.IsInWarSet)
+                {
+                    if (BestWeapon3 != null)
+                    {
+                        if (GetEffectiveness(item) > GetEffectiveness(BestWeapon3))
+                        {
+                            BestWeapon3 = item;
+                        }
+                    }
+                    else
+                    {
+                        BestWeapon3 = item;
+                    }
+                }
+                if (item.TypeId == _inventory.CharacterWeapon3Slot.TypeId &&
+                    GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon3Slot) &&
+                    item.CanCharacterUseItem && 
+                    !_inventory.IsInWarSet)
+                {
+                    if (item.IsCivilianItem)
+                    {
+                        if (BestWeapon3 != null)
+                        {
+                            if (GetEffectiveness(item) > GetEffectiveness(BestWeapon3))
+                            {
+                                BestWeapon3 = item;
+                            }
+                        }
+                        else
+                        {
+                            BestWeapon3 = item;
+                        }
+                    }
+                }
+            }
+            if (GetEffectiveness(_inventory.CharacterWeapon3Slot) >= GetEffectiveness(BestWeapon3))
+            {
+                BestWeapon3 = null;
+            }
+        }
+
+        private void FindBestWeapon2()
+        {
+            BestWeapon2 = null;
+
+            if (_inventory.CharacterWeapon2Slot == null)
+            {
+                return;
+            }
+
+            foreach (SPItemVM item in _inventory.RightItemListVM)
+            {
+                if (item.TypeId == _inventory.CharacterWeapon2Slot.TypeId && 
+                    item.CanCharacterUseItem && 
+                    _inventory.IsInWarSet &&
+                    GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon2Slot))
+                {
+                    if (BestWeapon2 != null)
+                    {
+                        if (GetEffectiveness(item) > GetEffectiveness(BestWeapon2))
+                        {
+                            BestWeapon2 = item;
+                        }
+                    }
+                    else
+                    {
+                        BestWeapon2 = item;
+                    }
+                }
+                if (item.TypeId == _inventory.CharacterWeapon2Slot.TypeId &&
+                    GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon2Slot) &&
+                    item.CanCharacterUseItem && 
+                    !_inventory.IsInWarSet)
+                {
+                    if (item.IsCivilianItem)
+                    {
+                        if (BestWeapon2 != null)
+                        {
+                            if (GetEffectiveness(item) > GetEffectiveness(BestWeapon2))
+                            {
+                                BestWeapon2 = item;
+                            }
+                        }
+                        else
+                        {
+                            BestWeapon2 = item;
+                        }
+                    }
+                }
+            }
+            if (GetEffectiveness(_inventory.CharacterWeapon2Slot) >= GetEffectiveness(BestWeapon2))
+            {
+                BestWeapon2 = null;
+            }
+        }
+
+        private void FindBestWeapon1()
+        {
+            BestWeapon1 = null;
+
+            if (_inventory.CharacterWeapon1Slot == null)
+            {
+                return;
+            }
+
+            foreach (SPItemVM item in _inventory.RightItemListVM)
+            {
+                if (item.TypeId == _inventory.CharacterWeapon1Slot.TypeId &&
+                    GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon1Slot) &&
+                    item.CanCharacterUseItem && _inventory.IsInWarSet)
+                {
+                    if (BestWeapon1 != null)
+                    {
+                        if (GetEffectiveness(item) > GetEffectiveness(BestWeapon1))
+                        {
+                            BestWeapon1 = item;
+                        }
+                    }
+                    else
+                    {
+                        BestWeapon1 = item;
+                    }
+                }
+                if (item.TypeId == _inventory.CharacterWeapon1Slot.TypeId &&
+                    GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon1Slot) &&
+                    item.CanCharacterUseItem && !_inventory.IsInWarSet)
+                {
+                    if (item.IsCivilianItem)
+                    {
+                        if (BestWeapon1 != null)
+                        {
+                            if (GetEffectiveness(item) > GetEffectiveness(BestWeapon1))
+                            {
+                                BestWeapon1 = item;
+                            }
+                        }
+                        else
+                        {
+                            BestWeapon1 = item;
+                        }
+                    }
+                }
+            }
+            if (GetEffectiveness(_inventory.CharacterWeapon1Slot) >= GetEffectiveness(BestWeapon1))
+            {
+                BestWeapon1 = null;
+            }
+        }
+
+        private WeaponClass GetWeaponClass(SPItemVM item)
+        {
+            if (item.ItemRosterElement.EquipmentElement.Item.HasWeaponComponent)
+                return item.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass;
+            return item.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass;
+        }
+
         protected override void OnClick()
         {
             switch (this.Id)
@@ -187,332 +470,409 @@ namespace EquipBestItem
                 case "EquipBestItemHarnessButton":
                     EquipBestItemHarnessButton();
                     break;
-                default:
+                case "EquipBestItemWeapon1Button":
+                    EquipBestItemWeapon1Button();
                     break;
+                case "EquipBestItemWeapon2Button":
+                    EquipBestItemWeapon2Button();
+                    break;
+                case "EquipBestItemWeapon3Button":
+                    EquipBestItemWeapon3Button();
+                    break;
+                case "EquipBestItemWeapon4Button":
+                    EquipBestItemWeapon4Button();
+                    break;
+                default:
+                    break; 
             }
+        }
+
+        private void EquipBestItemWeapon4Button()
+        {
+            _inventory.Call("UnequipEquipment", _inventory.CharacterWeapon4Slot);
+            _inventory.Call("ProcessEquipItem", BestWeapon4);
+            BestWeapon4 = null;
+            StateItemsWasChanged = true;
+        }
+
+        private void EquipBestItemWeapon3Button()
+        {
+            _inventory.Call("UnequipEquipment", _inventory.CharacterWeapon3Slot);
+            _inventory.Call("ProcessEquipItem", BestWeapon3);
+            BestWeapon3 = null;
+            StateItemsWasChanged = true;
+        }
+
+        private void EquipBestItemWeapon2Button()
+        {
+            _inventory.Call("UnequipEquipment", _inventory.CharacterWeapon2Slot);
+            _inventory.Call("ProcessEquipItem", BestWeapon2);
+            BestWeapon2 = null;
+            StateItemsWasChanged = true;
+        }
+
+        private void EquipBestItemWeapon1Button()
+        {
+            _inventory.Call("UnequipEquipment", _inventory.CharacterWeapon1Slot);
+            _inventory.Call("ProcessEquipItem", BestWeapon1);
+            BestWeapon1 = null;
+            StateItemsWasChanged = true;
         }
 
         private void EquipBestItemHarnessButton()
         {
-            _inventory.Call("ProcessEquipItem", _bestHarness);
-            this.IsEnabled = false;
-            _bestHarness = null;
+            _inventory.Call("ProcessEquipItem", BestHarness);
+            BestHarness = null;
+            StateItemsWasChanged = true;
         }
 
         private void EquipBestItemMountButton()
         {
-            _inventory.Call("ProcessEquipItem", _bestMount);
-            this.IsEnabled = false;
-            _bestMount = null;
+            _inventory.Call("ProcessEquipItem", BestMount);
+            BestMount = null;
+            StateItemsWasChanged = true;
         }
 
         private void EquipBestItemBootButton()
         {
-            _inventory.Call("ProcessEquipItem", _bestBoot);
-            this.IsEnabled = false;
-            _bestBoot = null;
+            _inventory.Call("ProcessEquipItem", BestBoot);
+            BestBoot = null;
+            StateItemsWasChanged = true;
         }
 
         private void EquipBestItemGloveButton()
         {
-            _inventory.Call("ProcessEquipItem", _bestGlove);
-            this.IsEnabled = false;
-            _bestGlove = null;
+            _inventory.Call("ProcessEquipItem", BestGlove);
+            BestGlove = null;
+            StateItemsWasChanged = true;
         }
 
         private void EquipBestItemArmorButton()
         {
-            _inventory.Call("ProcessEquipItem", _bestArmor);
-            this.IsEnabled = false;
-            _bestArmor = null;
+            _inventory.Call("ProcessEquipItem", BestArmor);
+            BestArmor = null;
+            StateItemsWasChanged = true;
         }
 
         private void EquipBestItemCloakButton()
         {
-            _inventory.Call("ProcessEquipItem", _bestCloak);
-            this.IsEnabled = false;
-            _bestCloak = null;
+            _inventory.Call("ProcessEquipItem", BestCloak);
+            BestCloak = null;
+            StateItemsWasChanged = true;
         }
 
         private void EquipBestItemHelmButton()
         {
-            _inventory.Call("ProcessEquipItem", _bestHelmet);
-            this.IsEnabled = false;
-            _bestHelmet = null;
+            _inventory.Call("ProcessEquipItem", BestHelmet);
+            BestHelmet = null;
+            StateItemsWasChanged = true;
         }
 
 
 
         public void FindBestHelm()
         {
-            _bestHelmet = null;
+            BestHelmet = null;
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.HeadArmor && item.CanCharacterUseItem && _inventory.IsInWarSet)
                 {
-                    if (_bestHelmet != null)
+                    if (BestHelmet != null)
                     {
-                        if (GetFullArmor(item) > GetFullArmor(_bestHelmet))
+                        if (GetFullArmor(item) > GetFullArmor(BestHelmet))
                         {
-                            _bestHelmet = item;
+                            BestHelmet = item;
                         }
                     }
                     else
                     {
-                        _bestHelmet = item;
+                        BestHelmet = item;
                     }
                 }
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.HeadArmor && item.CanCharacterUseItem && !_inventory.IsInWarSet)
                 {
                     if (item.IsCivilianItem)
                     {
-                        if (_bestHelmet != null)
+                        if (BestHelmet != null)
                         {
-                            if (GetFullArmor(item) > GetFullArmor(_bestHelmet))
+                            if (GetFullArmor(item) > GetFullArmor(BestHelmet))
                             {
-                                _bestHelmet = item;
+                                BestHelmet = item;
                             }
                         }
                         else
                         {
-                            _bestHelmet = item;
+                            BestHelmet = item;
                         }
                     }
                 }
+            }
+
+            if (GetFullArmor(_inventory.CharacterHelmSlot) >= GetFullArmor(BestHelmet))
+            {
+                BestHelmet = null;
             }
         }
 
         public void FindBestCloak()
         {
-            _bestCloak = null;
+            BestCloak = null;
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.Cape && item.CanCharacterUseItem && _inventory.IsInWarSet)
                 {
-                    if (_bestCloak != null)
+                    if (BestCloak != null)
                     {
-                        if (GetFullArmor(item) > GetFullArmor(_bestCloak))
+                        if (GetFullArmor(item) > GetFullArmor(BestCloak))
                         {
-                            _bestCloak = item;
+                            BestCloak = item;
                         }
                     }
                     else
                     {
-                        _bestCloak = item;
+                        BestCloak = item;
                     }
                 }
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.Cape && item.CanCharacterUseItem && !_inventory.IsInWarSet)
                 {
                     if (item.IsCivilianItem)
                     {
-                        if (_bestCloak != null)
+                        if (BestCloak != null)
                         {
-                            if (GetFullArmor(item) > GetFullArmor(_bestCloak))
+                            if (GetFullArmor(item) > GetFullArmor(BestCloak))
                             {
-                                _bestCloak = item;
+                                BestCloak = item;
                             }
                         }
                         else
                         {
-                            _bestCloak = item;
+                            BestCloak = item;
                         }
                     }
                 }
+            }
+            if (GetFullArmor(_inventory.CharacterCloakSlot) >= GetFullArmor(BestCloak))
+            {
+                BestCloak = null;
             }
         }
 
         public void FindBestArmor()
         {
-            _bestArmor = null;
+            BestArmor = null;
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.BodyArmor && item.CanCharacterUseItem && _inventory.IsInWarSet)
                 {
-                    if (_bestArmor != null)
+                    if (BestArmor != null)
                     {
-                        if (GetFullArmor(item) > GetFullArmor(_bestArmor))
+                        if (GetFullArmor(item) > GetFullArmor(BestArmor))
                         {
-                            _bestArmor = item;
+                            BestArmor = item;
                         }
                     }
                     else
                     {
-                        _bestArmor = item;
+                        BestArmor = item;
                     }
                 }
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.BodyArmor && item.CanCharacterUseItem && !_inventory.IsInWarSet)
                 {
                     if (item.IsCivilianItem)
                     {
-                        if (_bestArmor != null)
+                        if (BestArmor != null)
                         {
-                            if (GetFullArmor(item) > GetFullArmor(_bestArmor))
+                            if (GetFullArmor(item) > GetFullArmor(BestArmor))
                             {
-                                _bestArmor = item;
+                                BestArmor = item;
                             }
                         }
                         else
                         {
-                            _bestArmor = item;
+                            BestArmor = item;
                         }
                     }
                 }
+            }
+            if (GetFullArmor(_inventory.CharacterTorsoSlot) >= GetFullArmor(BestArmor))
+            {
+                BestArmor = null;
             }
         }
 
         public void FindBestGlove()
         {
-            _bestGlove = null;
+            BestGlove = null;
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.HandArmor && item.CanCharacterUseItem && _inventory.IsInWarSet)
                 {
-                    if (_bestGlove != null)
+                    if (BestGlove != null)
                     {
-                        if (GetFullArmor(item) > GetFullArmor(_bestGlove))
+                        if (GetFullArmor(item) > GetFullArmor(BestGlove))
                         {
-                            _bestGlove = item;
+                            BestGlove = item;
                         }
                     }
                     else
                     {
-                        _bestGlove = item;
+                        BestGlove = item;
                     }
                 }
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.HandArmor && item.CanCharacterUseItem && !_inventory.IsInWarSet)
                 {
                     if (item.IsCivilianItem)
                     {
-                        if (_bestGlove != null)
+                        if (BestGlove != null)
                         {
-                            if (GetFullArmor(item) > GetFullArmor(_bestGlove))
+                            if (GetFullArmor(item) > GetFullArmor(BestGlove))
                             {
-                                _bestGlove = item;
+                                BestGlove = item;
                             }
                         }
                         else
                         {
-                            _bestGlove = item;
+                            BestGlove = item;
                         }
                     }
                 }
+            }
+            if (GetFullArmor(_inventory.CharacterGloveSlot) >= GetFullArmor(BestGlove))
+            {
+                BestGlove = null;
             }
         }
 
         public void FindBestBoot()
         {
-            _bestBoot = null;
+            BestBoot = null;
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.LegArmor && item.CanCharacterUseItem && _inventory.IsInWarSet)
                 {
-                    if (_bestBoot != null)
+                    if (BestBoot != null)
                     {
-                        if (GetFullArmor(item) > GetFullArmor(_bestBoot))
+                        if (GetFullArmor(item) > GetFullArmor(BestBoot))
                         {
-                            _bestBoot = item;
+                            BestBoot = item;
                         }
                     }
                     else
                     {
-                        _bestBoot = item;
+                        BestBoot = item;
                     }
                 }
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.LegArmor && item.CanCharacterUseItem && !_inventory.IsInWarSet)
                 {
                     if (item.IsCivilianItem)
                     {
-                        if (_bestBoot != null)
+                        if (BestBoot != null)
                         {
-                            if (GetFullArmor(item) > GetFullArmor(_bestBoot))
+                            if (GetFullArmor(item) > GetFullArmor(BestBoot))
                             {
-                                _bestBoot = item;
+                                BestBoot = item;
                             }
                         }
                         else
                         {
-                            _bestBoot = item;
+                            BestBoot = item;
                         }
                     }
                 }
+            }
+            if (GetFullArmor(_inventory.CharacterBootSlot) >= GetFullArmor(BestBoot))
+            {
+                BestBoot = null;
             }
         }
 
         public void FindBestMount()
         {
-            _bestMount = null;
+            BestMount = null;
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.Horse && item.CanCharacterUseItem && _inventory.IsInWarSet)
                 {
-                    if (_bestMount != null)
+                    if (BestMount != null)
                     {
-                        if (item.ItemRosterElement.EquipmentElement.Item.Effectiveness > _bestMount.ItemRosterElement.EquipmentElement.Item.Effectiveness)
+                        if (GetMountEffectiveness(item) > GetMountEffectiveness(BestMount))
                         {
-                            _bestMount = item;
+                            BestMount = item;
                         }
                     }
                     else
                     {
-                        _bestMount = item;
+                        BestMount = item;
                     }
                 }
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.Horse && item.CanCharacterUseItem && !_inventory.IsInWarSet)
                 {
                     if (item.IsCivilianItem)
                     {
-                        if (_bestMount != null)
+                        if (BestMount != null)
                         {
-                            if (item.ItemRosterElement.EquipmentElement.Item.Effectiveness > _bestMount.ItemRosterElement.EquipmentElement.Item.Effectiveness)
+                            if (GetMountEffectiveness(item) > GetMountEffectiveness(BestMount))
                             {
-                                _bestMount = item;
+                                BestMount = item;
                             }
                         }
                         else
                         {
-                            _bestMount = item;
+                            BestMount = item;
                         }
                     }
                 }
+            }
+            if (GetMountEffectiveness(_inventory.CharacterMountSlot) >= GetMountEffectiveness(BestMount)) 
+            {
+                BestMount = null;
             }
         }
 
         public void FindBestHarness()
         {
-            _bestHarness = null;
+            BestHarness = null;
+
+            if (_inventory.CharacterMountSlot.StringId == "special_camel")
+                return;
+
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.HorseHarness && item.CanCharacterUseItem && _inventory.IsInWarSet)
                 {
-                    if (_bestHarness != null)
+                    if (BestHarness != null)
                     {
-                        if (GetFullArmor(item) > GetFullArmor(_bestHarness))
+                        if (GetFullArmor(item) > GetFullArmor(BestHarness))
                         {
-                            _bestHarness = item;
+                            BestHarness = item;
                         }
                     }
                     else
                     {
-                        _bestHarness = item;
+                        BestHarness = item;
                     }
                 }
                 if (item.TypeId == (int)ItemObject.ItemTypeEnum.HorseHarness && item.CanCharacterUseItem && !_inventory.IsInWarSet)
                 {
                     if (item.IsCivilianItem)
                     {
-                        if (_bestHarness != null)
+                        if (BestHarness != null)
                         {
-                            if (GetFullArmor(item) > GetFullArmor(_bestHarness))
+                            if (GetFullArmor(item) > GetFullArmor(BestHarness))
                             {
-                                _bestHarness = item;
+                                BestHarness = item;
                             }
                         }
                         else
                         {
-                            _bestHarness = item;
+                            BestHarness = item;
                         }
                     }
                 }
+            }
+            if (GetFullArmor(_inventory.CharacterMountArmorSlot) >= GetFullArmor(BestHarness))
+            {
+                BestHarness = null;
             }
         }
     }
