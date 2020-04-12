@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Xml.Serialization;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.Library;
 
 namespace EquipBestItem
 {
@@ -17,9 +19,9 @@ namespace EquipBestItem
                 {
                     return mi.Invoke(o, args);
                 }
-                catch (Exception e)
+                catch
                 {
-                    Debug.WriteLine(e.Message);
+                    //Debug.WriteLine(e.Message);
                 }
             }
             return null;
@@ -34,12 +36,52 @@ namespace EquipBestItem
                 {
                     return mi.GetValue(o);
                 }
-                catch (Exception e)
+                catch
                 {
-                    Debug.WriteLine(e.Message);
+                    //Debug.WriteLine(e.Message);
                 }
             }
             return null;
+        }
+
+        public static void Serialize<T>(string filename, T data)
+        {
+            TextWriter writer = null;
+            try
+            {
+                writer = new StreamWriter(filename);
+
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                serializer.Serialize(writer, data);
+            }
+            finally
+            {
+                if (writer != null)
+                {
+                    writer.Close();
+                }
+            }
+        }
+
+
+        public static T Deserialize<T>(string filename)
+        {
+            TextReader reader = null;
+            T data = default(T);
+            try
+            {
+                reader = new StreamReader(filename);
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                data = (T)serializer.Deserialize(reader);
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
+            return data;
         }
     }
 }
