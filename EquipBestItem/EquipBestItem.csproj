@@ -268,10 +268,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EquipBestItemAllWidget.cs" />
     <Compile Include="EquipBestItemBehavior.cs" />
     <Compile Include="EquipBestItemLogic.cs" />
     <Compile Include="EquipBestItemWidget.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="SubModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
