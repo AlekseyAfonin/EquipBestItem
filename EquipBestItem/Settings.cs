@@ -72,37 +72,37 @@ namespace EquipBestItem
     [Serializable]
     public class EquipBestItemSettings
     {
-        private bool _isEnabledEquipAllButton = false;
+        public bool IsEnabledEquipAllButton { get; set; }
+        
+        public bool IsEnabledStandardButtons { get; set; }
 
-        public bool IsEnabledEquipAllButton
-        {
-            get
-            {
-                return _isEnabledEquipAllButton;
-            }
-            set
-            {
-                _isEnabledEquipAllButton = value;
-            }
-        }
+        public bool IsEnableHelmButtom { get; set; }
 
-        private bool _isEnabledStandartButtons = true;
+        public bool IsEnableCloakButtom { get; set; }
 
-        public bool IsEnabledStandartButtons
-        {
-            get
-            {
-                return _isEnabledStandartButtons;
-            }
-            set
-            {
-                _isEnabledStandartButtons = value;
-            }
-        }
+        public bool IsEnableArmorButtom { get; set; }
+
+        public bool IsEnableGloveButtom { get; set; }
+
+        public bool IsEnableBootButtom { get; set; }
+
+        public bool IsEnableMountButtom { get; set; }
+
+        public bool IsEnableHarnessButtom { get; set; }
+
+        public bool IsEnableWeapon1Buttom { get; set; }
+
+        public bool IsEnableWeapon2Buttom { get; set; }
+
+        public bool IsEnableWeapon3Buttom { get; set; }
+
+        public bool IsEnableWeapon4Buttom { get; set; }
 
         public EquipBestItemSettings()
         {
         }
+
+
     }
 
     

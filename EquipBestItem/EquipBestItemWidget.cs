@@ -38,7 +38,8 @@ namespace EquipBestItem
                 _inventoryScreen = (InventoryGauntletScreen)ScreenManager.TopScreen;
             }
             _inventory = (SPInventoryVM)_inventoryScreen.GetField("_dataSource");
-            
+
+            this.IsEnabled = false;
         }
         
 
@@ -152,7 +153,12 @@ namespace EquipBestItem
         private void Weapon4ButtonUpdate()
         {
             FindBestWeapon4();
-            this.IsEnabled = (BestWeapon4 == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+            if ((GetItemUsage(_inventory.CharacterWeapon4Slot) == "long_bow" || GetItemUsage(_inventory.CharacterWeapon4Slot) == "bow") && GetItemUsage(BestWeapon4) != GetItemUsage(_inventory.CharacterWeapon4Slot))
+                BestWeapon4 = null;
+            else if (Settings.EBISettings.IsEnableWeapon4Buttom)
+                this.IsEnabled = (BestWeapon4 == null || !Settings.EBISettings.IsEnabledStandardButtons) ? false : true;
+            else
+                BestWeapon4 = null;
             
             StateItemsWasChanged = false;
         }
@@ -160,63 +166,145 @@ namespace EquipBestItem
         private void Weapon3ButtonUpdate()
         {
             FindBestWeapon3();
-            this.IsEnabled = (BestWeapon3 == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+            if ((GetItemUsage(_inventory.CharacterWeapon3Slot) == "long_bow" || GetItemUsage(_inventory.CharacterWeapon3Slot) == "bow") && GetItemUsage(BestWeapon3) != GetItemUsage(_inventory.CharacterWeapon3Slot))
+                BestWeapon3 = null;
+            else if (Settings.EBISettings.IsEnableWeapon3Buttom)
+                this.IsEnabled = (BestWeapon3 == null || !Settings.EBISettings.IsEnabledStandardButtons) ? false : true;
+            else
+                BestWeapon3 = null;
         }
 
         private void Weapon2ButtonUpdate()
         {
             FindBestWeapon2();
-            this.IsEnabled = (BestWeapon2 == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+            if ((GetItemUsage(_inventory.CharacterWeapon2Slot) == "long_bow" || GetItemUsage(_inventory.CharacterWeapon2Slot) == "bow") && GetItemUsage(BestWeapon2) != GetItemUsage(_inventory.CharacterWeapon2Slot))
+                BestWeapon2 = null;
+            else if (Settings.EBISettings.IsEnableWeapon2Buttom)
+                this.IsEnabled = (BestWeapon2 == null || !Settings.EBISettings.IsEnabledStandardButtons) ? false : true;
+            else
+                BestWeapon2 = null;
         }
 
         private void Weapon1ButtonUpdate()
         {
             FindBestWeapon1();
-            this.IsEnabled = (BestWeapon1 == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+            if ((GetItemUsage(_inventory.CharacterWeapon1Slot) == "long_bow" || GetItemUsage(_inventory.CharacterWeapon1Slot) == "bow") && GetItemUsage(BestWeapon1) != GetItemUsage(_inventory.CharacterWeapon1Slot))
+                BestWeapon1 = null;
+            else if (Settings.EBISettings.IsEnableWeapon1Buttom)
+                this.IsEnabled = (BestWeapon1 == null || !Settings.EBISettings.IsEnabledStandardButtons) ? false : true;
+            else
+                BestWeapon1 = null;
         }
 
         private void HarnessButtonUpdate()
         {
             FindBestHarness();
-            this.IsEnabled = (BestHarness == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+            if (Settings.EBISettings.IsEnableHarnessButtom)
+                this.IsEnabled = (BestHarness == null || !Settings.EBISettings.IsEnabledStandardButtons) ? false : true;
+            else
+                BestHarness = null;
         }
 
         private void MountButtonUpdate()
         {
             FindBestMount();
-            this.IsEnabled = (BestMount == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+            if (Settings.EBISettings.IsEnableMountButtom)
+                this.IsEnabled = (BestMount == null || !Settings.EBISettings.IsEnabledStandardButtons) ? false : true;
+            else
+                BestMount = null;
+            
         }
 
         private void BootButtonUpdate()
         {
             FindBestBoot();
-            this.IsEnabled = (BestBoot == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+            if (Settings.EBISettings.IsEnableBootButtom)
+                this.IsEnabled = (BestBoot == null || !Settings.EBISettings.IsEnabledStandardButtons) ? false : true;
+            else
+                BestBoot = null;
+            
         }
 
         private void GloveButtonUpdate()
         {
             FindBestGlove();
-            this.IsEnabled = (BestGlove == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+            if (Settings.EBISettings.IsEnableGloveButtom)
+                this.IsEnabled = (BestGlove == null || !Settings.EBISettings.IsEnabledStandardButtons) ? false : true;
+            else
+                BestGlove = null;
+            
         }
 
         private void ArmorButtonUpdate()
         {
             FindBestArmor();
-            this.IsEnabled = (BestArmor == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+            
+            if (Settings.EBISettings.IsEnableArmorButtom)
+                this.IsEnabled = (BestArmor == null || !Settings.EBISettings.IsEnabledStandardButtons) ? false : true;
+            else
+                BestArmor = null;
         }
 
         private void CloakButtonUpdate()
         {
             FindBestCloak();
-            this.IsEnabled = (BestCloak == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+            if (Settings.EBISettings.IsEnableCloakButtom)
+                this.IsEnabled = (BestCloak == null || !Settings.EBISettings.IsEnabledStandardButtons) ? false : true;
+            else
+                BestCloak = null;
+            
         }
 
         private void HelmButtonUpdate()
         {
             FindBestHelm();
-            this.IsEnabled = (BestHelmet == null || !Settings.EBISettings.IsEnabledStandartButtons) ? false : true;
+            if (Settings.EBISettings.IsEnableHelmButtom)
+                this.IsEnabled = (BestHelmet == null || !Settings.EBISettings.IsEnabledStandardButtons) ? false : true;
+            else
+                BestHelmet = null;
+            
         }
 
+        private float GetShieldEffectiveness(SPItemVM item)
+        {
+            if (item == null)
+                return 0f;
+            if (item.ItemRosterElement.IsEmpty)
+                return 0f;
+            if (item.ItemRosterElement.EquipmentElement.Item.HasWeaponComponent)
+            {
+                WeaponComponentData primaryWeapon = item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon;
+                float num = 1f;
+                switch (primaryWeapon.WeaponClass)
+                {
+                    case WeaponClass.SmallShield:
+                        num = 0.4f;
+                        break;
+                    case WeaponClass.LargeShield:
+                        num = 0.5f;
+                        break;
+                }
+                
+                float value = ((float)primaryWeapon.MaxDataValue + 3f * (float)primaryWeapon.BodyArmor + (float)primaryWeapon.ThrustSpeed) / (6f + primaryWeapon.Item.Weight) * 0.13f * num;
+                //((float)primaryWeapon.BodyArmor * 60f + (float)primaryWeapon.ThrustSpeed * 10f + (float)primaryWeapon.MaxDataValue * 0.5f + (float)primaryWeapon.WeaponLength * 20f - (float)primaryWeapon.Item.Weight * 10f) * num;
+                return value;
+            }
+            return 0f;
+        }
+
+        private bool IsShield(SPItemVM item)
+        {
+            if (item == null)
+                return false;
+            if (item.ItemRosterElement.IsEmpty)
+                return false;
+            if (item.ItemRosterElement.EquipmentElement.Item.HasWeaponComponent)
+            {
+                if (item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon.IsShield)
+                    return true;
+            }
+            return false;
+        }
 
 
         private void FindBestWeapon4()
@@ -230,14 +318,23 @@ namespace EquipBestItem
 
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
+                if ((GetItemUsage(item) == "long_bow" || GetItemUsage(item) == "bow") && GetItemUsage(item) != GetItemUsage(_inventory.CharacterWeapon4Slot))
+                    continue;
                 if (item.TypeId == _inventory.CharacterWeapon4Slot.TypeId &&
                     GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon4Slot) &&
                     item.CanCharacterUseItem && 
-                    _inventory.IsInWarSet)
+                    _inventory.IsInWarSet && 
+                    !item.ItemRosterElement.IsEmpty && 
+                    !item.ItemRosterElement.EquipmentElement.IsEmpty &&
+                    item.ItemRosterElement.EquipmentElement.Item.HasWeaponComponent)
                 {
                     if (BestWeapon4 != null)
                     {
-                        if (GetEffectiveness(item) > GetEffectiveness(BestWeapon4))
+                        if (IsShield(item))
+                        {
+                            if (GetShieldEffectiveness(item) > GetShieldEffectiveness(BestWeapon4)) BestWeapon4 = item;
+                        }
+                        else if (GetEffectiveness(item) > GetEffectiveness(BestWeapon4))
                         {
                             BestWeapon4 = item;
                         }
@@ -250,13 +347,20 @@ namespace EquipBestItem
                 if (item.TypeId == _inventory.CharacterWeapon4Slot.TypeId &&
                     GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon4Slot) &&
                     item.CanCharacterUseItem && 
-                    !_inventory.IsInWarSet)
+                    !_inventory.IsInWarSet &&
+                    !item.ItemRosterElement.IsEmpty &&
+                    !item.ItemRosterElement.EquipmentElement.IsEmpty &&
+                    item.ItemRosterElement.EquipmentElement.Item.HasWeaponComponent)
                 {
                     if (item.IsCivilianItem)
                     {
                         if (BestWeapon4 != null)
                         {
-                            if (GetEffectiveness(item) > GetEffectiveness(BestWeapon4))
+                            if (IsShield(item))
+                            {
+                                if (GetShieldEffectiveness(item) > GetShieldEffectiveness(BestWeapon4)) BestWeapon4 = item;
+                            }
+                            else if (GetEffectiveness(item) > GetEffectiveness(BestWeapon4))
                             {
                                 BestWeapon4 = item;
                             }
@@ -268,7 +372,11 @@ namespace EquipBestItem
                     }
                 }
             }
-            if (GetEffectiveness(_inventory.CharacterWeapon4Slot) >= GetEffectiveness(BestWeapon4))
+            if (IsShield(_inventory.CharacterWeapon4Slot))
+            {
+                if (GetShieldEffectiveness(_inventory.CharacterWeapon4Slot) >= GetShieldEffectiveness(BestWeapon4)) 
+                    BestWeapon4 = null;
+            } else if (GetEffectiveness(_inventory.CharacterWeapon4Slot) >= GetEffectiveness(BestWeapon4))
             {
                 BestWeapon4 = null;
             }
@@ -286,14 +394,23 @@ namespace EquipBestItem
 
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
+                if ((GetItemUsage(item) == "long_bow" || GetItemUsage(item) == "bow") && GetItemUsage(item) != GetItemUsage(_inventory.CharacterWeapon3Slot))
+                    continue;
                 if (item.TypeId == _inventory.CharacterWeapon3Slot.TypeId &&
                     GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon3Slot) &&
                     item.CanCharacterUseItem && 
-                    _inventory.IsInWarSet)
+                    _inventory.IsInWarSet &&
+                    !item.ItemRosterElement.IsEmpty &&
+                    !item.ItemRosterElement.EquipmentElement.IsEmpty &&
+                    item.ItemRosterElement.EquipmentElement.Item.HasWeaponComponent)
                 {
                     if (BestWeapon3 != null)
                     {
-                        if (GetEffectiveness(item) > GetEffectiveness(BestWeapon3))
+                        if (IsShield(item))
+                        {
+                            if (GetShieldEffectiveness(item) > GetShieldEffectiveness(BestWeapon3)) BestWeapon3 = item;
+                        }
+                        else if (GetEffectiveness(item) > GetEffectiveness(BestWeapon3))
                         {
                             BestWeapon3 = item;
                         }
@@ -306,13 +423,20 @@ namespace EquipBestItem
                 if (item.TypeId == _inventory.CharacterWeapon3Slot.TypeId &&
                     GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon3Slot) &&
                     item.CanCharacterUseItem && 
-                    !_inventory.IsInWarSet)
+                    !_inventory.IsInWarSet &&
+                    !item.ItemRosterElement.IsEmpty &&
+                    !item.ItemRosterElement.EquipmentElement.IsEmpty &&
+                    item.ItemRosterElement.EquipmentElement.Item.HasWeaponComponent)
                 {
                     if (item.IsCivilianItem)
                     {
                         if (BestWeapon3 != null)
                         {
-                            if (GetEffectiveness(item) > GetEffectiveness(BestWeapon3))
+                            if (IsShield(item))
+                            {
+                                if (GetShieldEffectiveness(item) > GetShieldEffectiveness(BestWeapon3)) BestWeapon3 = item;
+                            }
+                            else if (GetEffectiveness(item) > GetEffectiveness(BestWeapon3))
                             {
                                 BestWeapon3 = item;
                             }
@@ -324,7 +448,12 @@ namespace EquipBestItem
                     }
                 }
             }
-            if (GetEffectiveness(_inventory.CharacterWeapon3Slot) >= GetEffectiveness(BestWeapon3))
+            if (IsShield(_inventory.CharacterWeapon3Slot))
+            {
+                if (GetShieldEffectiveness(_inventory.CharacterWeapon3Slot) >= GetShieldEffectiveness(BestWeapon3))
+                    BestWeapon3 = null;
+            }
+            else if (GetEffectiveness(_inventory.CharacterWeapon3Slot) >= GetEffectiveness(BestWeapon3))
             {
                 BestWeapon3 = null;
             }
@@ -341,14 +470,23 @@ namespace EquipBestItem
 
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
+                if ((GetItemUsage(item) == "long_bow" || GetItemUsage(item) == "bow") && GetItemUsage(item) != GetItemUsage(_inventory.CharacterWeapon2Slot))
+                    continue;
                 if (item.TypeId == _inventory.CharacterWeapon2Slot.TypeId && 
                     item.CanCharacterUseItem && 
                     _inventory.IsInWarSet &&
-                    GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon2Slot))
+                    GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon2Slot) &&
+                    !item.ItemRosterElement.IsEmpty &&
+                    !item.ItemRosterElement.EquipmentElement.IsEmpty &&
+                    item.ItemRosterElement.EquipmentElement.Item.HasWeaponComponent)
                 {
                     if (BestWeapon2 != null)
                     {
-                        if (GetEffectiveness(item) > GetEffectiveness(BestWeapon2))
+                        if (IsShield(item))
+                        {
+                            if (GetShieldEffectiveness(item) > GetShieldEffectiveness(BestWeapon2)) BestWeapon2 = item;
+                        }
+                        else if (GetEffectiveness(item) > GetEffectiveness(BestWeapon2))
                         {
                             BestWeapon2 = item;
                         }
@@ -361,13 +499,20 @@ namespace EquipBestItem
                 if (item.TypeId == _inventory.CharacterWeapon2Slot.TypeId &&
                     GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon2Slot) &&
                     item.CanCharacterUseItem && 
-                    !_inventory.IsInWarSet)
+                    !_inventory.IsInWarSet &&
+                    !item.ItemRosterElement.IsEmpty &&
+                    !item.ItemRosterElement.EquipmentElement.IsEmpty &&
+                    item.ItemRosterElement.EquipmentElement.Item.HasWeaponComponent)
                 {
                     if (item.IsCivilianItem)
                     {
                         if (BestWeapon2 != null)
                         {
-                            if (GetEffectiveness(item) > GetEffectiveness(BestWeapon2))
+                            if (IsShield(item))
+                            {
+                                if (GetShieldEffectiveness(item) > GetShieldEffectiveness(BestWeapon2)) BestWeapon2 = item;
+                            }
+                            else if (GetEffectiveness(item) > GetEffectiveness(BestWeapon2))
                             {
                                 BestWeapon2 = item;
                             }
@@ -379,7 +524,12 @@ namespace EquipBestItem
                     }
                 }
             }
-            if (GetEffectiveness(_inventory.CharacterWeapon2Slot) >= GetEffectiveness(BestWeapon2))
+            if (IsShield(_inventory.CharacterWeapon2Slot))
+            {
+                if (GetShieldEffectiveness(_inventory.CharacterWeapon2Slot) >= GetShieldEffectiveness(BestWeapon2))
+                    BestWeapon2 = null;
+            }
+            else if (GetEffectiveness(_inventory.CharacterWeapon2Slot) >= GetEffectiveness(BestWeapon2))
             {
                 BestWeapon2 = null;
             }
@@ -396,13 +546,22 @@ namespace EquipBestItem
 
             foreach (SPItemVM item in _inventory.RightItemListVM)
             {
+                if ((GetItemUsage(item) == "long_bow" || GetItemUsage(item) == "bow") && GetItemUsage(item) != GetItemUsage(_inventory.CharacterWeapon1Slot))
+                    continue;
                 if (item.TypeId == _inventory.CharacterWeapon1Slot.TypeId &&
                     GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon1Slot) &&
-                    item.CanCharacterUseItem && _inventory.IsInWarSet)
+                    item.CanCharacterUseItem && _inventory.IsInWarSet &&
+                    !item.ItemRosterElement.IsEmpty &&
+                    !item.ItemRosterElement.EquipmentElement.IsEmpty &&
+                    item.ItemRosterElement.EquipmentElement.Item.HasWeaponComponent)
                 {
                     if (BestWeapon1 != null)
                     {
-                        if (GetEffectiveness(item) > GetEffectiveness(BestWeapon1))
+                        if (IsShield(item))
+                        {
+                            if (GetShieldEffectiveness(item) > GetShieldEffectiveness(BestWeapon1)) BestWeapon1 = item;
+                        }
+                        else if (GetEffectiveness(item) > GetEffectiveness(BestWeapon1))
                         {
                             BestWeapon1 = item;
                         }
@@ -414,13 +573,20 @@ namespace EquipBestItem
                 }
                 if (item.TypeId == _inventory.CharacterWeapon1Slot.TypeId &&
                     GetWeaponClass(item) == GetWeaponClass(_inventory.CharacterWeapon1Slot) &&
-                    item.CanCharacterUseItem && !_inventory.IsInWarSet)
+                    item.CanCharacterUseItem && !_inventory.IsInWarSet &&
+                    !item.ItemRosterElement.IsEmpty &&
+                    !item.ItemRosterElement.EquipmentElement.IsEmpty &&
+                    item.ItemRosterElement.EquipmentElement.Item.HasWeaponComponent)
                 {
                     if (item.IsCivilianItem)
                     {
                         if (BestWeapon1 != null)
                         {
-                            if (GetEffectiveness(item) > GetEffectiveness(BestWeapon1))
+                            if (IsShield(item))
+                            {
+                                if (GetShieldEffectiveness(item) > GetShieldEffectiveness(BestWeapon1)) BestWeapon1 = item;
+                            }
+                            else if (GetEffectiveness(item) > GetEffectiveness(BestWeapon1))
                             {
                                 BestWeapon1 = item;
                             }
@@ -432,10 +598,24 @@ namespace EquipBestItem
                     }
                 }
             }
-            if (GetEffectiveness(_inventory.CharacterWeapon1Slot) >= GetEffectiveness(BestWeapon1))
+
+            if (IsShield(_inventory.CharacterWeapon1Slot))
+            {
+                if (GetShieldEffectiveness(_inventory.CharacterWeapon1Slot) >= GetShieldEffectiveness(BestWeapon1))
+                    BestWeapon1 = null;
+            }
+            else if (GetEffectiveness(_inventory.CharacterWeapon1Slot) >= GetEffectiveness(BestWeapon1))
             {
                 BestWeapon1 = null;
             }
+        }
+
+        private string GetItemUsage(SPItemVM item)
+        {
+            if (item == null || item.ItemRosterElement.IsEmpty || item.ItemRosterElement.EquipmentElement.IsEmpty || !item.ItemRosterElement.EquipmentElement.Item.HasWeaponComponent)
+                return "";
+            string value = item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon.ItemUsage;
+            return value;
         }
 
         private WeaponClass GetWeaponClass(SPItemVM item)
