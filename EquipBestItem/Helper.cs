@@ -1,8 +1,11 @@
-﻿using System;
+﻿using SandBox.GauntletUI;
+using System;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Forms;
 using System.Xml.Serialization;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 
@@ -10,6 +13,7 @@ namespace EquipBestItem
 {
     public static class Helper
     {
+
         internal static object Call(this object o, string methodName, params object[] args)
         {
             var mi = o.GetType().GetMethod(methodName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
@@ -19,9 +23,9 @@ namespace EquipBestItem
                 {
                     return mi.Invoke(o, args);
                 }
-                catch
+                catch (Exception e)
                 {
-                    //Debug.WriteLine(e.Message);
+                    MessageBox.Show(e.Message);
                 }
             }
             return null;
@@ -36,9 +40,9 @@ namespace EquipBestItem
                 {
                     return mi.GetValue(o);
                 }
-                catch
+                catch (Exception e)
                 {
-                    //Debug.WriteLine(e.Message);
+                    MessageBox.Show(e.Message);
                 }
             }
             return null;
@@ -47,12 +51,15 @@ namespace EquipBestItem
         public static void Serialize<T>(string filename, T data)
         {
             TextWriter writer = null;
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+
             try
             {
                 writer = new StreamWriter(filename);
 
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
-                serializer.Serialize(writer, data);
+                serializer.Serialize(writer, data, ns);
             }
             finally
             {
@@ -83,5 +90,7 @@ namespace EquipBestItem
             }
             return data;
         }
+
+        
     }
 }

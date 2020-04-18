@@ -88,6 +88,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -268,12 +269,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EquipBestItemAllWidget.cs" />
-    <Compile Include="EquipBestItemBehavior.cs" />
-    <Compile Include="EquipBestItemLogic.cs" />
-    <Compile Include="EquipBestItemWidget.cs" />
+    <Compile Include="Behaviors\InventoryBehavior.cs" />
+    <Compile Include="Widgets\EquipBestItemAllWidget.cs" />
+    <Compile Include="EquipBestItemViewModel.cs" />
+    <Compile Include="Widgets\EquipBestItemWidget.cs" />
+    <Compile Include="Widgets\WorkaroundWidget.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="Widgets\LockSlotWidget.cs" />
+    <Compile Include="Widgets\LockRightPanelWidget.cs" />
+    <Compile Include="Widgets\LockLeftPanelWidget.cs" />
+    <Compile Include="Settings\CharacterSettings.cs" />
+    <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Settings\SettingsLoader.cs" />
     <Compile Include="SubModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

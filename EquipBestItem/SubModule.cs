@@ -15,40 +15,42 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using System.Xml.Serialization;
+using System.Windows.Forms;
+using EquipBestItem.Behaviors;
 
 namespace EquipBestItem
 {
 
     public class SubModule : MBSubModuleBase
     {
-        public static readonly string ModuleFolderName = "EquipBestItem";
+		protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
+		{
+			try
+			{
+				base.OnGameStart(game, gameStarterObject);
+				AddBehaviours(gameStarterObject as CampaignGameStarter);
+			}
+			catch (Exception e)
+			{
+				MessageBox.Show(e.Message);
+			}
+		}
 
-
-        protected override void OnSubModuleLoad()
-        {
-            base.OnSubModuleLoad();
-        }
-
-
-
-        protected override void OnBeforeInitialModuleScreenSetAsRoot()
-        {
-            base.OnBeforeInitialModuleScreenSetAsRoot();
-        }
-
-        protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
-        {
-            base.OnGameStart(game, gameStarterObject);
-        }
-
-
-
-        protected override void OnApplicationTick(float dt)
-        {
-        }
-
-
-
-    }
+		private void AddBehaviours(CampaignGameStarter gameStarterObject)
+		{
+			try
+			{
+				if (gameStarterObject != null)
+				{
+					gameStarterObject.AddBehavior(new InventoryBehavior());
+				}
+			}
+			catch (Exception e)
+			{
+				MessageBox.Show(e.Message);
+			}
+			
+		}
+	}
 
 }
