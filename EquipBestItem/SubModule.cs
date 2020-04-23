@@ -17,17 +17,29 @@ using TaleWorlds.MountAndBlade;
 using System.Xml.Serialization;
 using System.Windows.Forms;
 using EquipBestItem.Behaviors;
+using EquipBestItem.Settings;
 
 namespace EquipBestItem
 {
 
     public class SubModule : MBSubModuleBase
     {
+		public override void OnMissionBehaviourInitialize(Mission mission)
+		{
+			base.OnMissionBehaviourInitialize(mission);
+		}
+
 		protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
 		{
 			try
 			{
 				base.OnGameStart(game, gameStarterObject);
+
+				SettingsLoader test = SettingsLoader.Instance;
+
+				SettingsLoader.Instance.LoadSettings();
+				SettingsLoader.Instance.LoadCharacterSettings();
+
 				AddBehaviours(gameStarterObject as CampaignGameStarter);
 			}
 			catch (Exception e)
@@ -35,6 +47,8 @@ namespace EquipBestItem
 				MessageBox.Show(e.Message);
 			}
 		}
+
+
 
 		private void AddBehaviours(CampaignGameStarter gameStarterObject)
 		{
@@ -51,6 +65,8 @@ namespace EquipBestItem
 			}
 			
 		}
+
+
 	}
 
 }

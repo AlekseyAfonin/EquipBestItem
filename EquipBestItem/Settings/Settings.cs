@@ -10,13 +10,8 @@ namespace EquipBestItem.Settings
     public class Settings
     {
         public bool IsEnabledEquipAllButton { get; set; } = true;
-
         public bool IsEnabledStandardButtons { get; set; } = true;
-
-        public bool IsEnabledLocks { get; set; } = true;
-
         public bool IsLeftPanelLocked { get; set; }
-
         public bool IsRightPanelLocked { get; set; }
 
     }

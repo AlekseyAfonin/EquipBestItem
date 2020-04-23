@@ -10,21 +10,28 @@ namespace EquipBestItem.Settings
     public class CharacterSettings
     {
         public string Name { get; set; }
-        public bool IsHelmLocked { get; set; }
-        public bool IsCloakLocked { get; set; }
-        public bool IsArmorLocked { get; set; }
-        public bool IsGloveLocked { get; set; }
-        public bool IsBootLocked { get; set; }
-        public bool IsMountLocked { get; set; }
-        public bool IsHarnessLocked { get; set; }
-        public bool IsWeapon1Locked { get; set; }
-        public bool IsWeapon2Locked { get; set; }
-        public bool IsWeapon3Locked { get; set; }
-        public bool IsWeapon4Locked { get; set; }
+        public List<FilterWeaponSettings> FilterWeapon { get; set; }
+        public List<FilterArmorSettings> FilterArmor { get; set; }
+        public FilterMountSettings FilterMount { get; set; }
+
 
         public CharacterSettings(string name)
         {
             Name = name;
+            FilterWeapon = new List<FilterWeaponSettings>(4);
+            
+            for (int i = 0; i < 4; i++)
+            {
+                FilterWeapon.Add(new FilterWeaponSettings());
+            }
+
+            FilterArmor = new List<FilterArmorSettings>(6);
+            for (int i = 0; i < 6; i++)
+            {
+                FilterArmor.Add(new FilterArmorSettings());
+            }
+
+            FilterMount = new FilterMountSettings();
         }
 
         public CharacterSettings() 

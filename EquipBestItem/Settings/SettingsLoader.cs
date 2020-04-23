@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using TaleWorlds.Core;
 using TaleWorlds.Library;
 
 namespace EquipBestItem.Settings
@@ -23,10 +24,10 @@ namespace EquipBestItem.Settings
 
         public List<CharacterSettings> CharacterSettings { get; private set; }
 
+        public static bool Debug = false;
+
         private SettingsLoader()
         {
-            LoadSettings();
-            LoadCharacterSettings();
         }
 
         public static SettingsLoader Instance
@@ -41,15 +42,20 @@ namespace EquipBestItem.Settings
             }
         }
 
-        private void LoadSettings()
+        public void LoadSettings()
         { 
             try
             {
                 Settings = Helper.Deserialize<Settings>(_filePathSettings);
+
+                if (SettingsLoader.Debug)
+                    InformationManager.DisplayMessage(new InformationMessage("LoadSettings()"));
             }
             catch(Exception e)
             {
-                //MessageBox.Show("Не удалось открыть файл Settings.xml. " + e.Message);
+                if (SettingsLoader.Debug)
+                    MessageBox.Show("Cant load Settings.xml. " + e.Message + e.StackTrace);
+                InformationManager.DisplayMessage(new InformationMessage("I can't find Settings.xml, create a new..."));
                 Settings = new Settings();
                 SaveSettings();
             }
@@ -57,10 +63,20 @@ namespace EquipBestItem.Settings
 
         public void SaveSettings()
         {
-            Helper.Serialize<Settings>(_filePathSettings, Settings);
+            try
+            {
+                Helper.Serialize<Settings>(_filePathSettings, Settings);
+
+                if (SettingsLoader.Debug)
+                    InformationManager.DisplayMessage(new InformationMessage("SaveSettings()"));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message + e.StackTrace);
+            }
         }
 
-        private void LoadCharacterSettings()
+        public void LoadCharacterSettings()
         {
             try
             {
@@ -68,7 +84,9 @@ namespace EquipBestItem.Settings
             }
             catch (Exception e)
             {
-                //MessageBox.Show("Не удалось открыть файл CharacterSettings.xml. " + e.Message);
+                if (SettingsLoader.Debug)
+                    MessageBox.Show("Cant load CharacterSettings.xml. " + e.Message);
+                InformationManager.DisplayMessage(new InformationMessage("I can't find CharacterSettings.xml, create a new..."));
                 CharacterSettings = new List<CharacterSettings>();
                 SaveCharacterSettings();
             }
@@ -76,7 +94,17 @@ namespace EquipBestItem.Settings
 
         public void SaveCharacterSettings()
         {
-            Helper.Serialize<List<CharacterSettings>>(_filePathCharacterSettings, CharacterSettings);
+            try
+            {
+                Helper.Serialize<List<CharacterSettings>>(_filePathCharacterSettings, CharacterSettings);
+
+                if (SettingsLoader.Debug)
+                    InformationManager.DisplayMessage(new InformationMessage("SaveCharacterSettings()"));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message + e.StackTrace);
+            }
         }
 
         public CharacterSettings GetCharacterSettingsByName(string name)
@@ -88,9 +116,7 @@ namespace EquipBestItem.Settings
             }
 
             CharacterSettings characterSettings;
-
             characterSettings = new CharacterSettings(name);
-
             CharacterSettings.Add(characterSettings);
 
             return characterSettings;

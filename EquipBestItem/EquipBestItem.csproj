@@ -270,12 +270,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\InventoryBehavior.cs" />
+    <Compile Include="ViewModels\FilterViewModel.cs" />
+    <Compile Include="Settings\FilterArmorSettings.cs" />
+    <Compile Include="Settings\FilterMountSettings.cs" />
+    <Compile Include="Settings\FilterWeaponSettings.cs" />
+    <Compile Include="Layers\FilterLayer.cs" />
     <Compile Include="Widgets\EquipBestItemAllWidget.cs" />
-    <Compile Include="EquipBestItemViewModel.cs" />
+    <Compile Include="ViewModels\EquipBestItemViewModel.cs" />
     <Compile Include="Widgets\EquipBestItemWidget.cs" />
     <Compile Include="Widgets\WorkaroundWidget.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="Widgets\LockSlotWidget.cs" />
     <Compile Include="Widgets\LockRightPanelWidget.cs" />
     <Compile Include="Widgets\LockLeftPanelWidget.cs" />
     <Compile Include="Settings\CharacterSettings.cs" />
@@ -284,8 +288,6 @@
     <Compile Include="SubModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

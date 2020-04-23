@@ -90,7 +90,5 @@ namespace EquipBestItem
             }
             return data;
         }
-
-        
     }
 }

@@ -10,11 +10,11 @@ namespace EquipBestItem
 {
     public class EquipBestItemAllWidget : ButtonWidget
     {
-        EquipBestItemViewModel _viewModel;
+        //EquipBestItemViewModel _viewModel;
 
         public EquipBestItemAllWidget(UIContext context) : base(context)
         {
-            _viewModel = new EquipBestItemViewModel();
+            //_viewModel = new EquipBestItemViewModel();
         }
         
         protected override void OnUpdate(float dt)
@@ -26,15 +26,15 @@ namespace EquipBestItem
 
             if (EquipBestItemViewModel.IsEquipAllActivated)
             {
-                _viewModel.EquipAll();
+                EquipBestItemViewModel.EquipAll();
             }
 
-            if (_viewModel.IsAllBestItemsNull())
+            if (EquipBestItemViewModel.IsAllBestItemsNull())
             {
                 if (EquipBestItemViewModel.IsEquipAllActivated)
                 {
                     EquipBestItemViewModel.IsEquipAllActivated = false;
-                    _viewModel.RefreshValues();
+                    EquipBestItemViewModel.UpdateValues();
                 }
             }
         }

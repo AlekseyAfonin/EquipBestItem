@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaleWorlds.Core;
 using TaleWorlds.GauntletUI;
 using TaleWorlds.InputSystem;
 
@@ -12,11 +13,11 @@ namespace EquipBestItem
 {
     internal class WorkaroundWidget : Widget
     {
-        EquipBestItemViewModel _viewModel;
+        //EquipBestItemViewModel _viewModel;
 
         public WorkaroundWidget(UIContext context) : base(context)
         {
-            _viewModel = new EquipBestItemViewModel();
+            //_viewModel = new EquipBestItemViewModel();
         }
 
         bool _latestStateStatus;
@@ -48,7 +49,7 @@ namespace EquipBestItem
             if (_delay == 1)
             {
                 EquipBestItemViewModel.UpdateCurrentCharacterName();
-                _viewModel.RefreshValues();
+                EquipBestItemViewModel.UpdateValues();
             }
 
 

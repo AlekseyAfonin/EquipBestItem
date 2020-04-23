@@ -14,11 +14,11 @@ namespace EquipBestItem
 {
     public class EquipBestItemWidget : ButtonWidget
     {
-        EquipBestItemViewModel _viewModel;
+        //EquipBestItemViewModel _viewModel;
 
         public EquipBestItemWidget(UIContext context) : base(context)
         {
-            _viewModel = new EquipBestItemViewModel();
+            //_viewModel = new EquipBestItemViewModel();
         }
 
         protected override void OnUpdate(float dt)
@@ -48,15 +48,39 @@ namespace EquipBestItem
                 this.IsEnabled = EquipBestItemViewModel.IsWeapon3ButtonEnabled;
             if (this.Id == "EquipBestItemWeapon4Button" && this.IsEnabled != EquipBestItemViewModel.IsWeapon4ButtonEnabled)
                 this.IsEnabled = EquipBestItemViewModel.IsWeapon4ButtonEnabled;
-            if (this.Id == "EquipBestItemAllButton" && this.IsEnabled != EquipBestItemViewModel.IsEquipAllButtonEnabled)
-                this.IsEnabled = EquipBestItemViewModel.IsEquipAllButtonEnabled;
 
 
         }
 
         protected override void OnClick()
         {
-            _viewModel.RefreshValues();
+            if (this.Id == "EquipBestItemHelmButton" && this.IsEnabled)
+                EquipBestItemViewModel.EquipBestHelm();
+            if (this.Id == "EquipBestItemCloakButton" && this.IsEnabled)
+                EquipBestItemViewModel.EquipBestCloak();
+            if (this.Id == "EquipBestItemArmorButton" && this.IsEnabled)
+                EquipBestItemViewModel.EquipBestArmor();
+            if (this.Id == "EquipBestItemGloveButton" && this.IsEnabled)
+                EquipBestItemViewModel.EquipBestGlove();
+            if (this.Id == "EquipBestItemBootButton" && this.IsEnabled)
+                EquipBestItemViewModel.EquipBestBoot();
+            if (this.Id == "EquipBestItemMountButton" && this.IsEnabled)
+                EquipBestItemViewModel.EquipBestMount();
+            if (this.Id == "EquipBestItemHarnessButton" && this.IsEnabled)
+                EquipBestItemViewModel.EquipBestHarness();
+            if (this.Id == "EquipBestItemWeapon1Button" && this.IsEnabled)
+                EquipBestItemViewModel.EquipBestWeapon1();
+            if (this.Id == "EquipBestItemWeapon2Button" && this.IsEnabled)
+                EquipBestItemViewModel.EquipBestWeapon2();
+            if (this.Id == "EquipBestItemWeapon3Button" && this.IsEnabled)
+                EquipBestItemViewModel.EquipBestWeapon3();
+            if (this.Id == "EquipBestItemWeapon4Button" && this.IsEnabled)
+                EquipBestItemViewModel.EquipBestWeapon4();
+
+            //EquipBestItemViewModel.UpdateValues();
+
+
+
             //InformationManager.DisplayMessage(new InformationMessage(this.Id + " OnClick() " + Game.Current.ApplicationTime.ToString()));
         }
     }
