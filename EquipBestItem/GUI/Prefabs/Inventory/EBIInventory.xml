@@ -1,0 +1,42 @@
+<Prefab>
+  <Constants />
+  <VisualDefinitions>
+  </VisualDefinitions>
+  <Window>
+    <Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+      <Children>
+        <EquipBestItemWidget Id="EquipBestItemHelmButton" Command.Click="EquipBestHelm" IsEnabled="@IsHelmButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585" MarginTop="250" Brush="Inventory.EquipBetterItem.PlusButton"/>
+        <EquipBestItemWidget Id="EquipBestItemCloakButton" Command.Click="EquipBestCloak" IsEnabled="@IsCloakButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585" MarginTop="335" Brush="Inventory.EquipBetterItem.PlusButton"/>
+        <EquipBestItemWidget Id="EquipBestItemArmorButton" Command.Click="EquipBestArmor" IsEnabled="@IsArmorButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585" MarginTop="420" Brush="Inventory.EquipBetterItem.PlusButton"/>
+        <EquipBestItemWidget Id="EquipBestItemGloveButton" Command.Click="EquipBestGlove" IsEnabled="@IsGloveButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585" MarginTop="505" Brush="Inventory.EquipBetterItem.PlusButton"/>
+        <EquipBestItemWidget Id="EquipBestItemBootButton" Command.Click="EquipBestBoot" IsEnabled="@IsBootButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585" MarginTop="590" Brush="Inventory.EquipBetterItem.PlusButton"/>
+        <EquipBestItemWidget Id="EquipBestItemMountButton" Command.Click="EquipBestMount" IsEnabled="@IsMountButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585" MarginTop="710" Brush="Inventory.EquipBetterItem.PlusButton"/>
+        <EquipBestItemWidget Id="EquipBestItemHarnessButton" Command.Click="EquipBestHarness" IsEnabled="@IsHarnessButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585" MarginTop="795" Brush="Inventory.EquipBetterItem.PlusButton"/>
+        <EquipBestItemWidget Id="EquipBestItemWeapon1Button" Command.Click="EquipBestWeapon1" IsEnabled="@IsWeapon1ButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Right" MarginRight="670" MarginTop="335" Brush="Inventory.EquipBetterItem.PlusButton"/>
+        <EquipBestItemWidget Id="EquipBestItemWeapon2Button" Command.Click="EquipBestWeapon2" IsEnabled="@IsWeapon2ButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Right" MarginRight="670" MarginTop="420" Brush="Inventory.EquipBetterItem.PlusButton"/>
+        <EquipBestItemWidget Id="EquipBestItemWeapon3Button" Command.Click="EquipBestWeapon3" IsEnabled="@IsWeapon3ButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Right" MarginRight="670" MarginTop="505" Brush="Inventory.EquipBetterItem.PlusButton"/>
+        <EquipBestItemWidget Id="EquipBestItemWeapon4Button" Command.Click="EquipBestWeapon4" IsEnabled="@IsWeapon4ButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Right" MarginRight="670" MarginTop="590" Brush="Inventory.EquipBetterItem.PlusButton"/>
+        <EquipBestItemAllWidget Id="EquipBestItemAllButton" DoNotPassEventsToChildren="true" Command.Click="EquipAll" IsEnabled="@IsEquipAllButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="55" SuggestedHeight="55" HorizontalAlignment="Right" MarginRight="670" MarginTop="85" Brush="Inventory.EquipBetterItem.SpecialButton">
+          <Children>
+            <ImageWidget DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" HorizontalAlignment="Center" VerticalAlignment="Center" SuggestedWidth="30" SuggestedHeight="30" MarginLeft="7" MarginTop="-1" Brush="Inventory.EquipBetterItem.EquipAllButtonIcon" />
+          </Children>
+        </EquipBestItemAllWidget>
+        <LockLeftPanelWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="40" SuggestedHeight="38" HorizontalAlignment="Left" MarginLeft="590" MarginTop="95" Brush="Inventory.EquipBetterItem.LockedPanel" />
+        <LockRightPanelWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="40" SuggestedHeight="38" HorizontalAlignment="Right" MarginRight="590" MarginTop="92" Brush="Inventory.EquipBetterItem.LockedPanel" />
+
+        <!-- <LockSlotWidget Id="HelmLock" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="25" SuggestedHeight="23" HorizontalAlignment="Left" MarginLeft="680" MarginTop="251" Brush="Inventory.EquipBetterItem.LockedSlot" />
+        <LockSlotWidget Id="CloakLock" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="25" SuggestedHeight="23" HorizontalAlignment="Left" MarginLeft="680" MarginTop="336" Brush="Inventory.EquipBetterItem.LockedSlot" />
+        <LockSlotWidget Id="ArmorLock" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="25" SuggestedHeight="23" HorizontalAlignment="Left" MarginLeft="680" MarginTop="421" Brush="Inventory.EquipBetterItem.LockedSlot" />
+        <LockSlotWidget Id="GloveLock" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="25" SuggestedHeight="23" HorizontalAlignment="Left" MarginLeft="680" MarginTop="506" Brush="Inventory.EquipBetterItem.LockedSlot" />
+        <LockSlotWidget Id="BootLock" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="25" SuggestedHeight="23" HorizontalAlignment="Left" MarginLeft="680" MarginTop="591" Brush="Inventory.EquipBetterItem.LockedSlot" />
+        <LockSlotWidget Id="MountLock" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="25" SuggestedHeight="23" HorizontalAlignment="Left" MarginLeft="680" MarginTop="710" Brush="Inventory.EquipBetterItem.LockedSlot" />
+        <LockSlotWidget Id="HarnessLock" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="25" SuggestedHeight="23" HorizontalAlignment="Left" MarginLeft="680" MarginTop="795" Brush="Inventory.EquipBetterItem.LockedSlot" />
+        <LockSlotWidget Id="Weapon1Lock" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="25" SuggestedHeight="23" HorizontalAlignment="Right" MarginRight="585" MarginTop="336" Brush="Inventory.EquipBetterItem.LockedSlot" />
+        <LockSlotWidget Id="Weapon2Lock" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="25" SuggestedHeight="23" HorizontalAlignment="Right" MarginRight="585" MarginTop="421" Brush="Inventory.EquipBetterItem.LockedSlot" />
+        <LockSlotWidget Id="Weapon3Lock" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="25" SuggestedHeight="23" HorizontalAlignment="Right" MarginRight="585" MarginTop="506" Brush="Inventory.EquipBetterItem.LockedSlot" />
+        <LockSlotWidget Id="Weapon4Lock" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="25" SuggestedHeight="23" HorizontalAlignment="Right" MarginRight="585" MarginTop="591" Brush="Inventory.EquipBetterItem.LockedSlot" /> -->
+        <WorkaroundWidget/>
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

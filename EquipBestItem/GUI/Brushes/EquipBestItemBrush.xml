@@ -1,0 +1,137 @@
+<Brushes>
+  <Brush Name="Inventory.EquipBetterItem.PlusButton">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="TroopTierIcons\icon_tier_2_big" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" Sprite="TroopTierIcons\icon_tier_2_big" ColorFactor="0.7" IsHidden="false" />
+      </Style>
+      <Style Name="Hovered">
+        <BrushLayer Name="Default" Sprite="TroopTierIcons\icon_tier_2_big" ColorFactor="1.5" IsHidden="false" />
+      </Style>
+      <Style Name="Pressed">
+        <BrushLayer Name="Default" Sprite="TroopTierIcons\icon_tier_2_big" ColorFactor="2" IsHidden="false" />
+      </Style>
+      <Style Name="Disabled">
+        <BrushLayer Name="Default" Sprite="TroopTierIcons\icon_tier_2_big" IsHidden="true" />
+      </Style>
+    </Styles>
+    <SoundProperties>
+      <StateSounds>
+      </StateSounds>
+      <EventSounds>
+        <EventSound EventName="Click" Audio="popup" />
+      </EventSounds>
+    </SoundProperties>
+  </Brush>
+  <Brush Name="Inventory.EquipBetterItem.EquipAllButtonIcon">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="InventoryPartyExtension\Extension\equip" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" />
+      </Style>
+      <Style Name="Hovered">
+        <BrushLayer Name="Default" />
+      </Style>
+      <Style Name="Pressed">
+        <BrushLayer Name="Default" />
+      </Style>
+      <Style Name="Disabled">
+        <BrushLayer Name="Default" ColorFactor="0.2" />
+      </Style>
+      <Style Name="Selected">
+        <BrushLayer Name="Default" />
+      </Style>
+    </Styles>
+  </Brush>
+  <Brush Name="Inventory.EquipBetterItem.SpecialButton">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="Inventory\inventory_tooltip" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" Sprite="Inventory\inventory_tooltip" ColorFactor="1.0" />
+      </Style>
+      <Style Name="Hovered">
+        <BrushLayer Name="Default" Sprite="Inventory\inventory_tooltip" ColorFactor="1.5" />
+      </Style>
+      <Style Name="Selected">
+        <BrushLayer Name="Default" Sprite="Inventory\inventory_tooltip" ColorFactor="2.2" />
+      </Style>
+      <Style Name="Pressed">
+        <BrushLayer Name="Default" Sprite="Inventory\inventory_tooltip" ColorFactor="1.0" />
+      </Style>
+      <Style Name="Disabled">
+        <BrushLayer Name="Default" Sprite="Inventory\inventory_tooltip" IsHidden="true" />
+      </Style>
+    </Styles>
+    <SoundProperties>
+      <StateSounds>
+      </StateSounds>
+      <EventSounds>
+        <EventSound EventName="Click" Audio="popup" />
+      </EventSounds>
+    </SoundProperties>
+  </Brush>
+  <Brush Name="Inventory.EquipBetterItem.Filter">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="GameMenu\submenu_icon" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" Sprite="GameMenu\submenu_icon" ColorFactor="0.3" />
+      </Style>
+      <Style Name="Hovered">
+        <BrushLayer Name="Default" Sprite="GameMenu\submenu_icon" ColorFactor="1.2" />
+      </Style>
+      <Style Name="Selected">
+        <BrushLayer Name="Default" Sprite="GameMenu\submenu_icon" ColorFactor="1.0" />
+      </Style>
+      <Style Name="Pressed">
+        <BrushLayer Name="Default" Sprite="GameMenu\submenu_icon" ColorFactor="1.4" />
+      </Style>
+      <Style Name="Disabled">
+        <BrushLayer Name="Default" Sprite="GameMenu\submenu_icon" IsHidden="true" />
+      </Style>
+    </Styles>
+    <SoundProperties>
+      <StateSounds>
+      </StateSounds>
+      <EventSounds>
+        <EventSound EventName="Click" Audio="popup" />
+      </EventSounds>
+    </SoundProperties>
+  </Brush>
+  <Brush Name="Inventory.EquipBetterItem.LockedPanel">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="StdAssets\lock_opened" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" Sprite="StdAssets\lock_opened" ColorFactor="0.3" />
+      </Style>
+      <Style Name="Hovered">
+        <BrushLayer Name="Default" Sprite="StdAssets\lock_opened" ColorFactor="1.2" />
+      </Style>
+      <Style Name="Selected">
+        <BrushLayer Name="Default" Sprite="StdAssets\lock_closed" ColorFactor="0.3" />
+      </Style>
+      <Style Name="Pressed">
+        <BrushLayer Name="Default" Sprite="StdAssets\lock_opened" ColorFactor="1.4" />
+      </Style>
+      <Style Name="Disabled">
+        <BrushLayer Name="Default" Sprite="StdAssets\lock_opened" ColorFactor="0.1" />
+      </Style>
+    </Styles>
+    <SoundProperties>
+      <StateSounds>
+      </StateSounds>
+      <EventSounds>
+        <EventSound EventName="Click" Audio="popup" />
+      </EventSounds>
+    </SoundProperties>
+  </Brush>
+</Brushes>
