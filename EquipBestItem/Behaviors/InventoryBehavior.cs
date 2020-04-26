@@ -87,7 +87,6 @@ namespace EquipBestItem.Behaviors
 
                         if (EquipBestItemViewModel.InventoryScreen != null && this._filterLayer != null)
                         {
-
                             EquipBestItemViewModel.InventoryScreen.RemoveLayer(this._filterLayer);
                             this._filterLayer = null;
                         }

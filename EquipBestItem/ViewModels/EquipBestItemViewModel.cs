@@ -2,9 +2,6 @@
 using SandBox.GauntletUI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
@@ -129,7 +126,8 @@ namespace EquipBestItem
                                 case ItemTypeEnum.HeadArmor:
                                     {
                                         if (ArmorIndexCalculation(item, 0) > ArmorIndexCalculation(_inventory.CharacterHelmSlot, 0) &&
-                                            ArmorIndexCalculation(item, 0) > ArmorIndexCalculation(BestHelm, 0))
+                                            ArmorIndexCalculation(item, 0) > ArmorIndexCalculation(BestHelm, 0) &&
+                                            ArmorIndexCalculation(item, 0) != 0f)
                                         {
                                             BestHelm = item;
                                         }
@@ -138,7 +136,8 @@ namespace EquipBestItem
                                 case ItemTypeEnum.Cape:
                                     {
                                         if (ArmorIndexCalculation(item, 1) > ArmorIndexCalculation(_inventory.CharacterCloakSlot, 1) &&
-                                            ArmorIndexCalculation(item, 1) > ArmorIndexCalculation(BestCloak, 1))
+                                            ArmorIndexCalculation(item, 1) > ArmorIndexCalculation(BestCloak, 1) &&
+                                            ArmorIndexCalculation(item, 1) != 0f)
                                         {
                                             BestCloak = item;
                                         }
@@ -147,7 +146,8 @@ namespace EquipBestItem
                                 case ItemTypeEnum.BodyArmor:
                                     {
                                         if (ArmorIndexCalculation(item, 2) > ArmorIndexCalculation(_inventory.CharacterTorsoSlot, 2) &&
-                                            ArmorIndexCalculation(item, 2) > ArmorIndexCalculation(BestArmor, 2))
+                                            ArmorIndexCalculation(item, 2) > ArmorIndexCalculation(BestArmor, 2) &&
+                                            ArmorIndexCalculation(item, 2) != 0f)
                                         {
                                             BestArmor = item;
                                         }
@@ -156,7 +156,8 @@ namespace EquipBestItem
                                 case ItemTypeEnum.HandArmor:
                                     {
                                         if (ArmorIndexCalculation(item, 3) > ArmorIndexCalculation(_inventory.CharacterGloveSlot, 3) &&
-                                            ArmorIndexCalculation(item, 3) > ArmorIndexCalculation(BestGlove, 3))
+                                            ArmorIndexCalculation(item, 3) > ArmorIndexCalculation(BestGlove, 3) &&
+                                            ArmorIndexCalculation(item, 3) != 0f)
                                         {
                                             BestGlove = item;
                                         }
@@ -165,7 +166,8 @@ namespace EquipBestItem
                                 case ItemTypeEnum.LegArmor:
                                     {
                                         if (ArmorIndexCalculation(item, 4) > ArmorIndexCalculation(_inventory.CharacterBootSlot, 4) &&
-                                            ArmorIndexCalculation(item, 4) > ArmorIndexCalculation(BestBoot, 4))
+                                            ArmorIndexCalculation(item, 4) > ArmorIndexCalculation(BestBoot, 4) &&
+                                            ArmorIndexCalculation(item, 4) != 0f)
                                         {
                                             BestBoot = item;
                                         }
@@ -174,7 +176,8 @@ namespace EquipBestItem
                                 case ItemTypeEnum.HorseHarness:
                                     {
                                         if (ArmorIndexCalculation(item, 5) > ArmorIndexCalculation(_inventory.CharacterMountArmorSlot, 5) &&
-                                            ArmorIndexCalculation(item, 5) > ArmorIndexCalculation(BestHarness, 5))
+                                            ArmorIndexCalculation(item, 5) > ArmorIndexCalculation(BestHarness, 5) &&
+                                            ArmorIndexCalculation(item, 5) != 0f)
                                         {
                                             BestHarness = item;
                                         }
@@ -187,18 +190,20 @@ namespace EquipBestItem
                         if (item.ItemRosterElement.EquipmentElement.Item.WeaponComponent != null)
                         {
                             if (_inventory.CharacterWeapon1Slot != null && !_inventory.CharacterWeapon1Slot.ItemRosterElement.IsEmpty)
-                                if (item.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == _inventory.CharacterWeapon1Slot.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass && 
+                                if (item.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == _inventory.CharacterWeapon1Slot.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass &&
                                         GetItemUsage(item) == GetItemUsage(_inventory.CharacterWeapon1Slot))
-                                    if (WeaponIndexCalculation(item, 0) > WeaponIndexCalculation(_inventory.CharacterWeapon1Slot, 0) && 
-                                        WeaponIndexCalculation(item, 0) > WeaponIndexCalculation(BestWeapon1, 0))
-                                        {
-                                            BestWeapon1 = item;
-                                        }
+                                    if (WeaponIndexCalculation(item, 0) > WeaponIndexCalculation(_inventory.CharacterWeapon1Slot, 0) &&
+                                        WeaponIndexCalculation(item, 0) > WeaponIndexCalculation(BestWeapon1, 0) &&
+                                            WeaponIndexCalculation(item, 0) != 0f)
+                                    {
+                                        BestWeapon1 = item;
+                                    }
                             if (_inventory.CharacterWeapon2Slot != null && !_inventory.CharacterWeapon2Slot.ItemRosterElement.IsEmpty)
                                 if (item.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == _inventory.CharacterWeapon2Slot.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass &&
                                         GetItemUsage(item) == GetItemUsage(_inventory.CharacterWeapon2Slot))
-                                    if (WeaponIndexCalculation(item, 1) > WeaponIndexCalculation(_inventory.CharacterWeapon2Slot, 1) && 
-                                        WeaponIndexCalculation(item, 1) > WeaponIndexCalculation(BestWeapon2, 1))
+                                    if (WeaponIndexCalculation(item, 1) > WeaponIndexCalculation(_inventory.CharacterWeapon2Slot, 1) &&
+                                        WeaponIndexCalculation(item, 1) > WeaponIndexCalculation(BestWeapon2, 1) &&
+                                            WeaponIndexCalculation(item, 1) != 0f)
                                     {
                                         BestWeapon2 = item;
                                     }
@@ -206,7 +211,8 @@ namespace EquipBestItem
                                 if (item.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == _inventory.CharacterWeapon3Slot.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass &&
                                         GetItemUsage(item) == GetItemUsage(_inventory.CharacterWeapon3Slot))
                                     if (WeaponIndexCalculation(item, 2) > WeaponIndexCalculation(_inventory.CharacterWeapon3Slot, 2) &&
-                                        WeaponIndexCalculation(item, 2) > WeaponIndexCalculation(BestWeapon3, 2))
+                                        WeaponIndexCalculation(item, 2) > WeaponIndexCalculation(BestWeapon3, 2) &&
+                                            WeaponIndexCalculation(item, 2) != 0f)
                                     {
                                         BestWeapon3 = item;
                                     }
@@ -214,7 +220,8 @@ namespace EquipBestItem
                                 if (item.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == _inventory.CharacterWeapon4Slot.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass &&
                                         GetItemUsage(item) == GetItemUsage(_inventory.CharacterWeapon4Slot))
                                     if (WeaponIndexCalculation(item, 3) > WeaponIndexCalculation(_inventory.CharacterWeapon4Slot, 3) &&
-                                        WeaponIndexCalculation(item, 3) > WeaponIndexCalculation(BestWeapon4, 3))
+                                        WeaponIndexCalculation(item, 3) > WeaponIndexCalculation(BestWeapon4, 3) &&
+                                            WeaponIndexCalculation(item, 3) != 0f)
                                     {
                                         BestWeapon4 = item;
                                     }
@@ -223,7 +230,8 @@ namespace EquipBestItem
                         {
 
                             if (MountIndexCalculation(item) > MountIndexCalculation(_inventory.CharacterMountSlot) &&
-                                MountIndexCalculation(item) > MountIndexCalculation(BestMount))
+                                MountIndexCalculation(item) > MountIndexCalculation(BestMount) &&
+                                            MountIndexCalculation(item) != 0f)
                             {
                                 BestMount = item;
                             }
@@ -241,7 +249,8 @@ namespace EquipBestItem
                                 case ItemTypeEnum.HeadArmor:
                                     {
                                         if (ArmorIndexCalculation(item, 0) > ArmorIndexCalculation(_inventory.CharacterHelmSlot, 0) &&
-                                            ArmorIndexCalculation(item, 0) > ArmorIndexCalculation(BestHelm, 0))
+                                            ArmorIndexCalculation(item, 0) > ArmorIndexCalculation(BestHelm, 0) &&
+                                            ArmorIndexCalculation(item, 0) != 0f)
                                         {
                                             BestHelm = item;
                                         }
@@ -250,7 +259,8 @@ namespace EquipBestItem
                                 case ItemTypeEnum.Cape:
                                     {
                                         if (ArmorIndexCalculation(item, 1) > ArmorIndexCalculation(_inventory.CharacterCloakSlot, 1) &&
-                                            ArmorIndexCalculation(item, 1) > ArmorIndexCalculation(BestCloak, 1))
+                                            ArmorIndexCalculation(item, 1) > ArmorIndexCalculation(BestCloak, 1) &&
+                                            ArmorIndexCalculation(item, 1) != 0f)
                                         {
                                             BestCloak = item;
                                         }
@@ -259,7 +269,8 @@ namespace EquipBestItem
                                 case ItemTypeEnum.BodyArmor:
                                     {
                                         if (ArmorIndexCalculation(item, 2) > ArmorIndexCalculation(_inventory.CharacterTorsoSlot, 2) &&
-                                            ArmorIndexCalculation(item, 2) > ArmorIndexCalculation(BestArmor, 2))
+                                            ArmorIndexCalculation(item, 2) > ArmorIndexCalculation(BestArmor, 2) &&
+                                            ArmorIndexCalculation(item, 2) != 0f)
                                         {
                                             BestArmor = item;
                                         }
@@ -268,7 +279,8 @@ namespace EquipBestItem
                                 case ItemTypeEnum.HandArmor:
                                     {
                                         if (ArmorIndexCalculation(item, 3) > ArmorIndexCalculation(_inventory.CharacterGloveSlot, 3) &&
-                                            ArmorIndexCalculation(item, 3) > ArmorIndexCalculation(BestGlove, 3))
+                                            ArmorIndexCalculation(item, 3) > ArmorIndexCalculation(BestGlove, 3) &&
+                                            ArmorIndexCalculation(item, 3) != 0f)
                                         {
                                             BestGlove = item;
                                         }
@@ -277,7 +289,8 @@ namespace EquipBestItem
                                 case ItemTypeEnum.LegArmor:
                                     {
                                         if (ArmorIndexCalculation(item, 4) > ArmorIndexCalculation(_inventory.CharacterBootSlot, 4) &&
-                                            ArmorIndexCalculation(item, 4) > ArmorIndexCalculation(BestBoot, 4))
+                                            ArmorIndexCalculation(item, 4) > ArmorIndexCalculation(BestBoot, 4) &&
+                                            ArmorIndexCalculation(item, 4) != 0f)
                                         {
                                             BestBoot = item;
                                         }
@@ -286,7 +299,8 @@ namespace EquipBestItem
                                 case ItemTypeEnum.HorseHarness:
                                     {
                                         if (ArmorIndexCalculation(item, 5) > ArmorIndexCalculation(_inventory.CharacterMountArmorSlot, 5) &&
-                                            ArmorIndexCalculation(item, 5) > ArmorIndexCalculation(BestHarness, 5))
+                                            ArmorIndexCalculation(item, 5) > ArmorIndexCalculation(BestHarness, 5) &&
+                                            ArmorIndexCalculation(item, 5) != 0f)
                                         {
                                             BestHarness = item;
                                         }
@@ -302,7 +316,8 @@ namespace EquipBestItem
                                 if (item.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == _inventory.CharacterWeapon1Slot.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass &&
                                         GetItemUsage(item) == GetItemUsage(_inventory.CharacterWeapon1Slot))
                                     if (WeaponIndexCalculation(item, 0) > WeaponIndexCalculation(_inventory.CharacterWeapon1Slot, 0) &&
-                                        WeaponIndexCalculation(item, 0) > WeaponIndexCalculation(BestWeapon1, 0))
+                                        WeaponIndexCalculation(item, 0) > WeaponIndexCalculation(BestWeapon1, 0) &&
+                                            WeaponIndexCalculation(item, 0) != 0f)
                                     {
                                         BestWeapon1 = item;
                                     }
@@ -310,7 +325,8 @@ namespace EquipBestItem
                                 if (item.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == _inventory.CharacterWeapon2Slot.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass &&
                                         GetItemUsage(item) == GetItemUsage(_inventory.CharacterWeapon2Slot))
                                     if (WeaponIndexCalculation(item, 1) > WeaponIndexCalculation(_inventory.CharacterWeapon2Slot, 1) &&
-                                        WeaponIndexCalculation(item, 1) > WeaponIndexCalculation(BestWeapon2, 1))
+                                        WeaponIndexCalculation(item, 1) > WeaponIndexCalculation(BestWeapon2, 1) &&
+                                            WeaponIndexCalculation(item, 1) != 0f)
                                     {
                                         BestWeapon2 = item;
                                     }
@@ -318,7 +334,8 @@ namespace EquipBestItem
                                 if (item.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == _inventory.CharacterWeapon3Slot.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass &&
                                         GetItemUsage(item) == GetItemUsage(_inventory.CharacterWeapon3Slot))
                                     if (WeaponIndexCalculation(item, 2) > WeaponIndexCalculation(_inventory.CharacterWeapon3Slot, 2) &&
-                                        WeaponIndexCalculation(item, 2) > WeaponIndexCalculation(BestWeapon3, 2))
+                                        WeaponIndexCalculation(item, 2) > WeaponIndexCalculation(BestWeapon3, 2) &&
+                                            WeaponIndexCalculation(item, 2) != 0f)
                                     {
                                         BestWeapon3 = item;
                                     }
@@ -326,7 +343,8 @@ namespace EquipBestItem
                                 if (item.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == _inventory.CharacterWeapon4Slot.ItemRosterElement.EquipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass &&
                                         GetItemUsage(item) == GetItemUsage(_inventory.CharacterWeapon4Slot))
                                     if (WeaponIndexCalculation(item, 3) > WeaponIndexCalculation(_inventory.CharacterWeapon4Slot, 3) &&
-                                        WeaponIndexCalculation(item, 3) > WeaponIndexCalculation(BestWeapon4, 3))
+                                        WeaponIndexCalculation(item, 3) > WeaponIndexCalculation(BestWeapon4, 3) &&
+                                            WeaponIndexCalculation(item, 3) != 0f)
                                     {
                                         BestWeapon4 = item;
                                     }
@@ -335,7 +353,8 @@ namespace EquipBestItem
                         {
 
                             if (MountIndexCalculation(item) > MountIndexCalculation(_inventory.CharacterMountSlot) &&
-                                MountIndexCalculation(item) > MountIndexCalculation(BestMount))
+                                MountIndexCalculation(item) > MountIndexCalculation(BestMount) &&
+                                            MountIndexCalculation(item) != 0f)
                             {
                                 BestMount = item;
                             }
@@ -359,7 +378,7 @@ namespace EquipBestItem
             {
                 FindBestItemsFromSide(_inventory.LeftItemListVM);
             }
-                                 
+
             ButtonStatusUpdate();
         }
 
@@ -399,7 +418,7 @@ namespace EquipBestItem
             }
 
             if (BestArmor != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            { 
+            {
                 IsArmorButtonEnabled = true;
                 if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
                     IsEquipAllButtonEnabled = true;
@@ -410,7 +429,7 @@ namespace EquipBestItem
             }
 
             if (BestGlove != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            { 
+            {
                 IsGloveButtonEnabled = true;
                 if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
                     IsEquipAllButtonEnabled = true;
@@ -421,7 +440,7 @@ namespace EquipBestItem
             }
 
             if (BestBoot != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            { 
+            {
                 IsBootButtonEnabled = true;
                 if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
                     IsEquipAllButtonEnabled = true;
@@ -432,7 +451,7 @@ namespace EquipBestItem
             }
 
             if (BestMount != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            { 
+            {
                 IsMountButtonEnabled = true;
                 if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
                     IsEquipAllButtonEnabled = true;
@@ -461,7 +480,7 @@ namespace EquipBestItem
             }
 
             if (BestWeapon1 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            { 
+            {
                 IsWeapon1ButtonEnabled = true;
                 if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
                     IsEquipAllButtonEnabled = true;
@@ -472,7 +491,7 @@ namespace EquipBestItem
             }
 
             if (BestWeapon2 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            { 
+            {
                 IsWeapon2ButtonEnabled = true;
                 if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
                     IsEquipAllButtonEnabled = true;
@@ -703,7 +722,7 @@ namespace EquipBestItem
                 item1.ItemRosterElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon == null)
-                return 0;
+                return -9999;
 
             WeaponComponentData primaryWeaponItem1 = item1.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon;
             FilterWeaponSettings filterWeapon = _characterSettings.FilterWeapon[slotNumber];
@@ -753,7 +772,7 @@ namespace EquipBestItem
                 item1.ItemRosterElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.Item.ArmorComponent == null)
-                return 0;
+                return -9999;
 
             ArmorComponent armorComponentItem1 = item1.ItemRosterElement.EquipmentElement.Item.ArmorComponent;
             FilterArmorSettings filterArmor = _characterSettings.FilterArmor[slotNumber];
@@ -795,7 +814,7 @@ namespace EquipBestItem
                 item1.ItemRosterElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.Item.HorseComponent == null)
-                return 0;
+                return -9999;
 
             HorseComponent horseComponentItem1 = item1.ItemRosterElement.EquipmentElement.Item.HorseComponent;
             FilterMountSettings filterMount = _characterSettings.FilterMount;

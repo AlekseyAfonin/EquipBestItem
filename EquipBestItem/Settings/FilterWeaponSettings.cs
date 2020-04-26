@@ -18,7 +18,7 @@ namespace EquipBestItem
         public float SwingDamage { get; set; } = 1f;
         public float Accuracy { get; set; } = 1f;
         public float Handling { get; set; } = 1f;
-        public float WeaponWeight { get; set; } = 1f;
+        public float WeaponWeight { get; set; } = 0;
         public float WeaponBodyArmor { get; set; } = 1f;
 
         //public DamageTypes SwingDamageType { get; set; } = 0;

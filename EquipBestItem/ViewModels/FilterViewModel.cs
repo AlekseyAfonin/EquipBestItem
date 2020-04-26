@@ -1046,7 +1046,7 @@ namespace EquipBestItem
             this.CharacterSettings.FilterArmor[CurrentSlot].LegArmor = 1f;
             this.CharacterSettings.FilterArmor[CurrentSlot].ManeuverBonus = 1f;
             this.CharacterSettings.FilterArmor[CurrentSlot].SpeedBonus = 1f;
-            this.CharacterSettings.FilterArmor[CurrentSlot].ArmorWeight = 1f;
+            this.CharacterSettings.FilterArmor[CurrentSlot].ArmorWeight = 0;
             this.RefreshValues();
         }
 
@@ -1062,7 +1062,45 @@ namespace EquipBestItem
             this.CharacterSettings.FilterWeapon[CurrentSlot].ThrustDamage = 1f;
             this.CharacterSettings.FilterWeapon[CurrentSlot].ThrustSpeed = 1f;
             this.CharacterSettings.FilterWeapon[CurrentSlot].WeaponLength = 1f;
-            this.CharacterSettings.FilterWeapon[CurrentSlot].WeaponWeight = 1f;
+            this.CharacterSettings.FilterWeapon[CurrentSlot].WeaponWeight = 0;
+            this.RefreshValues();
+        }
+
+        public void ExecuteMountLock()
+        {
+            this.CharacterSettings.FilterMount.ChargeDamage = 0;
+            this.CharacterSettings.FilterMount.HitPoints = 0;
+            this.CharacterSettings.FilterMount.Maneuver = 0;
+            this.CharacterSettings.FilterMount.Speed = 0;
+            this.RefreshValues();
+        }
+
+        public void ExecuteArmorLock()
+        {
+            this.CharacterSettings.FilterArmor[CurrentSlot].ArmArmor = 0;
+            this.CharacterSettings.FilterArmor[CurrentSlot].ArmorBodyArmor = 0;
+            this.CharacterSettings.FilterArmor[CurrentSlot].ChargeBonus = 0;
+            this.CharacterSettings.FilterArmor[CurrentSlot].HeadArmor = 0;
+            this.CharacterSettings.FilterArmor[CurrentSlot].LegArmor = 0;
+            this.CharacterSettings.FilterArmor[CurrentSlot].ManeuverBonus = 0;
+            this.CharacterSettings.FilterArmor[CurrentSlot].SpeedBonus = 0;
+            this.CharacterSettings.FilterArmor[CurrentSlot].ArmorWeight = 0;
+            this.RefreshValues();
+        }
+
+        public void ExecuteWeaponLock()
+        {
+            this.CharacterSettings.FilterWeapon[CurrentSlot].Accuracy = 0;
+            this.CharacterSettings.FilterWeapon[CurrentSlot].WeaponBodyArmor = 0;
+            this.CharacterSettings.FilterWeapon[CurrentSlot].Handling = 0;
+            this.CharacterSettings.FilterWeapon[CurrentSlot].MaxDataValue = 0;
+            this.CharacterSettings.FilterWeapon[CurrentSlot].MissileSpeed = 0;
+            this.CharacterSettings.FilterWeapon[CurrentSlot].SwingDamage = 0;
+            this.CharacterSettings.FilterWeapon[CurrentSlot].SwingSpeed = 0;
+            this.CharacterSettings.FilterWeapon[CurrentSlot].ThrustDamage = 0;
+            this.CharacterSettings.FilterWeapon[CurrentSlot].ThrustSpeed = 0;
+            this.CharacterSettings.FilterWeapon[CurrentSlot].WeaponLength = 0;
+            this.CharacterSettings.FilterWeapon[CurrentSlot].WeaponWeight = 0;
             this.RefreshValues();
         }
 

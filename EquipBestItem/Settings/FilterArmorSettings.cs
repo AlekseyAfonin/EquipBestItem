@@ -16,6 +16,6 @@ namespace EquipBestItem.Settings
         public float ManeuverBonus { get; set; } = 1f;
         public float SpeedBonus { get; set; } = 1f;
         public float ChargeBonus { get; set; } = 1f;
-        public float ArmorWeight { get; set; } = 1f;
+        public float ArmorWeight { get; set; } = 0;
     }
 }
