@@ -722,7 +722,7 @@ namespace EquipBestItem
                 item1.ItemRosterElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon == null)
-                return -9999;
+                return -9999f;
 
             WeaponComponentData primaryWeaponItem1 = item1.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon;
             FilterWeaponSettings filterWeapon = _characterSettings.FilterWeapon[slotNumber];
@@ -751,6 +751,10 @@ namespace EquipBestItem
                 WeaponLength = primaryWeaponItem1.WeaponLength;
             float WeaponWeight = item1.ItemRosterElement.EquipmentElement.Weight;
 
+            if (SettingsLoader.Debug)
+                InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: Acc {1}, BA {2}, HL {3}, HP {4}, MS {5}, SD {6}, SS {7}, TD {8}, TS {9}, WL {10}, W {11}",
+                    item1.ItemDescription, Accuracy, BodyArmor, Handling, MaxDataValue, MissileSpeed, SwingDamage, SwingSpeed, ThrustDamage, ThrustSpeed, WeaponLength, WeaponWeight)));
+
             ItemModifier mod = item1.ItemRosterElement.EquipmentElement.ItemModifier;
             if (mod != null) {
                 BodyArmor = mod.ModifyArmor(BodyArmor);
@@ -759,6 +763,9 @@ namespace EquipBestItem
                 SwingSpeed = mod.ModifySpeed(SwingSpeed);
                 ThrustDamage = mod.ModifyDamage(ThrustDamage);
                 ThrustSpeed = mod.ModifySpeed(ThrustSpeed);
+                MaxDataValue += mod.HitPoints;
+                //WeaponWeight *= mod.WeightMultiplier;
+
             }
 
             var weights = _characterSettings.FilterWeapon[slotNumber];
@@ -775,6 +782,15 @@ namespace EquipBestItem
                 WeaponLength * weights.WeaponLength +
                 WeaponWeight * weights.WeaponWeight
             ) / sum;
+
+            if (SettingsLoader.Debug)
+            {
+                InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: Acc {1}, BA {2}, HL {3}, HP {4}, MS {5}, SD {6}, SS {7}, TD {8}, TS {9}, WL {10}, W {11}",
+                    item1.ItemDescription, Accuracy, BodyArmor, Handling, MaxDataValue, MissileSpeed, SwingDamage, SwingSpeed, ThrustDamage, ThrustSpeed, WeaponLength, WeaponWeight)));
+
+                InformationManager.DisplayMessage(new InformationMessage("Total score: " + value));
+            }
+
             return value;
         }
 
@@ -784,7 +800,7 @@ namespace EquipBestItem
                 item1.ItemRosterElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.Item.ArmorComponent == null)
-                return -9999;
+                return -9999f; //-9999 
 
             ArmorComponent armorComponentItem1 = item1.ItemRosterElement.EquipmentElement.Item.ArmorComponent;
             FilterArmorSettings filterArmor = _characterSettings.FilterArmor[slotNumber];
@@ -810,8 +826,7 @@ namespace EquipBestItem
                 BodyArmor = mod.ModifyArmor(BodyArmor);
                 LegArmor = mod.ModifyArmor(LegArmor);
                 ArmArmor = mod.ModifyArmor(ArmArmor);
-                // It doesn't look like the weight multiplier actually gets applied
-                // Weight *= mod.WeightMultiplier;
+                //Weight *= mod.WeightMultiplier;
             }
 
             float value = (
@@ -822,6 +837,14 @@ namespace EquipBestItem
                 Weight * filterArmor.ArmorWeight
             ) / sum;
 
+            if (SettingsLoader.Debug)
+            {
+                InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5}",
+                    item1.ItemDescription, HeadArmor, BodyArmor, LegArmor, ArmArmor, Weight)));
+
+                InformationManager.DisplayMessage(new InformationMessage("Total score: " + value));
+            }
+
             return value;
         }
 
@@ -831,7 +854,7 @@ namespace EquipBestItem
                 item1.ItemRosterElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.Item.HorseComponent == null)
-                return -9999;
+                return -9999f;
 
             HorseComponent horseComponentItem1 = item1.ItemRosterElement.EquipmentElement.Item.HorseComponent;
             FilterMountSettings filterMount = _characterSettings.FilterMount;
@@ -862,6 +885,14 @@ namespace EquipBestItem
                 Maneuver * weights.Maneuver +
                 Speed * weights.Speed
             ) / sum;
+
+            if (SettingsLoader.Debug)
+            {
+                InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: CD {1}, HP {2}, MR {3}, SD {4}",
+                    item1.ItemDescription, ChargeDamage, HitPoints, Maneuver, Speed)));
+
+                InformationManager.DisplayMessage(new InformationMessage("Total score: " + value));
+            }
 
             return value;
         }
