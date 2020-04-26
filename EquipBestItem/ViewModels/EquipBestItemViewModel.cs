@@ -707,7 +707,7 @@ namespace EquipBestItem
 
             WeaponComponentData primaryWeaponItem1 = item1.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon;
             FilterWeaponSettings filterWeapon = _characterSettings.FilterWeapon[slotNumber];
-            float summ =
+            float sum =
                 Math.Abs(filterWeapon.Accuracy) +
                 Math.Abs(filterWeapon.WeaponBodyArmor) +
                 Math.Abs(filterWeapon.Handling) +
@@ -720,30 +720,42 @@ namespace EquipBestItem
                 Math.Abs(filterWeapon.WeaponLength) +
                 Math.Abs(filterWeapon.WeaponWeight);
 
-            float Accuracy = (float)primaryWeaponItem1.Accuracy * (_characterSettings.FilterWeapon[slotNumber].Accuracy / summ);
-            if (float.IsNaN(Accuracy)) Accuracy = 0f;
-            float BodyArmor = (float)primaryWeaponItem1.BodyArmor * (_characterSettings.FilterWeapon[slotNumber].WeaponBodyArmor / summ);
-            if (float.IsNaN(BodyArmor)) BodyArmor = 0f;
-            float Handling = (float)primaryWeaponItem1.Handling * (_characterSettings.FilterWeapon[slotNumber].Handling / summ);
-            if (float.IsNaN(Handling)) Handling = 0f;
-            float MaxDataValue = (float)primaryWeaponItem1.MaxDataValue * (_characterSettings.FilterWeapon[slotNumber].MaxDataValue / summ);
-            if (float.IsNaN(MaxDataValue)) MaxDataValue = 0f;
-            float MissileSpeed = (float)primaryWeaponItem1.MissileSpeed * (_characterSettings.FilterWeapon[slotNumber].MissileSpeed / summ);
-            if (float.IsNaN(MissileSpeed)) MissileSpeed = 0f;
-            float SwingDamage = (float)primaryWeaponItem1.SwingDamage * (_characterSettings.FilterWeapon[slotNumber].SwingDamage / summ);
-            if (float.IsNaN(SwingDamage)) SwingDamage = 0f;
-            float SwingSpeed = (float)primaryWeaponItem1.SwingSpeed * (_characterSettings.FilterWeapon[slotNumber].SwingSpeed / summ);
-            if (float.IsNaN(SwingSpeed)) SwingSpeed = 0f;
-            float ThrustDamage = (float)primaryWeaponItem1.ThrustDamage * (_characterSettings.FilterWeapon[slotNumber].ThrustDamage / summ);
-            if (float.IsNaN(ThrustDamage)) ThrustDamage = 0f;
-            float ThrustSpeed = (float)primaryWeaponItem1.ThrustSpeed * (_characterSettings.FilterWeapon[slotNumber].ThrustSpeed / summ);
-            if (float.IsNaN(ThrustSpeed)) ThrustSpeed = 0f;
-            float WeaponLength = (float)primaryWeaponItem1.WeaponLength * (_characterSettings.FilterWeapon[slotNumber].WeaponLength / summ);
-            if (float.IsNaN(WeaponLength)) WeaponLength = 0f;
-            float Weight = item1.ItemRosterElement.EquipmentElement.Weight * (_characterSettings.FilterWeapon[slotNumber].WeaponWeight / summ);
-            if (float.IsNaN(Weight)) Weight = 0f;
+            int Accuracy = primaryWeaponItem1.Accuracy,
+                BodyArmor = primaryWeaponItem1.BodyArmor,
+                Handling = primaryWeaponItem1.Handling,
+                MaxDataValue = primaryWeaponItem1.MaxDataValue,
+                MissileSpeed = primaryWeaponItem1.MissileSpeed,
+                SwingDamage = primaryWeaponItem1.SwingDamage,
+                SwingSpeed = primaryWeaponItem1.SwingSpeed,
+                ThrustDamage = primaryWeaponItem1.ThrustDamage,
+                ThrustSpeed = primaryWeaponItem1.ThrustSpeed,
+                WeaponLength = primaryWeaponItem1.WeaponLength;
+            float WeaponWeight = item1.ItemRosterElement.EquipmentElement.Weight;
 
-            float value = Accuracy + BodyArmor + Handling + MaxDataValue + MissileSpeed + SwingDamage + SwingSpeed + ThrustDamage + ThrustSpeed + WeaponLength + Weight;
+            ItemModifier mod = item1.ItemRosterElement.EquipmentElement.ItemModifier;
+            if (mod != null) {
+                BodyArmor = mod.ModifyArmor(BodyArmor);
+                MissileSpeed = mod.ModifyMissileSpeed(MissileSpeed);
+                SwingDamage = mod.ModifyDamage(SwingDamage);
+                SwingSpeed = mod.ModifySpeed(SwingSpeed);
+                ThrustDamage = mod.ModifyDamage(ThrustDamage);
+                ThrustSpeed = mod.ModifySpeed(ThrustSpeed);
+            }
+
+            var weights = _characterSettings.FilterWeapon[slotNumber];
+            float value = (
+                Accuracy * weights.Accuracy +
+                BodyArmor * weights.WeaponBodyArmor +
+                Handling * weights.Handling +
+                MaxDataValue * weights.MaxDataValue +
+                MissileSpeed * weights.MissileSpeed +
+                SwingDamage * weights.SwingDamage +
+                SwingSpeed * weights.SwingSpeed +
+                ThrustDamage * weights.ThrustDamage +
+                ThrustSpeed * weights.ThrustSpeed +
+                WeaponLength * weights.WeaponLength +
+                WeaponWeight * weights.WeaponWeight
+            ) / sum;
             return value;
         }
 
@@ -758,34 +770,39 @@ namespace EquipBestItem
             ArmorComponent armorComponentItem1 = item1.ItemRosterElement.EquipmentElement.Item.ArmorComponent;
             FilterArmorSettings filterArmor = _characterSettings.FilterArmor[slotNumber];
 
-            float summ =
+            float sum =
                 Math.Abs(filterArmor.HeadArmor) +
                 Math.Abs(filterArmor.ArmArmor) +
                 Math.Abs(filterArmor.ArmorBodyArmor) +
                 Math.Abs(filterArmor.ArmorWeight) +
-                Math.Abs(filterArmor.ChargeBonus) +
-                Math.Abs(filterArmor.LegArmor) +
-                Math.Abs(filterArmor.ManeuverBonus) +
-                Math.Abs(filterArmor.SpeedBonus);
+                Math.Abs(filterArmor.LegArmor);
 
-            float HeadArmor = (float)armorComponentItem1.HeadArmor * (_characterSettings.FilterArmor[slotNumber].HeadArmor / summ);
-            if (float.IsNaN(HeadArmor)) HeadArmor = 0f;
-            float BodyArmor = (float)armorComponentItem1.BodyArmor * (_characterSettings.FilterArmor[slotNumber].ArmorBodyArmor / summ);
-            if (float.IsNaN(BodyArmor)) BodyArmor = 0f;
-            float LegArmor = (float)armorComponentItem1.LegArmor * (_characterSettings.FilterArmor[slotNumber].LegArmor / summ);
-            if (float.IsNaN(LegArmor)) LegArmor = 0f;
-            float ArmArmor = (float)armorComponentItem1.ArmArmor * (_characterSettings.FilterArmor[slotNumber].ArmArmor / summ);
-            if (float.IsNaN(ArmArmor)) ArmArmor = 0f;
-            float ManeuverBonus = (float)armorComponentItem1.ManeuverBonus * (_characterSettings.FilterArmor[slotNumber].ManeuverBonus / summ);
-            if (float.IsNaN(ManeuverBonus)) ManeuverBonus = 0f;
-            float SpeedBonus = (float)armorComponentItem1.SpeedBonus * (_characterSettings.FilterArmor[slotNumber].SpeedBonus / summ);
-            if (float.IsNaN(SpeedBonus)) SpeedBonus = 0f;
-            float ChargeBonus = (float)armorComponentItem1.ChargeBonus * (_characterSettings.FilterArmor[slotNumber].ChargeBonus / summ);
-            if (float.IsNaN(ChargeBonus)) ChargeBonus = 0f;
-            float Weight = item1.ItemRosterElement.EquipmentElement.Weight * (_characterSettings.FilterArmor[slotNumber].ArmorWeight / summ);
-            if (float.IsNaN(Weight)) Weight = 0f;
+            ItemModifier mod =
+                item1.ItemRosterElement.EquipmentElement.ItemModifier;
 
-            float value = HeadArmor + BodyArmor + LegArmor + ArmArmor + ManeuverBonus + SpeedBonus + ChargeBonus + Weight;
+            int HeadArmor = armorComponentItem1.HeadArmor,
+                BodyArmor = armorComponentItem1.BodyArmor,
+                LegArmor = armorComponentItem1.LegArmor,
+                ArmArmor = armorComponentItem1.ArmArmor;
+            float Weight = item1.ItemRosterElement.EquipmentElement.Weight;
+
+            if (mod != null) {
+                HeadArmor = mod.ModifyArmor(HeadArmor);
+                BodyArmor = mod.ModifyArmor(BodyArmor);
+                LegArmor = mod.ModifyArmor(LegArmor);
+                ArmArmor = mod.ModifyArmor(ArmArmor);
+                // It doesn't look like the weight multiplier actually gets applied
+                // Weight *= mod.WeightMultiplier;
+            }
+
+            float value = (
+                HeadArmor * filterArmor.HeadArmor +
+                BodyArmor * filterArmor.ArmorBodyArmor +
+                LegArmor * filterArmor.LegArmor +
+                ArmArmor * filterArmor.ArmArmor +
+                Weight * filterArmor.ArmorWeight
+            ) / sum;
+
             return value;
         }
 
@@ -800,25 +817,33 @@ namespace EquipBestItem
             HorseComponent horseComponentItem1 = item1.ItemRosterElement.EquipmentElement.Item.HorseComponent;
             FilterMountSettings filterMount = _characterSettings.FilterMount;
 
-            float summ =
+            float sum =
                 Math.Abs(filterMount.ChargeDamage) +
                 Math.Abs(filterMount.HitPoints) +
                 Math.Abs(filterMount.Maneuver) +
                 Math.Abs(filterMount.Speed);
 
-            float ChargeDamage = (float)horseComponentItem1.ChargeDamage * (_characterSettings.FilterMount.ChargeDamage / summ);
-            if (float.IsNaN(ChargeDamage)) ChargeDamage = 0f;
-            float HitPoints = (float)horseComponentItem1.HitPoints * (_characterSettings.FilterMount.HitPoints / summ);
-            if (float.IsNaN(HitPoints)) HitPoints = 0f;
-            float Maneuver = (float)horseComponentItem1.Maneuver * (_characterSettings.FilterMount.Maneuver / summ);
-            if (float.IsNaN(Maneuver)) Maneuver = 0f;
-            float Speed = (float)horseComponentItem1.Speed * (_characterSettings.FilterMount.Speed / summ);
-            if (float.IsNaN(Speed)) Speed = 0f;
+            int ChargeDamage = horseComponentItem1.ChargeDamage,
+                HitPoints = horseComponentItem1.HitPoints,
+                Maneuver = horseComponentItem1.Maneuver,
+                Speed = horseComponentItem1.Speed;
 
-            //float Weight = (item1.ItemRosterElement.EquipmentElement.Weight / item2.ItemRosterElement.EquipmentElement.Weight) * 100f * _characterSettings.FilterArmor[slotNumber].ArmorWeight;
-            //if (float.IsNaN(Weight)) Weight = 0f;
+            ItemModifier mod =
+                item1.ItemRosterElement.EquipmentElement.ItemModifier;
+            if (mod != null) {
+                ChargeDamage = mod.ModifyHorseCharge(ChargeDamage);
+                Maneuver = mod.ModifyHorseManuever(Maneuver);
+                Speed = mod.ModifyHorseSpeed(Speed);
+            }
 
-            float value = ChargeDamage + HitPoints + Maneuver + Speed;
+            var weights = _characterSettings.FilterMount;
+            float value = (
+                ChargeDamage * weights.ChargeDamage +
+                HitPoints * weights.HitPoints +
+                Maneuver * weights.Maneuver +
+                Speed * weights.Speed
+            ) / sum;
+
             return value;
         }
 
