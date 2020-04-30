@@ -26,7 +26,6 @@ namespace EquipBestItem
         public static bool IsWeapon2ButtonEnabled { get; set; }
         public static bool IsWeapon3ButtonEnabled { get; set; }
         public static bool IsWeapon4ButtonEnabled { get; set; }
-        public static bool IsEquipAllButtonEnabled { get; set; }
         public static bool IsEquipAllActivated { get; set; }
 
         public static bool IsLeftPanelLocked { get; set; }
@@ -57,51 +56,7 @@ namespace EquipBestItem
             _inventory = EquipBestItemViewModel.InventoryScreen.GetField("_dataSource") as SPInventoryVM;
             ItemUsageList = new List<string>();
             UpdateCurrentCharacterName();
-            //ItemUsageListUpdate();
         }
-
-        //private void ItemUsageListUpdate()
-        //{
-        //    string itemUsage;
-
-        //    if (_inventory.CharacterWeapon1Slot != null)
-        //    {
-        //        itemUsage = GetItemUsage(_inventory.CharacterWeapon1Slot);
-        //        if (!ItemUsageList.Contains(itemUsage) && itemUsage != "")
-        //            ItemUsageList.Add(itemUsage);
-        //    }
-        //    if (_inventory.CharacterWeapon2Slot != null)
-        //    {
-        //        itemUsage = GetItemUsage(_inventory.CharacterWeapon2Slot);
-        //        if (!ItemUsageList.Contains(itemUsage) && itemUsage != "")
-        //            ItemUsageList.Add(itemUsage);
-        //    }
-        //    if (_inventory.CharacterWeapon3Slot != null)
-        //    {
-        //        itemUsage = GetItemUsage(_inventory.CharacterWeapon3Slot);
-        //        if (!ItemUsageList.Contains(itemUsage) && itemUsage != "")
-        //            ItemUsageList.Add(itemUsage);
-        //    }
-        //    if (_inventory.CharacterWeapon4Slot != null)
-        //    {
-        //        itemUsage = GetItemUsage(_inventory.CharacterWeapon4Slot);
-        //        if (!ItemUsageList.Contains(itemUsage) && itemUsage != "")
-        //            ItemUsageList.Add(itemUsage);
-        //    }
-
-        //    foreach (SPItemVM item in _inventory.RightItemListVM)
-        //    {
-        //        itemUsage = GetItemUsage(item);
-        //        if (!ItemUsageList.Contains(itemUsage) && itemUsage != "")
-        //            ItemUsageList.Add(itemUsage);
-        //    }
-        //    foreach (SPItemVM item in _inventory.LeftItemListVM)
-        //    {
-        //        itemUsage = GetItemUsage(item);
-        //        if (!ItemUsageList.Contains(itemUsage) && itemUsage != "")
-        //            ItemUsageList.Add(itemUsage);
-        //    }
-        //}
 
         public static string GetItemUsage(SPItemVM item)
         {
@@ -393,13 +348,9 @@ namespace EquipBestItem
 
         public static void ButtonStatusUpdate()
         {
-            IsEquipAllButtonEnabled = false;
-
             if (BestHelm != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsHelmButtonEnabled = true;
-                if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
-                    IsEquipAllButtonEnabled = true;
             }
             else
             {
@@ -409,8 +360,6 @@ namespace EquipBestItem
             if (BestCloak != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsCloakButtonEnabled = true;
-                if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
-                    IsEquipAllButtonEnabled = true;
             }
             else
             {
@@ -420,8 +369,6 @@ namespace EquipBestItem
             if (BestArmor != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsArmorButtonEnabled = true;
-                if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
-                    IsEquipAllButtonEnabled = true;
             }
             else
             {
@@ -431,8 +378,6 @@ namespace EquipBestItem
             if (BestGlove != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsGloveButtonEnabled = true;
-                if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
-                    IsEquipAllButtonEnabled = true;
             }
             else
             {
@@ -442,8 +387,6 @@ namespace EquipBestItem
             if (BestBoot != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsBootButtonEnabled = true;
-                if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
-                    IsEquipAllButtonEnabled = true;
             }
             else
             {
@@ -453,8 +396,6 @@ namespace EquipBestItem
             if (BestMount != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsMountButtonEnabled = true;
-                if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
-                    IsEquipAllButtonEnabled = true;
             }
             else
             {
@@ -466,8 +407,6 @@ namespace EquipBestItem
                 if (IsCamel(_inventory.CharacterMountSlot) == false)
                 {
                     IsHarnessButtonEnabled = true;
-                    if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
-                        IsEquipAllButtonEnabled = true;
                 }
                 else
                 {
@@ -482,8 +421,6 @@ namespace EquipBestItem
             if (BestWeapon1 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsWeapon1ButtonEnabled = true;
-                if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
-                    IsEquipAllButtonEnabled = true;
             }
             else
             {
@@ -493,8 +430,6 @@ namespace EquipBestItem
             if (BestWeapon2 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsWeapon2ButtonEnabled = true;
-                if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
-                    IsEquipAllButtonEnabled = true;
             }
             else
             {
@@ -504,8 +439,6 @@ namespace EquipBestItem
             if (BestWeapon3 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsWeapon3ButtonEnabled = true;
-                if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
-                    IsEquipAllButtonEnabled = true;
             }
             else
             {
@@ -515,8 +448,6 @@ namespace EquipBestItem
             if (BestWeapon4 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsWeapon4ButtonEnabled = true;
-                if (SettingsLoader.Instance.Settings.IsEnabledEquipAllButton)
-                    IsEquipAllButtonEnabled = true;
             }
             else
             {
@@ -540,31 +471,6 @@ namespace EquipBestItem
             BestWeapon4 = null;
         }
 
-        //private static float GetMountEffectiveness(SPItemVM item)
-        //{
-
-        //    float value = 0f;
-
-        //    if (item != null && item.ItemRosterElement.EquipmentElement.Item != null)
-        //    {
-        //        if (item.ItemRosterElement.EquipmentElement.Item.HorseComponent != null)
-        //        {
-        //            if (item.ItemRosterElement.EquipmentElement.Item.HorseComponent.Monster.MonsterUsage != "camel" && item.ItemDescription != "Mule")
-        //                value = (float)item.ItemRosterElement.EquipmentElement.Item.HorseComponent.Maneuver *
-        //                    (float)item.ItemRosterElement.EquipmentElement.Item.HorseComponent.Speed +
-        //                    (float)item.ItemRosterElement.EquipmentElement.Item.HorseComponent.ChargeDamage +
-        //                    (float)item.ItemRosterElement.EquipmentElement.Item.HorseComponent.HitPoints * 0.2f;
-        //            else
-        //                value = ((float)item.ItemRosterElement.EquipmentElement.Item.HorseComponent.Maneuver *
-        //                    (float)item.ItemRosterElement.EquipmentElement.Item.HorseComponent.Speed +
-        //                    (float)item.ItemRosterElement.EquipmentElement.Item.HorseComponent.ChargeDamage +
-        //                    (float)item.ItemRosterElement.EquipmentElement.Item.HorseComponent.HitPoints) * 0.0001f;
-        //        }
-        //    }
-
-        //    return value;
-        //}
-
         public static void UpdateCurrentCharacterName()
         {
             if (_inventory.CurrentCharacterName != null)
@@ -573,148 +479,389 @@ namespace EquipBestItem
                 CurrentCharacterName = Hero.MainHero.Name.ToString();
         }
 
-        //private static float GetArmorEffectiveness(SPItemVM item)
-        //{
-        //    int value = 0;
+        public static void EquipEveryCharacter()
+        {
+            foreach (TroopRosterElement rosterElement in PartyBase.MainParty.MemberRoster)
+            {
+                if (rosterElement.Character.IsHero)
+                    EquipCharacter(rosterElement.Character);
+            }
+        }
 
-        //    if (item != null && item.ItemRosterElement.EquipmentElement.Item != null)
+        public static void EquipCharacter(CharacterObject character)
+        {
+            Equipment equipment = character.FirstBattleEquipment;
+
+            for (EquipmentIndex equipmentIndex = EquipmentIndex.WeaponItemBeginSlot; equipmentIndex < EquipmentIndex.NumEquipmentSetSlots; equipmentIndex++)
+            {
+                if (equipment[equipmentIndex].IsEmpty && equipmentIndex < EquipmentIndex.NonWeaponItemBeginSlot)
+                    continue;
+
+                EquipmentElement bestLeftEquipmentElement;
+                EquipmentElement bestRightEquipmentElement;
+
+                if (!SettingsLoader.Instance.Settings.IsLeftPanelLocked)
+                {
+                    bestLeftEquipmentElement = GetBetterItemFromSide(_inventory.LeftItemListVM, equipment[equipmentIndex], equipmentIndex);
+                }
+                if (!SettingsLoader.Instance.Settings.IsRightPanelLocked)
+                {
+                    bestRightEquipmentElement = GetBetterItemFromSide(_inventory.RightItemListVM, equipment[equipmentIndex], equipmentIndex);
+                }
+
+                if (!equipment[equipmentIndex].IsEmpty && (bestLeftEquipmentElement.Item != null || bestRightEquipmentElement.Item != null))
+                {
+                    TransferCommand transferCommand = TransferCommand.Transfer(
+                        1,
+                        InventoryLogic.InventorySide.Equipment,
+                        InventoryLogic.InventorySide.PlayerInventory,
+                        new ItemRosterElement(equipment[equipmentIndex], 1),
+                        equipmentIndex,
+                        EquipmentIndex.None,
+                        character,
+                        false
+                    );
+                    InventoryManager.MyInventoryLogic.AddTransferCommand(transferCommand);
+                }
+
+
+
+                if (bestLeftEquipmentElement.Item != null || bestRightEquipmentElement.Item != null)
+                    if (ItemIndexCalculation(bestLeftEquipmentElement, equipmentIndex) > ItemIndexCalculation(bestRightEquipmentElement, equipmentIndex))
+                    {
+                        TransferCommand equipCommand = TransferCommand.Transfer(
+                            1,
+                            InventoryLogic.InventorySide.OtherInventory,
+                            InventoryLogic.InventorySide.Equipment,
+                            new ItemRosterElement(bestLeftEquipmentElement, 1),
+                            EquipmentIndex.None,
+                            equipmentIndex,
+                            character,
+                            false
+                        );
+
+                        EquipMessage(equipmentIndex, character);
+                        InventoryManager.MyInventoryLogic.AddTransferCommand(equipCommand); 
+                    }
+                    else
+                    {
+                        TransferCommand equipCommand = TransferCommand.Transfer(
+                            1,
+                            InventoryLogic.InventorySide.PlayerInventory,
+                            InventoryLogic.InventorySide.Equipment,
+                            new ItemRosterElement(bestRightEquipmentElement, 1),
+                            EquipmentIndex.None,
+                            equipmentIndex,
+                            character,
+                            false
+                        );
+
+                        EquipMessage(equipmentIndex, character);
+                        InventoryManager.MyInventoryLogic.AddTransferCommand(equipCommand);
+                    }
+                _inventory.Call("ExecuteRemoveZeroCounts");
+            }
+            _inventory.Call("RefreshInformationValues");
+
+        }
+
+        public static void EquipMessage(EquipmentIndex equipmentIndex, CharacterObject character)
+        {
+            switch (equipmentIndex)
+            {
+                case EquipmentIndex.Weapon0:
+                    InformationManager.DisplayMessage(new InformationMessage(character.Name + " equips weapon in the first slot"));
+                    break;
+                case EquipmentIndex.Weapon1:
+                    InformationManager.DisplayMessage(new InformationMessage(character.Name + " equips weapon in the second slot"));
+                    break;
+                case EquipmentIndex.Weapon2:
+                    InformationManager.DisplayMessage(new InformationMessage(character.Name + " equips weapon in the third slot"));
+                    break;
+                case EquipmentIndex.Weapon3:
+                    InformationManager.DisplayMessage(new InformationMessage(character.Name + " equips weapon in the fourth slot"));
+                    break;
+                case EquipmentIndex.Head:
+                    InformationManager.DisplayMessage(new InformationMessage(character.Name + " equips helmet"));
+                    break;
+                case EquipmentIndex.Body:
+                    InformationManager.DisplayMessage(new InformationMessage(character.Name + " equips body armor"));
+                    break;
+                case EquipmentIndex.Leg:
+                    InformationManager.DisplayMessage(new InformationMessage(character.Name + " equips boots"));
+                    break;
+                case EquipmentIndex.Gloves:
+                    InformationManager.DisplayMessage(new InformationMessage(character.Name + " equips gloves"));
+                    break;
+                case EquipmentIndex.Cape:
+                    InformationManager.DisplayMessage(new InformationMessage(character.Name + " equips cape"));
+                    break;
+                case EquipmentIndex.Horse:
+                    InformationManager.DisplayMessage(new InformationMessage(character.Name + " equips horse"));
+                    break;
+                case EquipmentIndex.HorseHarness:
+                    InformationManager.DisplayMessage(new InformationMessage(character.Name + " equips horse harness"));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public static EquipmentElement GetBetterItemFromSide(MBBindingList<SPItemVM> itemListVM, EquipmentElement equipmentElement, EquipmentIndex slot)
+        {
+            EquipmentElement bestEquipmentElement;
+
+            foreach (SPItemVM item in itemListVM)
+            {
+                if (slot < EquipmentIndex.NonWeaponItemBeginSlot && item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon != null && item.IsEquipableItem)
+                {
+                    if (equipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon.WeaponClass &&
+                        GetItemUsage(item) == equipmentElement.Item.PrimaryWeapon.ItemUsage)
+                        if (bestEquipmentElement.IsEmpty)
+                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot))
+                                bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                            else
+                                continue;
+                        else
+                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot))
+                            bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                }
+                else if (item.ItemType == slot && item.IsEquipableItem)
+                    if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot))
+                        if (bestEquipmentElement.IsEmpty)
+                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot))
+                                bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                            else
+                                continue;
+                        else
+                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot))
+                            bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+            }
+
+            return bestEquipmentElement;
+        }
+
+        //public static EquipmentElement GetBetterItem(EquipmentElement equipmentElement, EquipmentIndex slot)
+        //{
+        //    EquipmentElement bestEquipmentElement;
+
+        //    if (!SettingsLoader.Instance.Settings.IsLeftPanelLocked)
         //    {
-        //        value =
-        //            item.ItemRosterElement.EquipmentElement.GetArmArmor() +
-        //            item.ItemRosterElement.EquipmentElement.GetLegArmor() +
-        //            item.ItemRosterElement.EquipmentElement.GetHeadArmor() +
-        //            item.ItemRosterElement.EquipmentElement.GetBodyArmorHuman() +
-        //            item.ItemRosterElement.EquipmentElement.GetBodyArmorHorse();
+        //        bestEquipmentElement = GetBetterItemFromSide(_inventory.LeftItemListVM, equipmentElement, slot, bestEquipmentElement);
+        //    }
+        //    if (!SettingsLoader.Instance.Settings.IsRightPanelLocked)
+        //    {
+        //        bestEquipmentElement = GetBetterItemFromSide(_inventory.RightItemListVM, equipmentElement, slot, bestEquipmentElement);
         //    }
 
-        //    return value;
+        //    return bestEquipmentElement;
         //}
 
+        public static int GetEquipmentSlot(EquipmentIndex slot)
+        {
+            switch (slot)
+            {
+                case EquipmentIndex.Weapon0:
+                    return 0;
+                case EquipmentIndex.Weapon1:
+                    return 1;
+                case EquipmentIndex.Weapon2:
+                    return 2;
+                case EquipmentIndex.Weapon3:
+                    return 3;
+                case EquipmentIndex.Head:
+                    return 0;
+                case EquipmentIndex.Cape:
+                    return 1;
+                case EquipmentIndex.Body:
+                    return 2;
+                case EquipmentIndex.Gloves:
+                    return 3;
+                case EquipmentIndex.Leg:
+                    return 4;
+                case EquipmentIndex.Horse:
+                    return 0;
+                case EquipmentIndex.HorseHarness:
+                    return 5;
+                default:
+                    return 0;
+            }
+        }
 
-        //private static float WeaponIndexCalculation(SPItemVM item1, SPItemVM item2, int slotNumber)
-        //{
-        //    if (item1 == null || 
-        //        item2 == null || 
-        //        item1.ItemRosterElement.IsEmpty ||
-        //        item2.ItemRosterElement.IsEmpty ||
-        //        item1.ItemRosterElement.EquipmentElement.IsEmpty ||
-        //        item2.ItemRosterElement.EquipmentElement.IsEmpty ||
-        //        item1.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon == null ||
-        //        item2.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon == null)
-        //        return 0;
+        private static float ItemIndexCalculation(EquipmentElement sourceItem, EquipmentIndex slot)
+        {
 
-        //    WeaponComponentData primaryWeaponItem1 = item1.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon;
-        //    WeaponComponentData primaryWeaponItem2 = item2.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon;
+            if (sourceItem.IsEmpty)
+                return -9999f;
 
-        //    float Accuracy = ((float)primaryWeaponItem1.Accuracy / (float)primaryWeaponItem2.Accuracy) * 100f * (float)_characterSettings.FilterWeapon[slotNumber].Accuracy;
-        //    if (float.IsNaN(Accuracy)) Accuracy = 0f;
-        //    float BodyArmor = ((float)primaryWeaponItem1.BodyArmor / (float)primaryWeaponItem2.BodyArmor) * 100f * (float)_characterSettings.FilterWeapon[slotNumber].WeaponBodyArmor;
-        //    if (float.IsNaN(BodyArmor)) BodyArmor = 0f;
-        //    float Handling = ((float)primaryWeaponItem1.Handling / (float)primaryWeaponItem2.Handling) * 100f * (float)_characterSettings.FilterWeapon[slotNumber].Handling;
-        //    if (float.IsNaN(Handling)) Handling = 0f;
-        //    float MaxDataValue = ((float)primaryWeaponItem1.MaxDataValue / (float)primaryWeaponItem2.MaxDataValue) * 100f * (float)_characterSettings.FilterWeapon[slotNumber].MaxDataValue;
-        //    if (float.IsNaN(MaxDataValue)) MaxDataValue = 0f;
-        //    float MissileSpeed = ((float)primaryWeaponItem1.MissileSpeed / (float)primaryWeaponItem2.MissileSpeed) * 100f * (float)_characterSettings.FilterWeapon[slotNumber].MissileSpeed;
-        //    if (float.IsNaN(MissileSpeed)) MissileSpeed = 0f;
-        //    float SwingDamage = ((float)primaryWeaponItem1.SwingDamage / (float)primaryWeaponItem2.SwingDamage) * 100f * (float)_characterSettings.FilterWeapon[slotNumber].SwingDamage;
-        //    if (float.IsNaN(SwingDamage)) SwingDamage = 0f;
-        //    float SwingSpeed = ((float)primaryWeaponItem1.SwingSpeed / (float)primaryWeaponItem2.SwingSpeed) * 100f * (float)_characterSettings.FilterWeapon[slotNumber].SwingSpeed;
-        //    if (float.IsNaN(SwingSpeed)) SwingSpeed = 0f;
-        //    float ThrustDamage = ((float)primaryWeaponItem1.ThrustDamage / (float)primaryWeaponItem2.ThrustDamage) * 100f * (float)_characterSettings.FilterWeapon[slotNumber].ThrustDamage;
-        //    if (float.IsNaN(ThrustDamage)) ThrustDamage = 0f;
-        //    float ThrustSpeed = ((float)primaryWeaponItem1.ThrustSpeed / (float)primaryWeaponItem2.ThrustSpeed) * 100f * (float)_characterSettings.FilterWeapon[slotNumber].ThrustSpeed;
-        //    if (float.IsNaN(ThrustSpeed)) ThrustSpeed = 0f;
-        //    float WeaponLength = ((float)primaryWeaponItem1.WeaponLength / (float)primaryWeaponItem2.WeaponLength) * 100f * (float)_characterSettings.FilterWeapon[slotNumber].WeaponLength;
-        //    if (float.IsNaN(WeaponLength)) WeaponLength = 0f;
-        //    float Weight = (item1.ItemRosterElement.EquipmentElement.Weight / item2.ItemRosterElement.EquipmentElement.Weight) * 100f * _characterSettings.FilterWeapon[slotNumber].WeaponWeight;
-        //    if (float.IsNaN(Weight)) Weight = 0f;
+            float value = 0f;
 
-        //    float value = Accuracy + BodyArmor + Handling + MaxDataValue + MissileSpeed + SwingDamage + SwingSpeed + ThrustDamage + ThrustSpeed + WeaponLength + Weight;
-        //    return value;
-        //}
+            if (sourceItem.Item.HasArmorComponent)
+            {
+                ArmorComponent armorComponentItem = sourceItem.Item.ArmorComponent;
+                FilterArmorSettings filterArmor = _characterSettings.FilterArmor[GetEquipmentSlot(slot)];
 
-        //private static float CompetitiveArmorIndexCalculation(SPItemVM item1, SPItemVM item2, int slotNumber)
-        //{
-        //    if (item1 == null ||
-        //        item2 == null ||
-        //        item1.ItemRosterElement.IsEmpty ||
-        //        item2.ItemRosterElement.IsEmpty ||
-        //        item1.ItemRosterElement.EquipmentElement.IsEmpty ||
-        //        item2.ItemRosterElement.EquipmentElement.IsEmpty ||
-        //        item1.ItemRosterElement.EquipmentElement.Item.ArmorComponent == null ||
-        //        item2.ItemRosterElement.EquipmentElement.Item.ArmorComponent == null)
-        //        return 0;
+                float sum =
+                    Math.Abs(filterArmor.HeadArmor) +
+                    Math.Abs(filterArmor.ArmArmor) +
+                    Math.Abs(filterArmor.ArmorBodyArmor) +
+                    Math.Abs(filterArmor.ArmorWeight) +
+                    Math.Abs(filterArmor.LegArmor);
 
-        //    ArmorComponent armorComponentItem1 = item1.ItemRosterElement.EquipmentElement.Item.ArmorComponent;
-        //    ArmorComponent armorComponentItem2 = item2.ItemRosterElement.EquipmentElement.Item.ArmorComponent;
-        //    FilterArmorSettings filterArmor = _characterSettings.FilterArmor[slotNumber];
+                ItemModifier mod =
+                    sourceItem.ItemModifier;
 
-        //    float summ = 
-        //        Math.Abs(filterArmor.HeadArmor) + 
-        //        Math.Abs(filterArmor.ArmArmor) + 
-        //        Math.Abs(filterArmor.ArmorBodyArmor) +
-        //        Math.Abs(filterArmor.ArmorWeight) +
-        //        Math.Abs(filterArmor.ChargeBonus) +
-        //        Math.Abs(filterArmor.LegArmor) +
-        //        Math.Abs(filterArmor.ManeuverBonus) +
-        //        Math.Abs(filterArmor.SpeedBonus);
+                int HeadArmor = armorComponentItem.HeadArmor,
+                    BodyArmor = armorComponentItem.BodyArmor,
+                    LegArmor = armorComponentItem.LegArmor,
+                    ArmArmor = armorComponentItem.ArmArmor;
+                float Weight = sourceItem.Weight;
+
+                if (mod != null)
+                {
+                    HeadArmor = mod.ModifyArmor(HeadArmor);
+                    BodyArmor = mod.ModifyArmor(BodyArmor);
+                    LegArmor = mod.ModifyArmor(LegArmor);
+                    ArmArmor = mod.ModifyArmor(ArmArmor);
+                    //Weight *= mod.WeightMultiplier;
+                }
+
+                value = (
+                    HeadArmor * filterArmor.HeadArmor +
+                    BodyArmor * filterArmor.ArmorBodyArmor +
+                    LegArmor * filterArmor.LegArmor +
+                    ArmArmor * filterArmor.ArmArmor +
+                    Weight * filterArmor.ArmorWeight
+                ) / sum;
+
+                if (SettingsLoader.Debug)
+                {
+                    InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5}",
+                        sourceItem.Item.Name, HeadArmor, BodyArmor, LegArmor, ArmArmor, Weight)));
+
+                    InformationManager.DisplayMessage(new InformationMessage("Total score: " + value));
+                }
+
+                return value;
+            }
+
+            if (sourceItem.Item.PrimaryWeapon != null)
+            {
+                WeaponComponentData primaryWeaponItem = sourceItem.Item.PrimaryWeapon;
+                FilterWeaponSettings filterWeapon = _characterSettings.FilterWeapon[GetEquipmentSlot(slot)];
+                float sum =
+                    Math.Abs(filterWeapon.Accuracy) +
+                    Math.Abs(filterWeapon.WeaponBodyArmor) +
+                    Math.Abs(filterWeapon.Handling) +
+                    Math.Abs(filterWeapon.MaxDataValue) +
+                    Math.Abs(filterWeapon.MissileSpeed) +
+                    Math.Abs(filterWeapon.SwingDamage) +
+                    Math.Abs(filterWeapon.SwingSpeed) +
+                    Math.Abs(filterWeapon.ThrustDamage) +
+                    Math.Abs(filterWeapon.ThrustSpeed) +
+                    Math.Abs(filterWeapon.WeaponLength) +
+                    Math.Abs(filterWeapon.WeaponWeight);
+
+                int Accuracy = primaryWeaponItem.Accuracy,
+                    BodyArmor = primaryWeaponItem.BodyArmor,
+                    Handling = primaryWeaponItem.Handling,
+                    MaxDataValue = primaryWeaponItem.MaxDataValue,
+                    MissileSpeed = primaryWeaponItem.MissileSpeed,
+                    SwingDamage = primaryWeaponItem.SwingDamage,
+                    SwingSpeed = primaryWeaponItem.SwingSpeed,
+                    ThrustDamage = primaryWeaponItem.ThrustDamage,
+                    ThrustSpeed = primaryWeaponItem.ThrustSpeed,
+                    WeaponLength = primaryWeaponItem.WeaponLength;
+                float WeaponWeight = sourceItem.Weight;
+
+                ItemModifier mod = sourceItem.ItemModifier;
+                if (mod != null)
+                {
+                    BodyArmor = mod.ModifyArmor(BodyArmor);
+                    MissileSpeed = mod.ModifyMissileSpeed(MissileSpeed);
+                    SwingDamage = mod.ModifyDamage(SwingDamage);
+                    SwingSpeed = mod.ModifySpeed(SwingSpeed);
+                    ThrustDamage = mod.ModifyDamage(ThrustDamage);
+                    ThrustSpeed = mod.ModifySpeed(ThrustSpeed);
+                    MaxDataValue += mod.HitPoints;
+                    //WeaponWeight *= mod.WeightMultiplier;
+
+                }
+
+                var weights = _characterSettings.FilterWeapon[GetEquipmentSlot(slot)];
+                value = (
+                    Accuracy * weights.Accuracy +
+                    BodyArmor * weights.WeaponBodyArmor +
+                    Handling * weights.Handling +
+                    MaxDataValue * weights.MaxDataValue +
+                    MissileSpeed * weights.MissileSpeed +
+                    SwingDamage * weights.SwingDamage +
+                    SwingSpeed * weights.SwingSpeed +
+                    ThrustDamage * weights.ThrustDamage +
+                    ThrustSpeed * weights.ThrustSpeed +
+                    WeaponLength * weights.WeaponLength +
+                    WeaponWeight * weights.WeaponWeight
+                ) / sum;
+
+                if (SettingsLoader.Debug)
+                {
+                    InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: Acc {1}, BA {2}, HL {3}, HP {4}, MS {5}, SD {6}, SS {7}, TD {8}, TS {9}, WL {10}, W {11}",
+                        sourceItem.Item.Name, Accuracy, BodyArmor, Handling, MaxDataValue, MissileSpeed, SwingDamage, SwingSpeed, ThrustDamage, ThrustSpeed, WeaponLength, WeaponWeight)));
+
+                    InformationManager.DisplayMessage(new InformationMessage("Total score: " + value));
+                }
+
+                return value;
+            }
+
+            if (sourceItem.Item.HasHorseComponent)
+            {
+                HorseComponent horseComponentItem = sourceItem.Item.HorseComponent;
+                FilterMountSettings filterMount = _characterSettings.FilterMount;
+
+                float sum =
+                    Math.Abs(filterMount.ChargeDamage) +
+                    Math.Abs(filterMount.HitPoints) +
+                    Math.Abs(filterMount.Maneuver) +
+                    Math.Abs(filterMount.Speed);
+
+                int ChargeDamage = horseComponentItem.ChargeDamage,
+                    HitPoints = horseComponentItem.HitPoints,
+                    Maneuver = horseComponentItem.Maneuver,
+                    Speed = horseComponentItem.Speed;
+
+                ItemModifier mod =
+                    sourceItem.ItemModifier;
+                if (mod != null)
+                {
+                    ChargeDamage = mod.ModifyHorseCharge(ChargeDamage);
+                    Maneuver = mod.ModifyHorseManuever(Maneuver);
+                    Speed = mod.ModifyHorseSpeed(Speed);
+                }
+
+                var weights = _characterSettings.FilterMount;
+                value = (
+                    ChargeDamage * weights.ChargeDamage +
+                    HitPoints * weights.HitPoints +
+                    Maneuver * weights.Maneuver +
+                    Speed * weights.Speed
+                ) / sum;
+
+                if (SettingsLoader.Debug)
+                {
+                    InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: CD {1}, HP {2}, MR {3}, SD {4}",
+                        sourceItem.Item.Name, ChargeDamage, HitPoints, Maneuver, Speed)));
+
+                    InformationManager.DisplayMessage(new InformationMessage("Total score: " + value));
+                }
+
+                return value;
+            }
+
+            return value;
+        }
 
 
-
-
-
-        //    float HeadArmor = ((float)armorComponentItem1.HeadArmor / (float)armorComponentItem2.HeadArmor) * 100f * (_characterSettings.FilterArmor[slotNumber].HeadArmor / summ);
-        //    if (float.IsNaN(HeadArmor)) HeadArmor = 0f;
-        //    float BodyArmor = ((float)armorComponentItem1.BodyArmor / (float)armorComponentItem2.BodyArmor) * 100f * (_characterSettings.FilterArmor[slotNumber].ArmorBodyArmor / summ);
-        //    if (float.IsNaN(BodyArmor)) BodyArmor = 0f;
-        //    float LegArmor = ((float)armorComponentItem1.LegArmor / (float)armorComponentItem2.LegArmor) * 100f * (_characterSettings.FilterArmor[slotNumber].LegArmor / summ);
-        //    if (float.IsNaN(LegArmor)) LegArmor = 0f;
-        //    float ArmArmor = ((float)armorComponentItem1.ArmArmor / (float)armorComponentItem2.ArmArmor) * 100f * (_characterSettings.FilterArmor[slotNumber].ArmArmor / summ);
-        //    if (float.IsNaN(ArmArmor)) ArmArmor = 0f;
-        //    float ManeuverBonus = ((float)armorComponentItem1.ManeuverBonus / (float)armorComponentItem2.ManeuverBonus) * 100f * (_characterSettings.FilterArmor[slotNumber].ManeuverBonus / summ);
-        //    if (float.IsNaN(ManeuverBonus)) ManeuverBonus = 0f;
-        //    float SpeedBonus = ((float)armorComponentItem1.SpeedBonus / (float)armorComponentItem2.SpeedBonus) * 100f * (_characterSettings.FilterArmor[slotNumber].SpeedBonus / summ);
-        //    if (float.IsNaN(SpeedBonus)) SpeedBonus = 0f;
-        //    float ChargeBonus = ((float)armorComponentItem1.ChargeBonus / (float)armorComponentItem2.ChargeBonus) * 100f * (_characterSettings.FilterArmor[slotNumber].ChargeBonus / summ);
-        //    if (float.IsNaN(ChargeBonus)) ChargeBonus = 0f;
-        //    float Weight = (item1.ItemRosterElement.EquipmentElement.Weight / item2.ItemRosterElement.EquipmentElement.Weight) * 100f * (_characterSettings.FilterArmor[slotNumber].ArmorWeight / summ);
-        //    if (float.IsNaN(Weight)) Weight = 0f;
-
-        //    float value = HeadArmor + BodyArmor + LegArmor + ArmArmor + ManeuverBonus + SpeedBonus + ChargeBonus + Weight;
-        //    return value;
-        //}
-
-
-        //private static float CompetitiveMountIndexCalculation(SPItemVM item1, SPItemVM item2)
-        //{
-        //    if (item1 == null ||
-        //        item2 == null ||
-        //        item1.ItemRosterElement.IsEmpty ||
-        //        item2.ItemRosterElement.IsEmpty ||
-        //        item1.ItemRosterElement.EquipmentElement.IsEmpty ||
-        //        item2.ItemRosterElement.EquipmentElement.IsEmpty ||
-        //        item1.ItemRosterElement.EquipmentElement.Item.HorseComponent == null ||
-        //        item2.ItemRosterElement.EquipmentElement.Item.HorseComponent == null)
-        //        return 0;
-
-        //    HorseComponent horseComponentItem1 = item1.ItemRosterElement.EquipmentElement.Item.HorseComponent;
-        //    HorseComponent horseComponentItem2 = item2.ItemRosterElement.EquipmentElement.Item.HorseComponent;
-
-        //    float ChargeDamage = ((float)horseComponentItem1.ChargeDamage / (float)horseComponentItem2.ChargeDamage) * 100f * _characterSettings.FilterMount.ChargeDamage;
-        //    if (float.IsNaN(ChargeDamage)) ChargeDamage = 0f;
-        //    float HitPoints = ((float)horseComponentItem1.HitPoints / (float)horseComponentItem2.HitPoints) * 100f * _characterSettings.FilterMount.HitPoints;
-        //    if (float.IsNaN(HitPoints)) HitPoints = 0f;
-        //    float Maneuver = ((float)horseComponentItem1.Maneuver / (float)horseComponentItem2.Maneuver) * 100f * _characterSettings.FilterMount.Maneuver;
-        //    if (float.IsNaN(Maneuver)) Maneuver = 0f;
-        //    float Speed = ((float)horseComponentItem1.Speed / (float)horseComponentItem2.Speed) * 100f * _characterSettings.FilterMount.Speed;
-        //    if (float.IsNaN(Speed)) Speed = 0f;
-
-        //    //float Weight = (item1.ItemRosterElement.EquipmentElement.Weight / item2.ItemRosterElement.EquipmentElement.Weight) * 100f * _characterSettings.FilterArmor[slotNumber].ArmorWeight;
-        //    //if (float.IsNaN(Weight)) Weight = 0f;
-
-        //    float value = ChargeDamage + HitPoints + Maneuver + Speed;
-        //    return value;
-        //}
 
         private static float WeaponIndexCalculation(SPItemVM item1, int slotNumber)
         {
@@ -750,10 +897,6 @@ namespace EquipBestItem
                 ThrustSpeed = primaryWeaponItem1.ThrustSpeed,
                 WeaponLength = primaryWeaponItem1.WeaponLength;
             float WeaponWeight = item1.ItemRosterElement.EquipmentElement.Weight;
-
-            if (SettingsLoader.Debug)
-                InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: Acc {1}, BA {2}, HL {3}, HP {4}, MS {5}, SD {6}, SS {7}, TD {8}, TS {9}, WL {10}, W {11}",
-                    item1.ItemDescription, Accuracy, BodyArmor, Handling, MaxDataValue, MissileSpeed, SwingDamage, SwingSpeed, ThrustDamage, ThrustSpeed, WeaponLength, WeaponWeight)));
 
             ItemModifier mod = item1.ItemRosterElement.EquipmentElement.ItemModifier;
             if (mod != null) {
@@ -800,7 +943,7 @@ namespace EquipBestItem
                 item1.ItemRosterElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.IsEmpty ||
                 item1.ItemRosterElement.EquipmentElement.Item.ArmorComponent == null)
-                return -9999f; //-9999 
+                return -9999f;
 
             ArmorComponent armorComponentItem1 = item1.ItemRosterElement.EquipmentElement.Item.ArmorComponent;
             FilterArmorSettings filterArmor = _characterSettings.FilterArmor[slotNumber];
@@ -896,19 +1039,6 @@ namespace EquipBestItem
 
             return value;
         }
-
-        //private static float GetWeaponEffectiveness(SPItemVM item)
-        //{
-        //    float value = 0f;
-
-        //    if (item != null && item.ItemRosterElement.EquipmentElement.Item != null)
-        //    {
-        //        value = item.ItemRosterElement.EquipmentElement.Item.Effectiveness;
-        //    }
-
-        //    return value;
-        //}
-
 
         public static void UpdateValues()
         {
