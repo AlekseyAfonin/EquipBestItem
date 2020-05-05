@@ -20,12 +20,22 @@ namespace EquipBestItem.Layers
         }
 
         bool IsAltPressed = false;
+        bool _lastSetState;
 
         protected override void OnLateUpdate(float dt)
         {
             base.OnLateUpdate(dt);
 
+            if (_lastSetState != EquipBestItemViewModel._inventory.IsInWarSet)
+            {
+                _viewModel.RefreshValues();
+                _lastSetState = EquipBestItemViewModel._inventory.IsInWarSet;
+            }
+
             if (EquipBestItemViewModel.CurrentCharacterName != _viewModel.CharacterSettings.Name)
+                _viewModel.RefreshValues();
+
+            if (EquipBestItemViewModel.IsEquipCurrentCharacterButtonEnabled != _viewModel.IsEquipCurrentCharacterButtonEnabled)
                 _viewModel.RefreshValues();
 
             if (TaleWorlds.InputSystem.Input.IsKeyDown(TaleWorlds.InputSystem.InputKey.LeftAlt) && !IsAltPressed)

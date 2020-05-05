@@ -1,4 +1,5 @@
 ﻿using EquipBestItem.Settings;
+using Helpers;
 using SandBox.GauntletUI;
 using System;
 using System.Collections.Generic;
@@ -26,11 +27,13 @@ namespace EquipBestItem
         public static bool IsWeapon2ButtonEnabled { get; set; }
         public static bool IsWeapon3ButtonEnabled { get; set; }
         public static bool IsWeapon4ButtonEnabled { get; set; }
-        public static bool IsEquipAllActivated { get; set; }
+        public static bool IsEquipCurrentCharacterButtonEnabled { get; set; }
 
         public static bool IsLeftPanelLocked { get; set; }
         public static bool IsRightPanelLocked { get; set; }
         public static List<string> ItemUsageList { get; private set; }
+
+        public static bool IsInWarSet { get; set; }
 
         public static SPItemVM BestHelm;
         public static SPItemVM BestCloak;
@@ -51,6 +54,8 @@ namespace EquipBestItem
 
         public static bool NewGame;
 
+        public static CharacterObject currentCharacter;
+
         public EquipBestItemViewModel()
         {
             _inventory = EquipBestItemViewModel.InventoryScreen.GetField("_dataSource") as SPInventoryVM;
@@ -70,6 +75,8 @@ namespace EquipBestItem
         {
             foreach (SPItemVM item in inventory)
             {
+                if (IsCamelHarness(item) || IsCamel(item))
+                    continue;
                 if (_inventory.IsInWarSet)
                 {
                     if (item.IsEquipableItem && item.CanCharacterUseItem)
@@ -339,18 +346,31 @@ namespace EquipBestItem
 
         private static bool IsCamel(SPItemVM item)
         {
-            if (_inventory.CharacterMountSlot != null)
-                if (!_inventory.CharacterMountSlot.ItemRosterElement.IsEmpty)
-                    if (_inventory.CharacterMountSlot.ItemRosterElement.EquipmentElement.Item.HorseComponent.Monster.MonsterUsage == "camel")
-                        return true;
+            if (item != null)
+                if (!item.ItemRosterElement.IsEmpty)
+                    if (!item.ItemRosterElement.EquipmentElement.IsEmpty)
+                        if (item.ItemRosterElement.EquipmentElement.Item.HasHorseComponent)
+                            if (item.ItemRosterElement.EquipmentElement.Item.HorseComponent.Monster.MonsterUsage == "camel")
+                                return true;
+            return false;
+        }
+
+        private static bool IsCamelHarness(SPItemVM item)
+        {
+            if (item != null && item.StringId.StartsWith("camel_sadd"))
+                return true;
             return false;
         }
 
         public static void ButtonStatusUpdate()
         {
+            IsEquipCurrentCharacterButtonEnabled = false;
+
             if (BestHelm != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsHelmButtonEnabled = true;
+                if (SettingsLoader.Instance.Settings.IsEnabledEquipCurrentCharacterButton)
+                    IsEquipCurrentCharacterButtonEnabled = true;
             }
             else
             {
@@ -360,6 +380,8 @@ namespace EquipBestItem
             if (BestCloak != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsCloakButtonEnabled = true;
+                if (SettingsLoader.Instance.Settings.IsEnabledEquipCurrentCharacterButton)
+                    IsEquipCurrentCharacterButtonEnabled = true;
             }
             else
             {
@@ -369,6 +391,8 @@ namespace EquipBestItem
             if (BestArmor != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsArmorButtonEnabled = true;
+                if (SettingsLoader.Instance.Settings.IsEnabledEquipCurrentCharacterButton)
+                    IsEquipCurrentCharacterButtonEnabled = true;
             }
             else
             {
@@ -378,6 +402,8 @@ namespace EquipBestItem
             if (BestGlove != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsGloveButtonEnabled = true;
+                if (SettingsLoader.Instance.Settings.IsEnabledEquipCurrentCharacterButton)
+                    IsEquipCurrentCharacterButtonEnabled = true;
             }
             else
             {
@@ -387,6 +413,8 @@ namespace EquipBestItem
             if (BestBoot != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsBootButtonEnabled = true;
+                if (SettingsLoader.Instance.Settings.IsEnabledEquipCurrentCharacterButton)
+                    IsEquipCurrentCharacterButtonEnabled = true;
             }
             else
             {
@@ -396,6 +424,8 @@ namespace EquipBestItem
             if (BestMount != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsMountButtonEnabled = true;
+                if (SettingsLoader.Instance.Settings.IsEnabledEquipCurrentCharacterButton)
+                    IsEquipCurrentCharacterButtonEnabled = true;
             }
             else
             {
@@ -407,6 +437,8 @@ namespace EquipBestItem
                 if (IsCamel(_inventory.CharacterMountSlot) == false)
                 {
                     IsHarnessButtonEnabled = true;
+                    if (SettingsLoader.Instance.Settings.IsEnabledEquipCurrentCharacterButton)
+                        IsEquipCurrentCharacterButtonEnabled = true;
                 }
                 else
                 {
@@ -421,6 +453,8 @@ namespace EquipBestItem
             if (BestWeapon1 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsWeapon1ButtonEnabled = true;
+                if (SettingsLoader.Instance.Settings.IsEnabledEquipCurrentCharacterButton)
+                    IsEquipCurrentCharacterButtonEnabled = true;
             }
             else
             {
@@ -430,6 +464,8 @@ namespace EquipBestItem
             if (BestWeapon2 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsWeapon2ButtonEnabled = true;
+                if (SettingsLoader.Instance.Settings.IsEnabledEquipCurrentCharacterButton)
+                    IsEquipCurrentCharacterButtonEnabled = true;
             }
             else
             {
@@ -439,6 +475,8 @@ namespace EquipBestItem
             if (BestWeapon3 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsWeapon3ButtonEnabled = true;
+                if (SettingsLoader.Instance.Settings.IsEnabledEquipCurrentCharacterButton)
+                    IsEquipCurrentCharacterButtonEnabled = true;
             }
             else
             {
@@ -448,6 +486,8 @@ namespace EquipBestItem
             if (BestWeapon4 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
                 IsWeapon4ButtonEnabled = true;
+                if (SettingsLoader.Instance.Settings.IsEnabledEquipCurrentCharacterButton)
+                    IsEquipCurrentCharacterButtonEnabled = true;
             }
             else
             {
@@ -481,20 +521,19 @@ namespace EquipBestItem
 
         public static void EquipEveryCharacter()
         {
-            foreach (TroopRosterElement rosterElement in PartyBase.MainParty.MemberRoster)
+            foreach (TroopRosterElement rosterElement in InventoryManager.MyInventoryLogic.RightMemberRoster)
             {
                 if (rosterElement.Character.IsHero)
                     EquipCharacter(rosterElement.Character);
             }
         }
 
-        public static void EquipCharacter(CharacterObject character)
+        public static void EquipCharacterEquipment(CharacterObject character, Equipment equipment, bool isCivilian)
         {
-            Equipment equipment = character.FirstBattleEquipment;
-
             for (EquipmentIndex equipmentIndex = EquipmentIndex.WeaponItemBeginSlot; equipmentIndex < EquipmentIndex.NumEquipmentSetSlots; equipmentIndex++)
             {
-                if (equipment[equipmentIndex].IsEmpty && equipmentIndex < EquipmentIndex.NonWeaponItemBeginSlot)
+                if (equipment[equipmentIndex].IsEmpty && equipmentIndex < EquipmentIndex.NonWeaponItemBeginSlot ||
+                    equipment[EquipmentIndex.Horse].IsEmpty && equipmentIndex == EquipmentIndex.HorseHarness)
                     continue;
 
                 EquipmentElement bestLeftEquipmentElement;
@@ -502,11 +541,11 @@ namespace EquipBestItem
 
                 if (!SettingsLoader.Instance.Settings.IsLeftPanelLocked)
                 {
-                    bestLeftEquipmentElement = GetBetterItemFromSide(_inventory.LeftItemListVM, equipment[equipmentIndex], equipmentIndex);
+                    bestLeftEquipmentElement = GetBetterItemFromSide(_inventory.LeftItemListVM, equipment[equipmentIndex], equipmentIndex, isCivilian, character);
                 }
                 if (!SettingsLoader.Instance.Settings.IsRightPanelLocked)
                 {
-                    bestRightEquipmentElement = GetBetterItemFromSide(_inventory.RightItemListVM, equipment[equipmentIndex], equipmentIndex);
+                    bestRightEquipmentElement = GetBetterItemFromSide(_inventory.RightItemListVM, equipment[equipmentIndex], equipmentIndex, isCivilian, character);
                 }
 
                 if (!equipment[equipmentIndex].IsEmpty && (bestLeftEquipmentElement.Item != null || bestRightEquipmentElement.Item != null))
@@ -519,7 +558,7 @@ namespace EquipBestItem
                         equipmentIndex,
                         EquipmentIndex.None,
                         character,
-                        false
+                        isCivilian
                     );
                     InventoryManager.MyInventoryLogic.AddTransferCommand(transferCommand);
                 }
@@ -537,11 +576,11 @@ namespace EquipBestItem
                             EquipmentIndex.None,
                             equipmentIndex,
                             character,
-                            false
+                            isCivilian
                         );
 
                         EquipMessage(equipmentIndex, character);
-                        InventoryManager.MyInventoryLogic.AddTransferCommand(equipCommand); 
+                        InventoryManager.MyInventoryLogic.AddTransferCommand(equipCommand);
                     }
                     else
                     {
@@ -553,7 +592,7 @@ namespace EquipBestItem
                             EquipmentIndex.None,
                             equipmentIndex,
                             character,
-                            false
+                            isCivilian
                         );
 
                         EquipMessage(equipmentIndex, character);
@@ -562,7 +601,22 @@ namespace EquipBestItem
                 _inventory.Call("ExecuteRemoveZeroCounts");
             }
             _inventory.Call("RefreshInformationValues");
+        }
 
+        public static void EquipCharacter(CharacterObject character)
+        {
+            _characterSettings = SettingsLoader.Instance.GetCharacterSettingsByName(character.Name.ToString());
+
+            if (_inventory.IsInWarSet)
+            {
+                Equipment battleEquipment = character.FirstBattleEquipment;
+                EquipCharacterEquipment(character, battleEquipment, false);
+            }
+            else
+            {
+                Equipment civilEquipment = character.FirstCivilianEquipment;
+                EquipCharacterEquipment(character, civilEquipment, true);
+            }
         }
 
         public static void EquipMessage(EquipmentIndex equipmentIndex, CharacterObject character)
@@ -607,35 +661,80 @@ namespace EquipBestItem
             }
         }
 
-        public static EquipmentElement GetBetterItemFromSide(MBBindingList<SPItemVM> itemListVM, EquipmentElement equipmentElement, EquipmentIndex slot)
+        public static EquipmentElement GetBetterItemFromSide(MBBindingList<SPItemVM> itemListVM, EquipmentElement equipmentElement, EquipmentIndex slot, bool isCivilian, CharacterObject character)
         {
             EquipmentElement bestEquipmentElement;
 
             foreach (SPItemVM item in itemListVM)
             {
-                if (slot < EquipmentIndex.NonWeaponItemBeginSlot && item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon != null && item.IsEquipableItem)
+                if (IsCamel(item) || IsCamelHarness(item))
+                    continue;
+                if (isCivilian)
                 {
-                    if (equipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon.WeaponClass &&
-                        GetItemUsage(item) == equipmentElement.Item.PrimaryWeapon.ItemUsage)
-                        if (bestEquipmentElement.IsEmpty)
-                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot))
-                                bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                    if (slot < EquipmentIndex.NonWeaponItemBeginSlot && 
+                        item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon != null && 
+                        item.IsEquipableItem && 
+                        item.IsCivilianItem &&
+                        CharacterHelper.CanUseItem(character, item.ItemRosterElement.EquipmentElement)
+                        )
+                    {
+                        if (equipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon.WeaponClass &&
+                            GetItemUsage(item) == equipmentElement.Item.PrimaryWeapon.ItemUsage)
+                            if (bestEquipmentElement.IsEmpty)
+                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot) &&
+                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                                    bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                                else
+                                    continue;
                             else
-                                continue;
-                        else
-                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot))
-                            bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot) &&
+                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                                bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                    }
+                    else if (item.ItemType == slot && item.IsEquipableItem && item.IsCivilianItem &&
+                        CharacterHelper.CanUseItem(character, item.ItemRosterElement.EquipmentElement))
+                            if (bestEquipmentElement.IsEmpty)
+                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot) &&
+                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                                    bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                                else
+                                    continue;
+                            else
+                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot) &&
+                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                                bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
                 }
-                else if (item.ItemType == slot && item.IsEquipableItem)
-                    if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot))
-                        if (bestEquipmentElement.IsEmpty)
-                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot))
-                                bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                else
+                {
+                    if (slot < EquipmentIndex.NonWeaponItemBeginSlot && item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon != null && item.IsEquipableItem &&
+                        CharacterHelper.CanUseItem(character, item.ItemRosterElement.EquipmentElement))
+                    {
+                        if (equipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon.WeaponClass &&
+                            GetItemUsage(item) == equipmentElement.Item.PrimaryWeapon.ItemUsage)
+                            if (bestEquipmentElement.IsEmpty)
+                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot) &&
+                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                                    bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                                else
+                                    continue;
                             else
-                                continue;
-                        else
-                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot))
-                            bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot) &&
+                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                                bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                    }
+                    else if (item.ItemType == slot && item.IsEquipableItem &&
+                        CharacterHelper.CanUseItem(character, item.ItemRosterElement.EquipmentElement))
+                            if (bestEquipmentElement.IsEmpty)
+                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot) &&
+                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                                    bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                                else
+                                    continue;
+                            else
+                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot) &&
+                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                                bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                }
             }
 
             return bestEquipmentElement;
@@ -1040,6 +1139,21 @@ namespace EquipBestItem
             return value;
         }
 
+        public override void RefreshValues()
+        {
+            base.RefreshValues();
+        }
+
+        public static CharacterObject GetCharacterByName(string name)
+        {
+            foreach (TroopRosterElement rosterElement in InventoryManager.MyInventoryLogic.RightMemberRoster)
+            {
+                if (rosterElement.Character.IsHero && rosterElement.Character.Name.ToString() == name)
+                    return rosterElement.Character;
+            }
+            return null;
+        }
+
         public static void UpdateValues()
         {
             FindBestItems();
@@ -1173,63 +1287,64 @@ namespace EquipBestItem
             return true;
         }
 
-        public static void EquipAll()
-        {
-            if (BestHelm != null)
-            {
-                EquipBestHelm();
-                return;
-            }
-            if (BestCloak != null)
-            {
-                EquipBestCloak();
-                return;
-            }
-            if (BestArmor != null)
-            {
-                EquipBestArmor();
-                return;
-            }
-            if (BestGlove != null)
-            {
-                EquipBestGlove();
-                return;
-            }
-            if (BestBoot != null)
-            {
-                EquipBestBoot();
-                return;
-            }
-            if (BestMount != null)
-            {
-                EquipBestMount();
-                return;
-            }
-            if (BestHarness != null)
-            {
-                EquipBestHarness();
-                return;
-            }
-            if (BestWeapon1 != null)
-            {
-                EquipBestWeapon1();
-                return;
-            }
-            if (BestWeapon2 != null)
-            {
-                EquipBestWeapon2();
-                return;
-            }
-            if (BestWeapon3 != null)
-            {
-                EquipBestWeapon3();
-                return;
-            }
-            if (BestWeapon4 != null)
-            {
-                EquipBestWeapon4();
-                return;
-            }
-        }
+        //public static void EquipAll()
+        //{
+        //    if (BestHelm != null)
+        //    {
+        //        EquipBestHelm();
+        //        return;
+        //    }
+        //    if (BestCloak != null)
+        //    {
+        //        EquipBestCloak();
+        //        return;
+        //    }
+        //    if (BestArmor != null)
+        //    {
+        //        EquipBestArmor();
+        //        return;
+        //    }
+        //    if (BestGlove != null)
+        //    {
+        //        EquipBestGlove();
+        //        return;
+        //    }
+        //    if (BestBoot != null)
+        //    {
+        //        EquipBestBoot();
+        //        return;
+        //    }
+        //    if (BestMount != null)
+        //    {
+        //        EquipBestMount();
+        //        return;
+        //    }
+        //    if (BestHarness != null)
+        //    {
+        //        EquipBestHarness();
+        //        return;
+        //    }
+        //    if (BestWeapon1 != null)
+        //    {
+        //        EquipBestWeapon1();
+        //        return;
+        //    }
+        //    if (BestWeapon2 != null)
+        //    {
+        //        EquipBestWeapon2();
+        //        return;
+        //    }
+        //    if (BestWeapon3 != null)
+        //    {
+        //        EquipBestWeapon3();
+        //        return;
+        //    }
+        //    if (BestWeapon4 != null)
+        //    {
+        //        EquipBestWeapon4();
+        //        return;
+        //    }
+        //}
+
     }
 }

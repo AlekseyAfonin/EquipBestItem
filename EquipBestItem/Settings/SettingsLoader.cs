@@ -109,6 +109,8 @@ namespace EquipBestItem.Settings
 
         public CharacterSettings GetCharacterSettingsByName(string name)
         {
+            if (!EquipBestItemViewModel._inventory.IsInWarSet)
+                name = name + "_civil";
             foreach (CharacterSettings charSettings in CharacterSettings)
             {
                 if (charSettings.Name == name)

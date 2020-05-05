@@ -227,7 +227,6 @@
     <Compile Include="Settings\FilterMountSettings.cs" />
     <Compile Include="Settings\FilterWeaponSettings.cs" />
     <Compile Include="Layers\FilterLayer.cs" />
-    <Compile Include="Widgets\EquipBestItemAllWidget.cs" />
     <Compile Include="ViewModels\EquipBestItemViewModel.cs" />
     <Compile Include="Widgets\EquipBestItemWidget.cs" />
     <Compile Include="Widgets\WorkaroundWidget.cs" />
