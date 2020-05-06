@@ -348,112 +348,20 @@ namespace EquipBestItem
 
         public static void ButtonStatusUpdate()
         {
-            if (BestHelm != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
+            if (SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
             {
-                IsHelmButtonEnabled = true;
+                IsHelmButtonEnabled = (BestHelm != null);
+                IsCloakButtonEnabled = (BestCloak != null);
+                IsArmorButtonEnabled = (BestArmor != null);
+                IsGloveButtonEnabled = (BestGlove != null);
+                IsBootButtonEnabled = (BestBoot != null);
+                IsMountButtonEnabled = (BestMount != null);
+                IsHarnessButtonEnabled = (BestHarness != null) && (!IsCamel(_inventory.CharacterMountSlot));
+                IsWeapon1ButtonEnabled = (BestWeapon1 != null);
+                IsWeapon2ButtonEnabled = (BestWeapon2 != null);
+                IsWeapon3ButtonEnabled = (BestWeapon3 != null);
+                IsWeapon4ButtonEnabled = (BestWeapon4 != null);
             }
-            else
-            {
-                IsHelmButtonEnabled = false;
-            }
-
-            if (BestCloak != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            {
-                IsCloakButtonEnabled = true;
-            }
-            else
-            {
-                IsCloakButtonEnabled = false;
-            }
-
-            if (BestArmor != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            {
-                IsArmorButtonEnabled = true;
-            }
-            else
-            {
-                IsArmorButtonEnabled = false;
-            }
-
-            if (BestGlove != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            {
-                IsGloveButtonEnabled = true;
-            }
-            else
-            {
-                IsGloveButtonEnabled = false;
-            }
-
-            if (BestBoot != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            {
-                IsBootButtonEnabled = true;
-            }
-            else
-            {
-                IsBootButtonEnabled = false;
-            }
-
-            if (BestMount != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            {
-                IsMountButtonEnabled = true;
-            }
-            else
-            {
-                IsMountButtonEnabled = false;
-            }
-
-            if (BestHarness != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            {
-                if (IsCamel(_inventory.CharacterMountSlot) == false)
-                {
-                    IsHarnessButtonEnabled = true;
-                }
-                else
-                {
-                    IsHarnessButtonEnabled = false;
-                }
-            }
-            else
-            {
-                IsHarnessButtonEnabled = false;
-            }
-
-            if (BestWeapon1 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            {
-                IsWeapon1ButtonEnabled = true;
-            }
-            else
-            {
-                IsWeapon1ButtonEnabled = false;
-            }
-
-            if (BestWeapon2 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            {
-                IsWeapon2ButtonEnabled = true;
-            }
-            else
-            {
-                IsWeapon2ButtonEnabled = false;
-            }
-
-            if (BestWeapon3 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            {
-                IsWeapon3ButtonEnabled = true;
-            }
-            else
-            {
-                IsWeapon3ButtonEnabled = false;
-            }
-
-            if (BestWeapon4 != null && SettingsLoader.Instance.Settings.IsEnabledStandardButtons)
-            {
-                IsWeapon4ButtonEnabled = true;
-            }
-            else
-            {
-                IsWeapon4ButtonEnabled = false;
-            }
-
         }
 
         static void NullBestItems()
