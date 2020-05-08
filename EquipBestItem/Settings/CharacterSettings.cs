@@ -14,6 +14,23 @@ namespace EquipBestItem.Settings
         public List<FilterArmorSettings> FilterArmor { get; set; }
         public FilterMountSettings FilterMount { get; set; }
 
+        public enum ArmorSlot
+        {
+            Helm = 0,
+            Cloak = 1,
+            Armor = 2,
+            Glove = 3,
+            Boot = 4,
+            Harness = 5
+        }
+
+        public enum WeaponSlot
+        {
+            Weapon1 = 0,
+            Weapon2 = 1,
+            Weapon3 = 2,
+            Weapon4 = 3
+        }
 
         public CharacterSettings(string name)
         {
