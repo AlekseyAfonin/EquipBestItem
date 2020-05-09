@@ -1,16 +1,8 @@
-﻿using EquipBestItem.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds.Core;
-using TaleWorlds.GauntletUI;
-using TaleWorlds.Library;
+﻿using TaleWorlds.GauntletUI;
 
 namespace EquipBestItem
 {
-    internal class LockRightPanelWidget : ButtonWidget
+    public class LockRightPanelWidget : ButtonWidget
     {
         public bool IsRightPanelLocked { get; set; }
 

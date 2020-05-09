@@ -1,20 +1,16 @@
-﻿using SandBox.GauntletUI;
-using System;
-using System.Diagnostics;
+﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Serialization;
-using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
-using TaleWorlds.Library;
 
 namespace EquipBestItem
 {
     public static class Helper
     {
 
-        internal static object Call(this object o, string methodName, params object[] args)
+        internal static object GetMethod(this object o, string methodName, params object[] args)
         {
             var mi = o.GetType().GetMethod(methodName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             if (mi != null)
@@ -23,9 +19,9 @@ namespace EquipBestItem
                 {
                     return mi.Invoke(o, args);
                 }
-                catch (Exception e)
+                catch
                 {
-                    MessageBox.Show(e.Message);
+                    throw new MBException(methodName + " GetField() exception");
                 }
             }
             return null;
@@ -40,9 +36,9 @@ namespace EquipBestItem
                 {
                     return mi.GetValue(o);
                 }
-                catch (Exception e)
+                catch
                 {
-                    MessageBox.Show(e.Message);
+                    throw new MBException(fieldName + " GetField() exception");
                 }
             }
             return null;
@@ -61,6 +57,10 @@ namespace EquipBestItem
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
                 serializer.Serialize(writer, data, ns);
             }
+            catch
+            {
+                throw new MBException(filename + " serialize error");
+            }
             finally
             {
                 if (writer != null)
@@ -73,19 +73,27 @@ namespace EquipBestItem
 
         public static T Deserialize<T>(string filename)
         {
-            TextReader reader = null;
+            XmlReader xmlReader = null;
+            StreamReader streamReader = null;
             T data = default(T);
             try
             {
-                reader = new StreamReader(filename);
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-                data = (T)serializer.Deserialize(reader);
+                using (streamReader = new StreamReader(filename))
+                {
+                    xmlReader = XmlReader.Create(streamReader);
+                    XmlSerializer serializer = new XmlSerializer(typeof(T));
+                    data = (T)serializer.Deserialize(xmlReader);
+                }
+            }
+            catch
+            {
+                throw new MBException(filename + " deserialize error");
             }
             finally
             {
-                if (reader != null)
+                if (xmlReader != null)
                 {
-                    reader.Close();
+                    xmlReader.Close();
                 }
             }
             return data;

@@ -1,41 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace EquipBestItem.Settings
+namespace EquipBestItem
 {
     [Serializable]
     public class CharacterSettings
     {
         public string Name { get; set; }
-        public List<FilterWeaponSettings> FilterWeapon { get; set; }
-        public List<FilterArmorSettings> FilterArmor { get; set; }
-        public FilterMountSettings FilterMount { get; set; }
 
+        private List<FilterWeaponSettings> _filterWeapon;
+
+        public List<FilterWeaponSettings> FilterWeapon
+        {
+            get
+            {
+                if (_filterWeapon == null)
+                {
+                    _filterWeapon = new List<FilterWeaponSettings>();
+                }
+                return _filterWeapon;
+            }
+        }
+
+        private List<FilterArmorSettings> _filterArmor;
+
+        public List<FilterArmorSettings> FilterArmor
+        {
+            get
+            {
+                if (_filterArmor == null)
+                {
+                    _filterArmor = new List<FilterArmorSettings>();
+                }
+                return _filterArmor;
+            }
+        }
+
+        private FilterMountSettings _filterMount;
+        public FilterMountSettings FilterMount
+        {
+            get
+            {
+                if (_filterMount == null)
+                {
+                    _filterMount = new FilterMountSettings();
+                }
+                return _filterMount;
+            }
+        }
+
+        public CharacterSettings()
+        {
+        }
 
         public CharacterSettings(string name)
         {
             Name = name;
-            FilterWeapon = new List<FilterWeaponSettings>(4);
-            
+
             for (int i = 0; i < 4; i++)
             {
                 FilterWeapon.Add(new FilterWeaponSettings());
             }
 
-            FilterArmor = new List<FilterArmorSettings>(6);
             for (int i = 0; i < 6; i++)
             {
                 FilterArmor.Add(new FilterArmorSettings());
             }
 
-            FilterMount = new FilterMountSettings();
-        }
-
-        public CharacterSettings() 
-        {
+            _filterMount = new FilterMountSettings();
         }
 
     }

@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Serialization;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 
-namespace EquipBestItem.Settings
+namespace EquipBestItem
 {
     public class SettingsLoader
     {
@@ -23,8 +18,6 @@ namespace EquipBestItem.Settings
         public Settings Settings { get; private set; }
 
         public List<CharacterSettings> CharacterSettings { get; private set; }
-
-        public static bool Debug = false;
 
         private SettingsLoader()
         {
@@ -43,21 +36,22 @@ namespace EquipBestItem.Settings
         }
 
         public void LoadSettings()
-        { 
+        {
             try
             {
-                Settings = Helper.Deserialize<Settings>(_filePathSettings);
-
-                if (SettingsLoader.Debug)
-                    InformationManager.DisplayMessage(new InformationMessage("LoadSettings()"));
+                this.Settings = Helper.Deserialize<Settings>(_filePathSettings);
             }
-            catch(Exception e)
+            catch(MBException e)
             {
-                if (SettingsLoader.Debug)
-                    MessageBox.Show("Cant load Settings.xml. " + e.Message + e.StackTrace);
-                InformationManager.DisplayMessage(new InformationMessage("I can't find Settings.xml, create a new..."));
-                Settings = new Settings();
-                SaveSettings();
+                InformationManager.DisplayMessage(new InformationMessage(e.Message + ". Trying to create a new..."));
+            }
+            finally
+            {
+                if (this.Settings == null)
+                {
+                    this.Settings = new Settings();
+                    SaveSettings();
+                }
             }
         }
 
@@ -66,13 +60,10 @@ namespace EquipBestItem.Settings
             try
             {
                 Helper.Serialize<Settings>(_filePathSettings, Settings);
-
-                if (SettingsLoader.Debug)
-                    InformationManager.DisplayMessage(new InformationMessage("SaveSettings()"));
             }
-            catch (Exception e)
+            catch (MBException e)
             {
-                MessageBox.Show(e.Message + e.StackTrace);
+                InformationManager.DisplayMessage(new InformationMessage(e.Message));
             }
         }
 
@@ -80,15 +71,20 @@ namespace EquipBestItem.Settings
         {
             try
             {
-                CharacterSettings = Helper.Deserialize<List<CharacterSettings>>(_filePathCharacterSettings);
+                this.CharacterSettings = Helper.Deserialize<List<CharacterSettings>>(_filePathCharacterSettings);
             }
-            catch (Exception e)
+            catch (MBException e)
             {
-                if (SettingsLoader.Debug)
-                    MessageBox.Show("Cant load CharacterSettings.xml. " + e.Message);
-                InformationManager.DisplayMessage(new InformationMessage("I can't find CharacterSettings.xml, create a new..."));
-                CharacterSettings = new List<CharacterSettings>();
-                SaveCharacterSettings();
+                InformationManager.DisplayMessage(new InformationMessage(e.Message));
+                this.CharacterSettings = new List<CharacterSettings>();
+            }
+
+            finally
+            {
+                if (this.CharacterSettings == null)
+                {
+                    this.CharacterSettings = new List<CharacterSettings>();
+                }
             }
         }
 
@@ -96,14 +92,11 @@ namespace EquipBestItem.Settings
         {
             try
             {
-                Helper.Serialize<List<CharacterSettings>>(_filePathCharacterSettings, CharacterSettings);
-
-                if (SettingsLoader.Debug)
-                    InformationManager.DisplayMessage(new InformationMessage("SaveCharacterSettings()"));
+                Helper.Serialize<List<CharacterSettings>>(_filePathCharacterSettings, this.CharacterSettings);
             }
-            catch (Exception e)
+            catch (MBException e)
             {
-                MessageBox.Show(e.Message + e.StackTrace);
+                InformationManager.DisplayMessage(new InformationMessage(e.Message));
             }
         }
 
@@ -111,15 +104,20 @@ namespace EquipBestItem.Settings
         {
             if (!EquipBestItemViewModel._inventory.IsInWarSet)
                 name = name + "_civil";
-            foreach (CharacterSettings charSettings in CharacterSettings)
+
+            if (this.CharacterSettings != null)
             {
-                if (charSettings.Name == name)
-                    return charSettings;
+                foreach (CharacterSettings charSettings in this.CharacterSettings)
+                {
+                    if (charSettings.Name == name)
+                    {
+                        return charSettings;
+                    }
+                }
             }
 
-            CharacterSettings characterSettings;
-            characterSettings = new CharacterSettings(name);
-            CharacterSettings.Add(characterSettings);
+            CharacterSettings characterSettings = new CharacterSettings(name);
+            this.CharacterSettings.Add(characterSettings);
 
             return characterSettings;
         }

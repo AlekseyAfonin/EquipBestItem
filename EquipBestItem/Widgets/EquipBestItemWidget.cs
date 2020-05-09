@@ -1,14 +1,4 @@
-﻿using System;
-using SandBox.GauntletUI;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
-using TaleWorlds.Core;
-using TaleWorlds.Engine.Screens;
-using TaleWorlds.GauntletUI;
-using TaleWorlds.Library;
-using TaleWorlds.GauntletUI.Data;
-using TaleWorlds.Engine.GauntletUI;
-using EquipBestItem.Behaviors;
-using TaleWorlds.InputSystem;
+﻿using TaleWorlds.GauntletUI;
 
 namespace EquipBestItem
 {

@@ -1,10 +1,4 @@
-﻿using EquipBestItem.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds.Core;
+﻿using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 
 namespace EquipBestItem.Layers
@@ -49,20 +43,18 @@ namespace EquipBestItem.Layers
                 }
 
                 this._viewModel.IsLayerHidden = true;
-
-
-                if (SettingsLoader.Debug)
-                    InformationManager.DisplayMessage(new InformationMessage("Layout IsKeyDown() " + Game.Current.ApplicationTime.ToString()));
-
+#if DEBUG
+                InformationManager.DisplayMessage(new InformationMessage("Layout IsKeyDown() "));
+#endif
             }
             if (TaleWorlds.InputSystem.Input.IsKeyReleased(TaleWorlds.InputSystem.InputKey.LeftAlt) && IsAltPressed)
             {
                 IsAltPressed = false;
                 if (this._viewModel.IsHiddenFilterLayer && (!this._viewModel.IsArmorSlotHidden || !this._viewModel.IsMountSlotHidden || !this._viewModel.IsWeaponSlotHidden)) this._viewModel.IsHiddenFilterLayer = false;
                 this._viewModel.IsLayerHidden = false;
-
-                if (SettingsLoader.Debug)
-                    InformationManager.DisplayMessage(new InformationMessage("Layout IsKeyReleased() " + Game.Current.ApplicationTime.ToString()));
+#if DEBUG
+                InformationManager.DisplayMessage(new InformationMessage("Layout IsKeyReleased() "));
+#endif
             }
         }
     }

@@ -1,11 +1,6 @@
 ﻿using EquipBestItem.Layers;
-using EquipBestItem.Settings;
 using SandBox.GauntletUI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
@@ -78,7 +73,7 @@ namespace EquipBestItem.Behaviors
                     {
                         if (EquipBestItemViewModel.InventoryScreen != null && this._gauntletLayer != null)
                         {
-                            
+
                             EquipBestItemViewModel.InventoryScreen.RemoveLayer(this._gauntletLayer);
                             this._gauntletLayer = null;
                             SettingsLoader.Instance.SaveSettings();
@@ -93,12 +88,10 @@ namespace EquipBestItem.Behaviors
                     }
                 }
             }
-            catch (Exception e)
+            catch (MBException e)
             {
-                MessageBox.Show(e.Message);
+                InformationManager.DisplayMessage(new InformationMessage(e.Message));
             }
-
-
         }
 
         public override void SyncData(IDataStore dataStore)

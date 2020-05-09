@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds.Core;
-using TaleWorlds.GauntletUI;
+﻿using TaleWorlds.GauntletUI;
 using TaleWorlds.InputSystem;
 
 //Workaround to update view model state. Once every release mouse button.
 
 namespace EquipBestItem
 {
-    internal class WorkaroundWidget : Widget
+    public class WorkaroundWidget : Widget
     {
         //EquipBestItemViewModel _viewModel;
 

@@ -1,13 +1,4 @@
-﻿using EquipBestItem.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds.CampaignSystem;
-using TaleWorlds.Core;
-using TaleWorlds.Engine.Screens;
-using TaleWorlds.GauntletUI;
+﻿using TaleWorlds.Core;
 using TaleWorlds.Library;
 
 namespace EquipBestItem
@@ -18,6 +9,7 @@ namespace EquipBestItem
 
         public static int CurrentSlot = 0;
 
+        #region DataSourcePropertys
         private bool _isHelmFilterSelected;
 
         [DataSourceProperty]
@@ -590,7 +582,7 @@ namespace EquipBestItem
                 }
             }
         }
-        
+
         private string _missileSpeed;
         [DataSourceProperty]
         public string MissileSpeed
@@ -620,7 +612,7 @@ namespace EquipBestItem
                 }
             }
         }
-        
+
         private string _maxDataValue;
         [DataSourceProperty]
         public string MaxDataValue
@@ -845,56 +837,7 @@ namespace EquipBestItem
                 }
             }
         }
-        
-
-
-        //private string _weaponClass = "Choose weapon class";
-
-
-        //[DataSourceProperty]
-        //public string WeaponClass
-        //{
-        //    get => _weaponClass;
-        //    set
-        //    {
-        //        if (_weaponClass != value)
-        //        {
-        //            _weaponClass = value;
-        //            OnPropertyChanged();
-        //        }
-        //    }
-        //}
-
-
-        //private string _weaponUsage = "Choose weapon type item usage";
-        //[DataSourceProperty]
-        //public string WeaponUsage
-        //{
-        //    get => _weaponUsage;
-        //    set
-        //    {
-        //        if (_weaponUsage != value)
-        //        {
-        //            _weaponUsage = value;
-        //            OnPropertyChanged();
-        //        }
-        //    }
-        //}
-
-        //private List<string> _ItemUsageList = new List<string>()
-        //{
-        //    "arrow_right",
-        //    "arrow_top",
-        //    "bow",
-        //    "crossbow",
-        //    "hand_shield",
-        //    "long_bow",
-        //    "shield"
-        //};
-
-
-        //private List<string> _weaponFlagsList;
-        //private int _weaponFlagsCurrentIndex = 0;
+        #endregion DataSourceProperties
 
         public FilterViewModel()
         {
@@ -906,10 +849,18 @@ namespace EquipBestItem
         {
             base.RefreshValues();
             EquipBestItemViewModel.UpdateCurrentCharacterName();
-            this.CharacterSettings = SettingsLoader.Instance.GetCharacterSettingsByName(EquipBestItemViewModel.CurrentCharacterName);
+            try
+            {
+                this.CharacterSettings = SettingsLoader.Instance.GetCharacterSettingsByName(EquipBestItemViewModel.CurrentCharacterName);
+            }
+            catch (MBException e)
+            {
+                InformationManager.DisplayMessage(new InformationMessage(e.Message));
+                throw;
+            }
 
             if (!IsWeaponSlotHidden)
-                this.Title = "Weapon " + (CurrentSlot+1) + " filter";
+                this.Title = "Weapon " + (CurrentSlot + 1) + " filter";
             if (!IsArmorSlotHidden)
                 switch (CurrentSlot)
                 {
@@ -934,7 +885,7 @@ namespace EquipBestItem
                     default:
                         this.Title = "Default";
                         break;
-                } 
+                }
             if (!IsMountSlotHidden)
                 this.Title = "Mount " + "filter";
 
@@ -978,7 +929,7 @@ namespace EquipBestItem
                 this.IsHelmFilterSelected = true;
             else
                 this.IsHelmFilterSelected = false;
-            
+
             if (this.CharacterSettings.FilterArmor[0].ThisFilterLocked())
                 this.IsHelmFilterLocked = true;
             else
@@ -1097,11 +1048,12 @@ namespace EquipBestItem
 
             IsEquipCurrentCharacterButtonEnabled = EquipBestItemViewModel.IsEquipCurrentCharacterButtonEnabled;
 
-
-            if (SettingsLoader.Debug)
-                InformationManager.DisplayMessage(new InformationMessage("FilterVMRefreshValue"));
+#if DEBUG
+            InformationManager.DisplayMessage(new InformationMessage("FilterVMRefreshValue")); 
+#endif
         }
 
+        #region ExecuteMethods
         public void ExecuteSwingDamagePrev()
         {
             this.CharacterSettings.FilterWeapon[CurrentSlot].SwingDamage -= 1f;
@@ -1218,7 +1170,7 @@ namespace EquipBestItem
             Accuracy = this.CharacterSettings.FilterWeapon[CurrentSlot].Accuracy.ToString();
             this.RefreshValues();
         }
-        
+
         public void ExecuteWeaponBodyArmorPrev()
         {
             this.CharacterSettings.FilterWeapon[CurrentSlot].WeaponBodyArmor -= 1f;
@@ -1405,7 +1357,7 @@ namespace EquipBestItem
 
         public void ExecuteShowHideWeapon1Filter()
         {
-            
+
             if (CurrentSlot != 0 || this.IsWeaponSlotHidden)
             {
                 CurrentSlot = 0;
@@ -1417,7 +1369,7 @@ namespace EquipBestItem
             this.IsArmorSlotHidden = true;
             this.IsMountSlotHidden = true;
             this.RefreshValues();
-            
+
 
         }
         public void ExecuteShowHideWeapon2Filter()
@@ -1672,9 +1624,60 @@ namespace EquipBestItem
             EquipBestItemViewModel.EquipCharacter(EquipBestItemViewModel.GetCharacterByName(EquipBestItemViewModel.CurrentCharacterName));
             this.RefreshValues();
 
-            if (SettingsLoader.Debug)
-                InformationManager.DisplayMessage(new InformationMessage("ExecuteEquipCurrentCharacter"));
+#if DEBUG
+            InformationManager.DisplayMessage(new InformationMessage("ExecuteEquipCurrentCharacter")); 
+#endif
         }
+
+        #endregion ExecuteMethods
+
+        //private string _weaponClass = "Choose weapon class";
+
+
+        //[DataSourceProperty]
+        //public string WeaponClass
+        //{
+        //    get => _weaponClass;
+        //    set
+        //    {
+        //        if (_weaponClass != value)
+        //        {
+        //            _weaponClass = value;
+        //            OnPropertyChanged();
+        //        }
+        //    }
+        //}
+
+
+        //private string _weaponUsage = "Choose weapon type item usage";
+        //[DataSourceProperty]
+        //public string WeaponUsage
+        //{
+        //    get => _weaponUsage;
+        //    set
+        //    {
+        //        if (_weaponUsage != value)
+        //        {
+        //            _weaponUsage = value;
+        //            OnPropertyChanged();
+        //        }
+        //    }
+        //}
+
+        //private List<string> _ItemUsageList = new List<string>()
+        //{
+        //    "arrow_right",
+        //    "arrow_top",
+        //    "bow",
+        //    "crossbow",
+        //    "hand_shield",
+        //    "long_bow",
+        //    "shield"
+        //};
+
+
+        //private List<string> _weaponFlagsList;
+        //private int _weaponFlagsCurrentIndex = 0;
 
         //public void ExecuteWeaponTypeSelectNextItem()
         //{

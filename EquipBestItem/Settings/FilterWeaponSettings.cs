@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds.Core;
 
 namespace EquipBestItem
 {
+    [Serializable]
     public class FilterWeaponSettings
     {
         public float MaxDataValue { get; set; } = 1f;
@@ -68,7 +64,7 @@ namespace EquipBestItem
 
         public FilterWeaponSettings()
         {
-            
+
         }
     }
 }

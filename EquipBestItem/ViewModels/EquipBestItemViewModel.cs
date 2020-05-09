@@ -1,5 +1,4 @@
-﻿using EquipBestItem.Settings;
-using Helpers;
+﻿using Helpers;
 using SandBox.GauntletUI;
 using System;
 using System.Collections.Generic;
@@ -598,9 +597,9 @@ namespace EquipBestItem
                         EquipMessage(equipmentIndex, character);
                         InventoryManager.MyInventoryLogic.AddTransferCommand(equipCommand);
                     }
-                _inventory.Call("ExecuteRemoveZeroCounts");
+                _inventory.GetMethod("ExecuteRemoveZeroCounts");
             }
-            _inventory.Call("RefreshInformationValues");
+            _inventory.GetMethod("RefreshInformationValues");
         }
 
         public static void EquipCharacter(CharacterObject character)
@@ -671,9 +670,9 @@ namespace EquipBestItem
                     continue;
                 if (isCivilian)
                 {
-                    if (slot < EquipmentIndex.NonWeaponItemBeginSlot && 
-                        item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon != null && 
-                        item.IsEquipableItem && 
+                    if (slot < EquipmentIndex.NonWeaponItemBeginSlot &&
+                        item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon != null &&
+                        item.IsEquipableItem &&
                         item.IsCivilianItem &&
                         CharacterHelper.CanUseItem(character, item.ItemRosterElement.EquipmentElement)
                         )
@@ -693,16 +692,16 @@ namespace EquipBestItem
                     }
                     else if (item.ItemType == slot && item.IsEquipableItem && item.IsCivilianItem &&
                         CharacterHelper.CanUseItem(character, item.ItemRosterElement.EquipmentElement))
-                            if (bestEquipmentElement.IsEmpty)
-                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot) &&
-                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
-                                    bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
-                                else
-                                    continue;
-                            else
-                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot) &&
-                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                        if (bestEquipmentElement.IsEmpty)
+                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot) &&
+                                ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
                                 bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                            else
+                                continue;
+                        else
+                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot) &&
+                                ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                            bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
                 }
                 else
                 {
@@ -724,16 +723,16 @@ namespace EquipBestItem
                     }
                     else if (item.ItemType == slot && item.IsEquipableItem &&
                         CharacterHelper.CanUseItem(character, item.ItemRosterElement.EquipmentElement))
-                            if (bestEquipmentElement.IsEmpty)
-                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot) &&
-                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
-                                    bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
-                                else
-                                    continue;
-                            else
-                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot) &&
-                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                        if (bestEquipmentElement.IsEmpty)
+                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot) &&
+                                ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
                                 bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
+                            else
+                                continue;
+                        else
+                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot) &&
+                                ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                            bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
                 }
             }
 
@@ -833,13 +832,12 @@ namespace EquipBestItem
                     Weight * filterArmor.ArmorWeight
                 ) / sum;
 
-                if (SettingsLoader.Debug)
-                {
-                    InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5}",
-                        sourceItem.Item.Name, HeadArmor, BodyArmor, LegArmor, ArmArmor, Weight)));
+#if DEBUG
+                InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5}",
+                                sourceItem.Item.Name, HeadArmor, BodyArmor, LegArmor, ArmArmor, Weight)));
 
-                    InformationManager.DisplayMessage(new InformationMessage("Total score: " + value));
-                }
+                InformationManager.DisplayMessage(new InformationMessage("Total score: " + value)); 
+#endif
 
                 return value;
             }
@@ -902,13 +900,13 @@ namespace EquipBestItem
                     WeaponWeight * weights.WeaponWeight
                 ) / sum;
 
-                if (SettingsLoader.Debug)
-                {
-                    InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: Acc {1}, BA {2}, HL {3}, HP {4}, MS {5}, SD {6}, SS {7}, TD {8}, TS {9}, WL {10}, W {11}",
-                        sourceItem.Item.Name, Accuracy, BodyArmor, Handling, MaxDataValue, MissileSpeed, SwingDamage, SwingSpeed, ThrustDamage, ThrustSpeed, WeaponLength, WeaponWeight)));
 
-                    InformationManager.DisplayMessage(new InformationMessage("Total score: " + value));
-                }
+#if DEBUG
+                InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: Acc {1}, BA {2}, HL {3}, HP {4}, MS {5}, SD {6}, SS {7}, TD {8}, TS {9}, WL {10}, W {11}",
+                                sourceItem.Item.Name, Accuracy, BodyArmor, Handling, MaxDataValue, MissileSpeed, SwingDamage, SwingSpeed, ThrustDamage, ThrustSpeed, WeaponLength, WeaponWeight)));
+
+                InformationManager.DisplayMessage(new InformationMessage("Total score: " + value)); 
+#endif
 
                 return value;
             }
@@ -946,13 +944,13 @@ namespace EquipBestItem
                     Speed * weights.Speed
                 ) / sum;
 
-                if (SettingsLoader.Debug)
-                {
-                    InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: CD {1}, HP {2}, MR {3}, SD {4}",
-                        sourceItem.Item.Name, ChargeDamage, HitPoints, Maneuver, Speed)));
 
-                    InformationManager.DisplayMessage(new InformationMessage("Total score: " + value));
-                }
+#if DEBUG
+                InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: CD {1}, HP {2}, MR {3}, SD {4}",
+                                sourceItem.Item.Name, ChargeDamage, HitPoints, Maneuver, Speed)));
+
+                InformationManager.DisplayMessage(new InformationMessage("Total score: " + value)); 
+#endif
 
                 return value;
             }
@@ -998,7 +996,8 @@ namespace EquipBestItem
             float WeaponWeight = item1.ItemRosterElement.EquipmentElement.Weight;
 
             ItemModifier mod = item1.ItemRosterElement.EquipmentElement.ItemModifier;
-            if (mod != null) {
+            if (mod != null)
+            {
                 BodyArmor = mod.ModifyArmor(BodyArmor);
                 MissileSpeed = mod.ModifyMissileSpeed(MissileSpeed);
                 SwingDamage = mod.ModifyDamage(SwingDamage);
@@ -1025,13 +1024,12 @@ namespace EquipBestItem
                 WeaponWeight * weights.WeaponWeight
             ) / sum;
 
-            if (SettingsLoader.Debug)
-            {
-                InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: Acc {1}, BA {2}, HL {3}, HP {4}, MS {5}, SD {6}, SS {7}, TD {8}, TS {9}, WL {10}, W {11}",
-                    item1.ItemDescription, Accuracy, BodyArmor, Handling, MaxDataValue, MissileSpeed, SwingDamage, SwingSpeed, ThrustDamage, ThrustSpeed, WeaponLength, WeaponWeight)));
+#if DEBUG
+            InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: Acc {1}, BA {2}, HL {3}, HP {4}, MS {5}, SD {6}, SS {7}, TD {8}, TS {9}, WL {10}, W {11}",
+                        item1.ItemDescription, Accuracy, BodyArmor, Handling, MaxDataValue, MissileSpeed, SwingDamage, SwingSpeed, ThrustDamage, ThrustSpeed, WeaponLength, WeaponWeight)));
 
-                InformationManager.DisplayMessage(new InformationMessage("Total score: " + value));
-            }
+            InformationManager.DisplayMessage(new InformationMessage("Total score: " + value)); 
+#endif
 
             return value;
         }
@@ -1063,7 +1061,8 @@ namespace EquipBestItem
                 ArmArmor = armorComponentItem1.ArmArmor;
             float Weight = item1.ItemRosterElement.EquipmentElement.Weight;
 
-            if (mod != null) {
+            if (mod != null)
+            {
                 HeadArmor = mod.ModifyArmor(HeadArmor);
                 BodyArmor = mod.ModifyArmor(BodyArmor);
                 LegArmor = mod.ModifyArmor(LegArmor);
@@ -1079,13 +1078,12 @@ namespace EquipBestItem
                 Weight * filterArmor.ArmorWeight
             ) / sum;
 
-            if (SettingsLoader.Debug)
-            {
-                InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5}",
-                    item1.ItemDescription, HeadArmor, BodyArmor, LegArmor, ArmArmor, Weight)));
+#if DEBUG
+            InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5}",
+                        item1.ItemDescription, HeadArmor, BodyArmor, LegArmor, ArmArmor, Weight)));
 
-                InformationManager.DisplayMessage(new InformationMessage("Total score: " + value));
-            }
+            InformationManager.DisplayMessage(new InformationMessage("Total score: " + value)); 
+#endif
 
             return value;
         }
@@ -1114,7 +1112,8 @@ namespace EquipBestItem
 
             ItemModifier mod =
                 item1.ItemRosterElement.EquipmentElement.ItemModifier;
-            if (mod != null) {
+            if (mod != null)
+            {
                 ChargeDamage = mod.ModifyHorseCharge(ChargeDamage);
                 Maneuver = mod.ModifyHorseManuever(Maneuver);
                 Speed = mod.ModifyHorseSpeed(Speed);
@@ -1128,13 +1127,12 @@ namespace EquipBestItem
                 Speed * weights.Speed
             ) / sum;
 
-            if (SettingsLoader.Debug)
-            {
-                InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: CD {1}, HP {2}, MR {3}, SD {4}",
-                    item1.ItemDescription, ChargeDamage, HitPoints, Maneuver, Speed)));
+#if DEBUG
+            InformationManager.DisplayMessage(new InformationMessage(String.Format("{0}: CD {1}, HP {2}, MR {3}, SD {4}",
+                        item1.ItemDescription, ChargeDamage, HitPoints, Maneuver, Speed)));
 
-                InformationManager.DisplayMessage(new InformationMessage("Total score: " + value));
-            }
+            InformationManager.DisplayMessage(new InformationMessage("Total score: " + value)); 
+#endif
 
             return value;
         }
@@ -1157,83 +1155,85 @@ namespace EquipBestItem
         public static void UpdateValues()
         {
             FindBestItems();
-            if (SettingsLoader.Debug)
-                InformationManager.DisplayMessage(new InformationMessage("EBIViewModel UpdateValue() " + Game.Current.ApplicationTime.ToString()));
+
+#if DEBUG
+            InformationManager.DisplayMessage(new InformationMessage("EBIViewModel UpdateValue() " + Game.Current.ApplicationTime.ToString())); 
+#endif
         }
 
         public static void EquipBestHelm()
         {
-            _inventory.Call("ProcessEquipItem", BestHelm);
+            _inventory.GetMethod("ProcessEquipItem", BestHelm);
             BestHelm = null;
             //this.RefreshValues();
         }
 
         public static void EquipBestCloak()
         {
-            _inventory.Call("ProcessEquipItem", BestCloak);
+            _inventory.GetMethod("ProcessEquipItem", BestCloak);
             BestCloak = null;
             //this.RefreshValues();
         }
 
         public static void EquipBestArmor()
         {
-            _inventory.Call("ProcessEquipItem", BestArmor);
+            _inventory.GetMethod("ProcessEquipItem", BestArmor);
             BestArmor = null;
             //this.RefreshValues();
         }
 
         public static void EquipBestGlove()
         {
-            _inventory.Call("ProcessEquipItem", BestGlove);
+            _inventory.GetMethod("ProcessEquipItem", BestGlove);
             BestGlove = null;
             //this.RefreshValues();
         }
         public static void EquipBestBoot()
         {
-            _inventory.Call("ProcessEquipItem", BestBoot);
+            _inventory.GetMethod("ProcessEquipItem", BestBoot);
             BestBoot = null;
             //this.RefreshValues();
         }
 
         public static void EquipBestMount()
         {
-            _inventory.Call("ProcessEquipItem", BestMount);
+            _inventory.GetMethod("ProcessEquipItem", BestMount);
             BestMount = null;
             //this.RefreshValues();
         }
         public static void EquipBestHarness()
         {
-            _inventory.Call("ProcessEquipItem", BestHarness);
+            _inventory.GetMethod("ProcessEquipItem", BestHarness);
             BestHarness = null;
             //this.RefreshValues();
         }
 
         public static void EquipBestWeapon1()
         {
-            _inventory.Call("UnequipEquipment", _inventory.CharacterWeapon1Slot);
-            _inventory.Call("ProcessEquipItem", BestWeapon1);
+            _inventory.GetMethod("UnequipEquipment", _inventory.CharacterWeapon1Slot);
+            _inventory.GetMethod("ProcessEquipItem", BestWeapon1);
             BestWeapon1 = null;
             UpdateValues();
         }
         public static void EquipBestWeapon2()
         {
-            _inventory.Call("UnequipEquipment", _inventory.CharacterWeapon2Slot);
-            _inventory.Call("ProcessEquipItem", BestWeapon2);
+            _inventory.GetMethod("UnequipEquipment", _inventory.CharacterWeapon2Slot);
+            _inventory.GetMethod("ProcessEquipItem", BestWeapon2);
             BestWeapon2 = null;
             UpdateValues();
         }
 
         public static void EquipBestWeapon3()
         {
-            _inventory.Call("UnequipEquipment", _inventory.CharacterWeapon3Slot);
-            _inventory.Call("ProcessEquipItem", BestWeapon3);
+            _inventory.GetMethod("UnequipEquipment", _inventory.CharacterWeapon3Slot);
+            _inventory.GetMethod("ProcessEquipItem", BestWeapon3);
             BestWeapon3 = null;
             UpdateValues();
         }
         public static void EquipBestWeapon4()
         {
-            _inventory.Call("UnequipEquipment", _inventory.CharacterWeapon4Slot);
-            _inventory.Call("ProcessEquipItem", BestWeapon4);
+            _inventory.GetMethod("UnequipEquipment", _inventory.CharacterWeapon4Slot);
+            _inventory.GetMethod("ProcessEquipItem", BestWeapon4);
             BestWeapon4 = null;
             UpdateValues();
         }
