@@ -1,15 +1,16 @@
-﻿using TaleWorlds.Core;
-using TaleWorlds.Engine.GauntletUI;
+﻿using TaleWorlds.Engine.GauntletUI;
 
 namespace EquipBestItem.Layers
 {
     internal class FilterLayer : GauntletLayer
     {
-        FilterViewModel _viewModel;
+        private FilterViewModel _viewModel;
+
 
         public FilterLayer(int localOrder, string categoryId = "GauntletLayer") : base(localOrder, categoryId)
         {
             _viewModel = new FilterViewModel();
+
             this.LoadMovie("FiltersLayer", this._viewModel);
         }
 
@@ -20,17 +21,11 @@ namespace EquipBestItem.Layers
         {
             base.OnLateUpdate(dt);
 
-            if (_lastSetState != EquipBestItemViewModel._inventory.IsInWarSet)
+            if (_lastSetState != InventoryBehavior.Inventory.IsInWarSet)
             {
                 _viewModel.RefreshValues();
-                _lastSetState = EquipBestItemViewModel._inventory.IsInWarSet;
+                _lastSetState = InventoryBehavior.Inventory.IsInWarSet;
             }
-
-            if (EquipBestItemViewModel.CurrentCharacterName != _viewModel.CharacterSettings.Name)
-                _viewModel.RefreshValues();
-
-            if (EquipBestItemViewModel.IsEquipCurrentCharacterButtonEnabled != _viewModel.IsEquipCurrentCharacterButtonEnabled)
-                _viewModel.RefreshValues();
 
             if (TaleWorlds.InputSystem.Input.IsKeyDown(TaleWorlds.InputSystem.InputKey.LeftAlt) && !IsAltPressed)
             {

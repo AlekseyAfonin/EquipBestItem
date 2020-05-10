@@ -1,8 +1,5 @@
-﻿using System;
-
-namespace EquipBestItem
+﻿namespace EquipBestItem
 {
-    [Serializable]
     public class FilterWeaponSettings
     {
         public float MaxDataValue { get; set; } = 1f;

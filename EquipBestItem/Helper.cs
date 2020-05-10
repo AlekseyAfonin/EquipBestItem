@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Windows.Forms;
+﻿using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using TaleWorlds.Core;
@@ -44,7 +42,7 @@ namespace EquipBestItem
             return null;
         }
 
-        public static void Serialize<T>(string filename, T data)
+        public static void Serialize<T>(string fileName, T data)
         {
             TextWriter writer = null;
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
@@ -52,14 +50,14 @@ namespace EquipBestItem
 
             try
             {
-                writer = new StreamWriter(filename);
+                writer = new StreamWriter(fileName);
 
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
                 serializer.Serialize(writer, data, ns);
             }
             catch
             {
-                throw new MBException(filename + " serialize error");
+                throw new MBException(fileName + " serialize error");
             }
             finally
             {
@@ -71,14 +69,14 @@ namespace EquipBestItem
         }
 
 
-        public static T Deserialize<T>(string filename)
+        public static T Deserialize<T>(string fileName)
         {
             XmlReader xmlReader = null;
             StreamReader streamReader = null;
             T data = default(T);
             try
             {
-                using (streamReader = new StreamReader(filename))
+                using (streamReader = new StreamReader(fileName))
                 {
                     xmlReader = XmlReader.Create(streamReader);
                     XmlSerializer serializer = new XmlSerializer(typeof(T));
@@ -87,7 +85,7 @@ namespace EquipBestItem
             }
             catch
             {
-                throw new MBException(filename + " deserialize error");
+                throw new MBException(fileName + " deserialize error");
             }
             finally
             {

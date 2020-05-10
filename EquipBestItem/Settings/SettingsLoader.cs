@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Windows.Forms;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 
@@ -41,7 +38,7 @@ namespace EquipBestItem
             {
                 this.Settings = Helper.Deserialize<Settings>(_filePathSettings);
             }
-            catch(MBException e)
+            catch (MBException e)
             {
                 InformationManager.DisplayMessage(new InformationMessage(e.Message + ". Trying to create a new..."));
             }
@@ -102,7 +99,7 @@ namespace EquipBestItem
 
         public CharacterSettings GetCharacterSettingsByName(string name)
         {
-            if (!EquipBestItemViewModel._inventory.IsInWarSet)
+            if (!InventoryBehavior.Inventory.IsInWarSet)
                 name = name + "_civil";
 
             if (this.CharacterSettings != null)

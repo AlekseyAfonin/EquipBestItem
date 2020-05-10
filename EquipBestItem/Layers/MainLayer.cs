@@ -1,17 +1,15 @@
-﻿using TaleWorlds.GauntletUI;
-using TaleWorlds.InputSystem;
-
-//Workaround to update view model state. Once every release mouse button.
+﻿using TaleWorlds.Engine.GauntletUI;
 
 namespace EquipBestItem
 {
-    public class WorkaroundWidget : Widget
+    class MainLayer : GauntletLayer
     {
-        //EquipBestItemViewModel _viewModel;
+        MainViewModel _viewModel;
 
-        public WorkaroundWidget(UIContext context) : base(context)
+        public MainLayer(int localOrder, string categoryId = "GauntletLayer") : base(localOrder, categoryId)
         {
-            //_viewModel = new EquipBestItemViewModel();
+            _viewModel = new MainViewModel();
+            this.LoadMovie("EBIInventory", this._viewModel);
         }
 
         bool _latestStateStatus;
@@ -36,18 +34,15 @@ namespace EquipBestItem
         {
             base.OnLateUpdate(dt);
 
-            _leftMouseButtonStatus = Input.IsKeyReleased(InputKey.LeftMouseButton);
+            _leftMouseButtonStatus = TaleWorlds.InputSystem.Input.IsKeyReleased(TaleWorlds.InputSystem.InputKey.LeftMouseButton);
 
             _firstUpdateState = StateChanged();
 
             if (_delay == 1)
             {
-                EquipBestItemViewModel.UpdateCurrentCharacterName();
-                EquipBestItemViewModel.UpdateValues();
+                //EquipBestItemViewModel.UpdateCurrentCharacterName();
+                _viewModel.RefreshValues();
             }
-
-
-
         }
     }
 }

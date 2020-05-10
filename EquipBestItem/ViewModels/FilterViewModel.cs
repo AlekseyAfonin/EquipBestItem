@@ -807,51 +807,19 @@ namespace EquipBestItem
                 }
             }
         }
-
-        private bool _isEquipCurrentCharacterButtonEnabled;
-        [DataSourceProperty]
-        public bool IsEquipCurrentCharacterButtonEnabled
-        {
-            get => _isEquipCurrentCharacterButtonEnabled;
-            set
-            {
-                if (_isEquipCurrentCharacterButtonEnabled != value)
-                {
-                    _isEquipCurrentCharacterButtonEnabled = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private bool _isEnabledEquipAllButton;
-        [DataSourceProperty]
-        public bool IsEnabledEquipAllButton
-        {
-            get => _isEnabledEquipAllButton;
-            set
-            {
-                if (_isEnabledEquipAllButton != value)
-                {
-                    _isEnabledEquipAllButton = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
         #endregion DataSourceProperties
 
         public FilterViewModel()
         {
-            this.IsEnabledEquipAllButton = !SettingsLoader.Instance.Settings.IsEnabledEquipAllButton;
             this.RefreshValues();
         }
 
         public override void RefreshValues()
         {
             base.RefreshValues();
-            EquipBestItemViewModel.UpdateCurrentCharacterName();
             try
             {
-                this.CharacterSettings = SettingsLoader.Instance.GetCharacterSettingsByName(EquipBestItemViewModel.CurrentCharacterName);
+                this.CharacterSettings = SettingsLoader.Instance.GetCharacterSettingsByName(InventoryBehavior.Inventory.CurrentCharacterName);
             }
             catch (MBException e)
             {
@@ -1044,10 +1012,6 @@ namespace EquipBestItem
                 this.IsWeapon4FilterLocked = true;
             else
                 this.IsWeapon4FilterLocked = false;
-
-
-            IsEquipCurrentCharacterButtonEnabled = EquipBestItemViewModel.IsEquipCurrentCharacterButtonEnabled;
-
 #if DEBUG
             InformationManager.DisplayMessage(new InformationMessage("FilterVMRefreshValue")); 
 #endif
@@ -1357,7 +1321,6 @@ namespace EquipBestItem
 
         public void ExecuteShowHideWeapon1Filter()
         {
-
             if (CurrentSlot != 0 || this.IsWeaponSlotHidden)
             {
                 CurrentSlot = 0;
@@ -1369,12 +1332,10 @@ namespace EquipBestItem
             this.IsArmorSlotHidden = true;
             this.IsMountSlotHidden = true;
             this.RefreshValues();
-
-
         }
+
         public void ExecuteShowHideWeapon2Filter()
         {
-
             if (CurrentSlot != 1 || this.IsWeaponSlotHidden)
             {
                 CurrentSlot = 1;
@@ -1387,9 +1348,9 @@ namespace EquipBestItem
             this.IsMountSlotHidden = true;
             this.RefreshValues();
         }
+
         public void ExecuteShowHideWeapon3Filter()
         {
-
             if (CurrentSlot != 2 || this.IsWeaponSlotHidden)
             {
                 CurrentSlot = 2;
@@ -1402,9 +1363,9 @@ namespace EquipBestItem
             this.IsMountSlotHidden = true;
             this.RefreshValues();
         }
+
         public void ExecuteShowHideWeapon4Filter()
         {
-
             if (CurrentSlot != 3 || this.IsWeaponSlotHidden)
             {
                 CurrentSlot = 3;
@@ -1464,7 +1425,6 @@ namespace EquipBestItem
             this.IsWeaponSlotHidden = true;
             this.IsMountSlotHidden = true;
             this.RefreshValues();
-
         }
 
         public void ExecuteShowHideGloveFilter()
@@ -1481,7 +1441,6 @@ namespace EquipBestItem
             this.IsWeaponSlotHidden = true;
             this.IsMountSlotHidden = true;
             this.RefreshValues();
-
         }
 
         public void ExecuteShowHideBootFilter()
@@ -1498,7 +1457,6 @@ namespace EquipBestItem
             this.IsWeaponSlotHidden = true;
             this.IsMountSlotHidden = true;
             this.RefreshValues();
-
         }
 
         public void ExecuteShowHideMountFilter()
@@ -1512,7 +1470,6 @@ namespace EquipBestItem
             this.IsWeaponSlotHidden = true;
             this.IsMountSlotHidden = false;
             this.RefreshValues();
-
         }
 
         public void ExecuteShowHideHarnessFilter()
@@ -1529,7 +1486,6 @@ namespace EquipBestItem
             this.IsWeaponSlotHidden = true;
             this.IsMountSlotHidden = true;
             this.RefreshValues();
-
         }
 
         public void ExecuteWeaponClose()
@@ -1612,21 +1568,6 @@ namespace EquipBestItem
             this.CharacterSettings.FilterWeapon[CurrentSlot].WeaponLength = 0;
             this.CharacterSettings.FilterWeapon[CurrentSlot].WeaponWeight = 0;
             this.RefreshValues();
-        }
-
-        public void ExecuteEquipEveryCharacter()
-        {
-            EquipBestItemViewModel.EquipEveryCharacter();
-        }
-
-        public void ExecuteEquipCurrentCharacter()
-        {
-            EquipBestItemViewModel.EquipCharacter(EquipBestItemViewModel.GetCharacterByName(EquipBestItemViewModel.CurrentCharacterName));
-            this.RefreshValues();
-
-#if DEBUG
-            InformationManager.DisplayMessage(new InformationMessage("ExecuteEquipCurrentCharacter")); 
-#endif
         }
 
         #endregion ExecuteMethods

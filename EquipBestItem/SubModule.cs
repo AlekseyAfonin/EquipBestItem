@@ -1,14 +1,9 @@
-﻿using EquipBestItem.Behaviors;
-using System;
-using System.Windows.Forms;
-using TaleWorlds.CampaignSystem;
+﻿using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
-using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace EquipBestItem
 {
-
     public class SubModule : MBSubModuleBase
     {
         public override void OnMissionBehaviourInitialize(Mission mission)
@@ -32,8 +27,6 @@ namespace EquipBestItem
             }
         }
 
-
-
         private void AddBehaviours(CampaignGameStarter gameStarterObject)
         {
             try
@@ -44,13 +37,9 @@ namespace EquipBestItem
                 }
             }
             catch
-            { 
+            {
                 throw;
             }
-
         }
-
-
     }
-
 }

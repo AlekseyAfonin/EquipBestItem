@@ -84,5 +84,8 @@ namespace EquipBestItem
             _filterMount = new FilterMountSettings();
         }
 
+        public CharacterSettings()
+        {
+        }
     }
 }

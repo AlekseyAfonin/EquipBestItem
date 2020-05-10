@@ -1,14 +1,14 @@
 ﻿using EquipBestItem.Layers;
 using SandBox.GauntletUI;
 using System;
-using System.Windows.Forms;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Engine.Screens;
 using TaleWorlds.Library;
 
-namespace EquipBestItem.Behaviors
+namespace EquipBestItem
 {
     class InventoryBehavior : CampaignBehaviorBase
     {
@@ -17,13 +17,9 @@ namespace EquipBestItem.Behaviors
             Game.Current.EventManager.RegisterEvent(new Action<TutorialContextChangedEvent>(this.AddNewInventoryLayer));
         }
 
-        //Layer with locks and main viewmodel
-        GauntletLayer _gauntletLayer;
-        EquipBestItemViewModel _viewModel;
-
-        //Layer with filters
-        GauntletLayer _gauntletFiltersLayer;
-        FilterViewModel _filterViewModel;
+        public static SPInventoryVM Inventory;
+        InventoryGauntletScreen _inventoryScreen;
+        GauntletLayer _mainLayer;
         FilterLayer _filterLayer;
 
         private void AddNewInventoryLayer(TutorialContextChangedEvent tutorialContextChangedEvent)
@@ -34,18 +30,15 @@ namespace EquipBestItem.Behaviors
                 {
                     if (ScreenManager.TopScreen is InventoryGauntletScreen)
                     {
-                        EquipBestItemViewModel.InventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
-                        _viewModel = new EquipBestItemViewModel();
-                        this._gauntletLayer = new GauntletLayer(1000, "GauntletLayer");
-                        this._gauntletLayer.LoadMovie("EBIInventory", _viewModel);
-                        EquipBestItemViewModel.InventoryScreen.AddLayer(this._gauntletLayer);
-                        this._gauntletLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+                        _inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
+                        Inventory = _inventoryScreen.GetField("_dataSource") as SPInventoryVM;
+
+                        this._mainLayer = new MainLayer(1000, "GauntletLayer");
+                        _inventoryScreen.AddLayer(this._mainLayer);
+                        this._mainLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
 
                         _filterLayer = new FilterLayer(1001, "GauntletLayer");
-                        _filterViewModel = new FilterViewModel();
-                        this._gauntletFiltersLayer = new GauntletLayer(1001, "GauntletLayer");
-                        this._gauntletFiltersLayer.LoadMovie("FiltersLayer", _filterViewModel);
-                        EquipBestItemViewModel.InventoryScreen.AddLayer(this._filterLayer);
+                        _inventoryScreen.AddLayer(this._filterLayer);
                         this._filterLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
                     }
 
@@ -71,18 +64,18 @@ namespace EquipBestItem.Behaviors
                 {
                     if (tutorialContextChangedEvent.NewContext == TutorialContexts.None)
                     {
-                        if (EquipBestItemViewModel.InventoryScreen != null && this._gauntletLayer != null)
+                        if (_inventoryScreen != null && this._mainLayer != null)
                         {
 
-                            EquipBestItemViewModel.InventoryScreen.RemoveLayer(this._gauntletLayer);
-                            this._gauntletLayer = null;
+                            _inventoryScreen.RemoveLayer(this._mainLayer);
+                            this._mainLayer = null;
                             SettingsLoader.Instance.SaveSettings();
                             SettingsLoader.Instance.SaveCharacterSettings();
                         }
 
-                        if (EquipBestItemViewModel.InventoryScreen != null && this._filterLayer != null)
+                        if (_inventoryScreen != null && this._filterLayer != null)
                         {
-                            EquipBestItemViewModel.InventoryScreen.RemoveLayer(this._filterLayer);
+                            _inventoryScreen.RemoveLayer(this._filterLayer);
                             this._filterLayer = null;
                         }
                     }

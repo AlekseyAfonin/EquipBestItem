@@ -60,6 +60,9 @@
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>key.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="SandBox">
       <HintPath>D:\Games\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.dll</HintPath>
@@ -283,14 +286,13 @@
   <ItemGroup>
     <Compile Include="Behaviors\InventoryBehavior.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Layers\MainLayer.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\FilterViewModel.cs" />
     <Compile Include="Settings\FilterArmorSettings.cs" />
     <Compile Include="Settings\FilterMountSettings.cs" />
     <Compile Include="Settings\FilterWeaponSettings.cs" />
     <Compile Include="Layers\FilterLayer.cs" />
-    <Compile Include="ViewModels\EquipBestItemViewModel.cs" />
-    <Compile Include="Widgets\EquipBestItemWidget.cs" />
-    <Compile Include="Widgets\WorkaroundWidget.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Widgets\LockRightPanelWidget.cs" />
     <Compile Include="Widgets\LockLeftPanelWidget.cs" />
@@ -312,6 +314,7 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="key.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
