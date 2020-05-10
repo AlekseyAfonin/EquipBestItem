@@ -105,6 +105,26 @@
       </EventSounds>
     </SoundProperties>
   </Brush>
+   <Brush Name="Inventory.EquipBetterItem.FilterLock">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="StdAssets\lock_closed" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" Sprite="StdAssets\lock_closed" ColorFactor="1.4" />
+      </Style>
+      <Style Name="Disabled">
+        <BrushLayer Name="Default" Sprite="StdAssets\lock_closed" IsHidden="true" />
+      </Style>
+    </Styles>
+    <SoundProperties>
+      <StateSounds>
+      </StateSounds>
+      <EventSounds>
+        <EventSound EventName="Click" Audio="popup" />
+      </EventSounds>
+    </SoundProperties>
+  </Brush>
   <Brush Name="Inventory.EquipBetterItem.LockedPanel">
     <Layers>
       <BrushLayer Name="Default" Sprite="StdAssets\lock_opened" />

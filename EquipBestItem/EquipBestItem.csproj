@@ -55,13 +55,14 @@
     <DebugType>none</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>key.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SandBox">
@@ -285,7 +286,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\InventoryBehavior.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Layers\MainLayer.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\FilterViewModel.cs" />
@@ -306,15 +306,12 @@
     <Content Include="GUI\Brushes\EquipBestItemBrush.xml" />
     <Content Include="GUI\Prefabs\Inventory\EBIInventory.xml" />
     <Content Include="GUI\Prefabs\Inventory\FiltersLayer.xml" />
-    <Content Include="ModuleData\CharacterSettings.xml" />
-    <Content Include="ModuleData\Settings.xml" />
     <Content Include="SubModule.xml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="key.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
