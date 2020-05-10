@@ -1,4 +1,5 @@
-﻿using TaleWorlds.Engine.GauntletUI;
+﻿using TaleWorlds.Core;
+using TaleWorlds.Engine.GauntletUI;
 
 namespace EquipBestItem
 {
@@ -12,37 +13,23 @@ namespace EquipBestItem
             this.LoadMovie("EBIInventory", this._viewModel);
         }
 
-        bool _latestStateStatus;
-        bool _leftMouseButtonStatus;
-        int _delay;
-        bool _firstUpdateState = false;
-
-        private bool StateChanged()
-        {
-
-            if (_leftMouseButtonStatus != _latestStateStatus)
-            {
-                _latestStateStatus = _leftMouseButtonStatus;
-                _delay = 0;
-                return true;
-            }
-            _delay++;
-            return false;
-        }
+        bool _leftMouseButtonWasReleased = false;
 
         protected override void OnLateUpdate(float dt)
         {
             base.OnLateUpdate(dt);
 
-            _leftMouseButtonStatus = TaleWorlds.InputSystem.Input.IsKeyReleased(TaleWorlds.InputSystem.InputKey.LeftMouseButton);
-
-            _firstUpdateState = StateChanged();
-
-            if (_delay == 1)
+            if (TaleWorlds.InputSystem.Input.IsKeyReleased(TaleWorlds.InputSystem.InputKey.LeftMouseButton) && !_leftMouseButtonWasReleased)
             {
-                //EquipBestItemViewModel.UpdateCurrentCharacterName();
                 _viewModel.RefreshValues();
+                _leftMouseButtonWasReleased = true;
             }
+
+            if (TaleWorlds.InputSystem.Input.IsKeyPressed(TaleWorlds.InputSystem.InputKey.LeftMouseButton) && _leftMouseButtonWasReleased)
+            {
+                _leftMouseButtonWasReleased = false;
+            }
+
         }
     }
 }

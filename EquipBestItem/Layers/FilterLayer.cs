@@ -1,4 +1,5 @@
-﻿using TaleWorlds.Engine.GauntletUI;
+﻿using TaleWorlds.Core;
+using TaleWorlds.Engine.GauntletUI;
 
 namespace EquipBestItem.Layers
 {
@@ -38,18 +39,12 @@ namespace EquipBestItem.Layers
                 }
 
                 this._viewModel.IsLayerHidden = true;
-#if DEBUG
-                InformationManager.DisplayMessage(new InformationMessage("Layout IsKeyDown() "));
-#endif
             }
             if (TaleWorlds.InputSystem.Input.IsKeyReleased(TaleWorlds.InputSystem.InputKey.LeftAlt) && IsAltPressed)
             {
                 IsAltPressed = false;
                 if (this._viewModel.IsHiddenFilterLayer && (!this._viewModel.IsArmorSlotHidden || !this._viewModel.IsMountSlotHidden || !this._viewModel.IsWeaponSlotHidden)) this._viewModel.IsHiddenFilterLayer = false;
                 this._viewModel.IsLayerHidden = false;
-#if DEBUG
-                InformationManager.DisplayMessage(new InformationMessage("Layout IsKeyReleased() "));
-#endif
             }
         }
     }
