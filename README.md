@@ -31,4 +31,4 @@ and follow instructions.
 
 ## License
 
-Equip Best Item is released under the [MIT License](LICENSE).
+[MIT License](LICENSE)
