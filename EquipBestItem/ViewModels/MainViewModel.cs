@@ -228,7 +228,7 @@ namespace EquipBestItem
 
         public MainViewModel()
         {
-            _inventoryLogic = InventoryManager.MyInventoryLogic;
+            _inventoryLogic = InventoryManager.InventoryLogic;
             _inventory = InventoryBehavior.Inventory;
         }
 
