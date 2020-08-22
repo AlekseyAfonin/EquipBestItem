@@ -236,6 +236,9 @@ namespace EquipBestItem
         {
             base.RefreshValues();
 
+            if (_inventoryLogic == null)
+                _inventoryLogic = InventoryManager.InventoryLogic;
+
             _currentCharacter = GetCharacterByName(_inventory.CurrentCharacterName);
             _characterSettings = SettingsLoader.Instance.GetCharacterSettingsByName(_currentCharacter.Name.ToString());
 
@@ -755,6 +758,16 @@ namespace EquipBestItem
                 if (rosterElement.Character.IsHero && rosterElement.Character.Name.ToString() == name)
                     return rosterElement.Character;
             }
+
+            // Crash fix for the mod Party AI Overhaul and Commands
+            foreach (TroopRosterElement rosterElement in _inventoryLogic.MerchantParty.MemberRoster)
+            {
+                if (rosterElement.Character.IsHero && rosterElement.Character.Name.ToString() == name)
+                {
+                    return rosterElement.Character;
+                }
+            }
+
             return null;
         }
 
