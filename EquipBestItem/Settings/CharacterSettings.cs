@@ -47,6 +47,7 @@ namespace EquipBestItem
                 }
                 return _filterMount;
             }
+            set => _filterMount = value;
         }
 
         public enum ArmorSlot
