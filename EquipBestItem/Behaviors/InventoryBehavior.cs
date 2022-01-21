@@ -1,26 +1,30 @@
-﻿using EquipBestItem.Layers;
+﻿using System;
+using System.Collections.Generic;
+using EquipBestItem.Layers;
+using EquipBestItem.Settings;
 using SandBox.GauntletUI;
-using System;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Engine.Screens;
 using TaleWorlds.Library;
+using TaleWorlds.MountAndBlade.ViewModelCollection;
 
-namespace EquipBestItem
+namespace EquipBestItem.Behaviors
 {
     class InventoryBehavior : CampaignBehaviorBase
     {
         public override void RegisterEvents()
         {
-            Game.Current.EventManager.RegisterEvent(new Action<TutorialContextChangedEvent>(this.AddNewInventoryLayer));
+            Game.Current.EventManager.RegisterEvent(new Action<TutorialContextChangedEvent>(AddNewInventoryLayer));
         }
 
         public static SPInventoryVM Inventory;
         InventoryGauntletScreen _inventoryScreen;
         GauntletLayer _mainLayer;
         FilterLayer _filterLayer;
+        private FilterArmorLayer _filterArmorLayer;
 
         private void AddNewInventoryLayer(TutorialContextChangedEvent tutorialContextChangedEvent)
         {
@@ -33,13 +37,23 @@ namespace EquipBestItem
                         _inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
                         Inventory = _inventoryScreen.GetField("_dataSource") as SPInventoryVM;
 
-                        this._mainLayer = new MainLayer(1000, "GauntletLayer");
-                        _inventoryScreen.AddLayer(this._mainLayer);
-                        this._mainLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+                        if (SettingsLoader.Instance.CharacterSettings == null)
+                        {
+                            //SettingsLoader.Instance.LoadSettings();
+                            SettingsLoader.Instance.LoadCharacterSettings();
+                        }
+
+                        _mainLayer = new MainLayer(1000, "GauntletLayer");
+                        _inventoryScreen.AddLayer(_mainLayer);
+                        _mainLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
 
                         _filterLayer = new FilterLayer(1001, "GauntletLayer");
-                        _inventoryScreen.AddLayer(this._filterLayer);
-                        this._filterLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+                        _inventoryScreen.AddLayer(_filterLayer);
+                        _filterLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+                        
+                        _filterArmorLayer = new FilterArmorLayer(1002, "GauntletLayer");
+                        _inventoryScreen.AddLayer(_filterArmorLayer);
+                        _filterArmorLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
                     }
 
                     //Temporarily disabled clearing settings file for characters
@@ -64,25 +78,31 @@ namespace EquipBestItem
                 {
                     if (tutorialContextChangedEvent.NewContext == TutorialContexts.None)
                     {
-                        if (_inventoryScreen != null && this._mainLayer != null)
+                        if (_inventoryScreen != null && _mainLayer != null)
                         {
 
-                            _inventoryScreen.RemoveLayer(this._mainLayer);
-                            this._mainLayer = null;
+                            _inventoryScreen.RemoveLayer(_mainLayer);
+                            _mainLayer = null;
                             SettingsLoader.Instance.SaveSettings();
                             SettingsLoader.Instance.SaveCharacterSettings();
                         }
 
-                        if (_inventoryScreen != null && this._filterLayer != null)
+                        if (_inventoryScreen != null && _filterLayer != null)
                         {
-                            _inventoryScreen.RemoveLayer(this._filterLayer);
-                            this._filterLayer = null;
+                            _inventoryScreen.RemoveLayer(_filterLayer);
+                            _filterLayer = null;
                         }
                     }
                 }
             }
             catch (MBException e)
             {
+                if (SettingsLoader.Instance.Settings.Debug)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message + e.StackTrace);
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
                 InformationManager.DisplayMessage(new InformationMessage(e.Message));
             }
         }

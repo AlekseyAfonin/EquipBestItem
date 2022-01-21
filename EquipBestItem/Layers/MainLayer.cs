@@ -1,7 +1,7 @@
-﻿using TaleWorlds.Core;
+﻿using EquipBestItem.ViewModels;
 using TaleWorlds.Engine.GauntletUI;
 
-namespace EquipBestItem
+namespace EquipBestItem.Layers
 {
     class MainLayer : GauntletLayer
     {
@@ -10,7 +10,7 @@ namespace EquipBestItem
         public MainLayer(int localOrder, string categoryId = "GauntletLayer") : base(localOrder, categoryId)
         {
             _viewModel = new MainViewModel();
-            this.LoadMovie("EBIInventory", this._viewModel);
+            LoadMovie("EBI_Buttons", _viewModel);
         }
 
         bool _leftMouseButtonWasReleased = false;

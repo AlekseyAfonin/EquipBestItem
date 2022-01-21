@@ -1,6 +1,7 @@
-﻿using TaleWorlds.GauntletUI;
+﻿using EquipBestItem.Settings;
+using TaleWorlds.GauntletUI;
 
-namespace EquipBestItem
+namespace EquipBestItem.Widgets
 {
     public class LockLeftPanelWidget : ButtonWidget
     {
@@ -9,14 +10,14 @@ namespace EquipBestItem
         public LockLeftPanelWidget(UIContext context) : base(context)
         {
             IsLeftPanelLocked = SettingsLoader.Instance.Settings.IsLeftPanelLocked;
-            this.IsSelected = IsLeftPanelLocked;
+            IsSelected = IsLeftPanelLocked;
         }
 
         protected override void OnClick()
         {
             base.OnClick();
             IsLeftPanelLocked = !IsLeftPanelLocked;
-            this.IsSelected = IsLeftPanelLocked;
+            IsSelected = IsLeftPanelLocked;
             SettingsLoader.Instance.Settings.IsLeftPanelLocked = IsLeftPanelLocked;
         }
 

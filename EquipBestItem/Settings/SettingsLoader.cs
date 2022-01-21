@@ -1,16 +1,19 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using EquipBestItem.Behaviors;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 
-namespace EquipBestItem
+namespace EquipBestItem.Settings
 {
     public class SettingsLoader
     {
-        private string _filePathSettings = Path.Combine(BasePath.Name, "Modules", "EquipBestItem", "ModuleData", "Settings.xml");
-        private string _filePathCharacterSettings = Path.Combine(BasePath.Name, "Modules", "EquipBestItem", "ModuleData", "CharacterSettings.xml");
+        //New settings folder "Documents\Mount and Blade II Bannerlord\Configs\"
+        private PlatformFilePath _settingsFile = new PlatformFilePath(EngineFilePaths.ConfigsPath, "Settings.xml");
+        private PlatformFilePath _characterSettingsFile = new PlatformFilePath(EngineFilePaths.ConfigsPath, "CharacterSettings.xml");
 
-        private static SettingsLoader _instance = null;
+        private static SettingsLoader _instance;
 
         public Settings Settings { get; private set; }
 
@@ -36,19 +39,24 @@ namespace EquipBestItem
         {
             try
             {
-                this.Settings = Helper.Deserialize<Settings>(_filePathSettings);
+                if (FileHelper.FileExists(_settingsFile))
+                {
+                    Settings = Helper.Deserialize<Settings>(_settingsFile);
+                }
+                else
+                {
+                    Settings = new Settings();
+                }
             }
             catch (MBException e)
             {
-                InformationManager.DisplayMessage(new InformationMessage(e.Message + ". Trying to create a new..."));
-            }
-            finally
-            {
-                if (this.Settings == null)
+                if (SettingsLoader.Instance.Settings.Debug)
                 {
-                    this.Settings = new Settings();
-                    SaveSettings();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message + e.StackTrace);
+                    Console.ForegroundColor = ConsoleColor.Gray;
                 }
+                InformationManager.DisplayMessage(new InformationMessage(e.Message + ". Creating a new..."));
             }
         }
 
@@ -56,10 +64,16 @@ namespace EquipBestItem
         {
             try
             {
-                Helper.Serialize<Settings>(_filePathSettings, Settings);
+                Helper.Serialize(_settingsFile, Settings);
             }
             catch (MBException e)
             {
+                if (Instance.Settings.Debug)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message + e.StackTrace);
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
                 InformationManager.DisplayMessage(new InformationMessage(e.Message));
             }
         }
@@ -68,19 +82,28 @@ namespace EquipBestItem
         {
             try
             {
-                this.CharacterSettings = Helper.Deserialize<List<CharacterSettings>>(_filePathCharacterSettings);
+                if (FileHelper.FileExists(_characterSettingsFile))
+                {
+                    CharacterSettings = Helper.Deserialize<List<CharacterSettings>>(_characterSettingsFile);
+                }
             }
             catch (MBException e)
             {
+                if (Instance.Settings.Debug)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message + e.StackTrace);
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
                 InformationManager.DisplayMessage(new InformationMessage(e.Message));
-                this.CharacterSettings = new List<CharacterSettings>();
             }
-
             finally
             {
-                if (this.CharacterSettings == null)
+                if (CharacterSettings == null)
                 {
-                    this.CharacterSettings = new List<CharacterSettings>();
+                    CharacterSettings = new List<CharacterSettings>();
+                    CharacterSettings.Add(new CharacterSettings("default_equipbestitem"));
+                    CharacterSettings.Add(new CharacterSettings("default_equipbestitem_civil"));
                 }
             }
         }
@@ -89,10 +112,16 @@ namespace EquipBestItem
         {
             try
             {
-                Helper.Serialize<List<CharacterSettings>>(_filePathCharacterSettings, this.CharacterSettings);
+                Helper.Serialize(_characterSettingsFile, CharacterSettings);
             }
             catch (MBException e)
             {
+                if (Instance.Settings.Debug)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message + e.StackTrace);
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
                 InformationManager.DisplayMessage(new InformationMessage(e.Message));
             }
         }
@@ -102,9 +131,9 @@ namespace EquipBestItem
             if (!InventoryBehavior.Inventory.IsInWarSet)
                 name = name + "_civil";
 
-            if (this.CharacterSettings != null)
+            if (CharacterSettings != null)
             {
-                foreach (CharacterSettings charSettings in this.CharacterSettings)
+                foreach (CharacterSettings charSettings in CharacterSettings)
                 {
                     if (charSettings.Name == name)
                     {
@@ -113,10 +142,7 @@ namespace EquipBestItem
                 }
             }
 
-            CharacterSettings characterSettings = new CharacterSettings(name);
-            this.CharacterSettings.Add(characterSettings);
-
-            return characterSettings;
+            return null;
         }
     }
 }

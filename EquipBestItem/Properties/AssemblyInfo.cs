@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("EquipBestItem")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Mount and Blade 2 Bannerlord mod")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Aleksey Afonin")]
 [assembly: AssemblyProduct("EquipBestItem")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]

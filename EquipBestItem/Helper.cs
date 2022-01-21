@@ -1,7 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using TaleWorlds.Core;
+using TaleWorlds.Library;
+using StringReader = System.IO.StringReader;
+using StringWriter = System.IO.StringWriter;
 
 namespace EquipBestItem
 {
@@ -42,59 +46,52 @@ namespace EquipBestItem
             return null;
         }
 
-        public static void Serialize<T>(string fileName, T data)
+        public static void Serialize<T>(PlatformFilePath platformFilePath, T data)
         {
-            TextWriter writer = null;
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             ns.Add("", "");
 
             try
             {
-                writer = new StreamWriter(fileName);
-
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
-                serializer.Serialize(writer, data, ns);
+                var stringWriter = new StringWriter();
+                serializer.Serialize(stringWriter, data);
+                
+                FileHelper.SaveFileString(platformFilePath, stringWriter.ToString());
             }
             catch
             {
-                throw new MBException(fileName + " serialize error");
-            }
-            finally
-            {
-                if (writer != null)
-                {
-                    writer.Close();
-                }
+                throw new MBException(platformFilePath.FileName + " serialize error");
             }
         }
 
 
-        public static T Deserialize<T>(string fileName)
+        public static T Deserialize<T>(PlatformFilePath platformFilePath)
         {
-            XmlReader xmlReader = null;
-            StreamReader streamReader = null;
-            T data = default(T);
+            string fileString = FileHelper.GetFileContentString(platformFilePath);
+            T data = default (T);
+            
             try
             {
-                using (streamReader = new StreamReader(fileName))
+                StringReader stringReader;
+                using (stringReader = new StringReader(fileString))
                 {
-                    xmlReader = XmlReader.Create(streamReader);
+                    var xmlReader = XmlReader.Create(stringReader);
                     XmlSerializer serializer = new XmlSerializer(typeof(T));
-                    data = (T)serializer.Deserialize(xmlReader);
+                    
+                    if (serializer.CanDeserialize(xmlReader))
+                    {
+                        data = (T)serializer.Deserialize(xmlReader);
+                    }
                 }
             }
-            catch
+            catch (Exception e)
             {
-                throw new MBException(fileName + " deserialize error");
+                throw new MBException(platformFilePath.FileName + " " + e.Message);
             }
-            finally
-            {
-                if (xmlReader != null)
-                {
-                    xmlReader.Close();
-                }
-            }
+            
             return data;
         }
+
     }
 }

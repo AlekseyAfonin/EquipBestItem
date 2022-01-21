@@ -1,91 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace EquipBestItem
+namespace EquipBestItem.Settings
 {
     [Serializable]
     public class CharacterSettings
     {
         public string Name { get; set; }
 
-        private List<FilterWeaponSettings> _filterWeapon;
-
-        public List<FilterWeaponSettings> FilterWeapon
+        private Filters _filters;
+        public Filters Filters
         {
-            get
-            {
-                if (_filterWeapon == null)
-                {
-                    _filterWeapon = new List<FilterWeaponSettings>();
-                }
-                return _filterWeapon;
-            }
-        }
-
-        private List<FilterArmorSettings> _filterArmor;
-
-        public List<FilterArmorSettings> FilterArmor
-        {
-            get
-            {
-                if (_filterArmor == null)
-                {
-                    _filterArmor = new List<FilterArmorSettings>();
-                }
-                return _filterArmor;
-            }
-        }
-
-        private FilterMountSettings _filterMount;
-        public FilterMountSettings FilterMount
-        {
-            get
-            {
-                if (_filterMount == null)
-                {
-                    _filterMount = new FilterMountSettings();
-                }
-                return _filterMount;
-            }
-        }
-
-        public enum ArmorSlot
-        {
-            Helm = 0,
-            Cloak = 1,
-            Armor = 2,
-            Glove = 3,
-            Boot = 4,
-            Harness = 5
-        }
-
-        public enum WeaponSlot
-        {
-            Weapon1 = 0,
-            Weapon2 = 1,
-            Weapon3 = 2,
-            Weapon4 = 3
+            get => _filters;
+            set => _filters = value;
         }
 
         public CharacterSettings(string name)
         {
             Name = name;
 
-            for (int i = 0; i < 4; i++)
+            if (name == "default_equipbestitem" || name == "default_equipbestitem_civil")
             {
-                FilterWeapon.Add(new FilterWeaponSettings());
+                _filters = new Filters(true);
             }
 
-            for (int i = 0; i < 6; i++)
-            {
-                FilterArmor.Add(new FilterArmorSettings());
-            }
-
-            _filterMount = new FilterMountSettings();
+            if (_filters == null)
+                _filters = new Filters();
         }
 
         public CharacterSettings()
         {
+            Console.WriteLine("CharacterSettings() Constructor call");
         }
     }
 }
