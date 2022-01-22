@@ -227,6 +227,9 @@
       <HintPath>..\..\..\..\..\..\Games\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.GauntletUI.Widgets.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="TaleWorlds.MountAndBlade.View, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\..\..\Games\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\Native\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.View.dll</HintPath>
+    </Reference>
     <Reference Include="TaleWorlds.MountAndBlade.ViewModelCollection, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\..\..\..\..\Games\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.ViewModelCollection.dll</HintPath>
     </Reference>
@@ -296,10 +299,12 @@
     <Compile Include="Layers\FilterArmorLayer.cs" />
     <Compile Include="Layers\MainLayer.cs" />
     <Compile Include="Models\FilterArmorModel.cs" />
+    <Compile Include="Models\FilterModel.cs" />
     <Compile Include="Models\MainModel.cs" />
     <Compile Include="Settings\FilterElement.cs" />
     <Compile Include="Settings\Filters.cs" />
     <Compile Include="ViewModels\FilterArmorVM.cs" />
+    <Compile Include="ViewModels\FilterWeaponVM.cs" />
     <Compile Include="ViewModels\MainVM.cs" />
     <Compile Include="ViewModels\FilterVM.cs" />
     <Compile Include="Settings\FilterWeaponSettings.cs" />

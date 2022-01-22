@@ -1,19 +1,25 @@
 ﻿using EquipBestItem.ViewModels;
+using SandBox.GauntletUI;
+using SandBox.View.Map;
 using TaleWorlds.Engine.GauntletUI;
+using TaleWorlds.Engine.Screens;
+using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.Screen;
 
 namespace EquipBestItem.Layers
 {
     class MainLayer : GauntletLayer
     {
-        MainViewModel _viewModel;
+        private MainVM _vm;
 
         public MainLayer(int localOrder, string categoryId = "GauntletLayer") : base(localOrder, categoryId)
         {
-            _viewModel = new MainViewModel();
-            LoadMovie("EBI_Buttons", _viewModel);
+            
+            _vm = new MainVM(ScreenManager.TopScreen as InventoryGauntletScreen);
+            LoadMovie("EBI_Main", _vm);
         }
 
-        bool _leftMouseButtonWasReleased = false;
+        bool _leftMouseButtonWasReleased;
 
         protected override void OnLateUpdate(float dt)
         {
@@ -21,7 +27,7 @@ namespace EquipBestItem.Layers
 
             if (TaleWorlds.InputSystem.Input.IsKeyReleased(TaleWorlds.InputSystem.InputKey.LeftMouseButton) && !_leftMouseButtonWasReleased)
             {
-                _viewModel.RefreshValues();
+                _vm.RefreshValues();
                 _leftMouseButtonWasReleased = true;
             }
 
@@ -30,6 +36,12 @@ namespace EquipBestItem.Layers
                 _leftMouseButtonWasReleased = false;
             }
 
+        }
+
+        protected override void OnFinalize()
+        {
+            base.OnFinalize();
+            _vm = null;
         }
     }
 }

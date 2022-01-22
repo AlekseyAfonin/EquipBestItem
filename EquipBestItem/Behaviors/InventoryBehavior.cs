@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using EquipBestItem.Layers;
 using EquipBestItem.Settings;
+using EquipBestItem.ViewModels;
 using SandBox.GauntletUI;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
@@ -9,7 +9,6 @@ using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Engine.Screens;
 using TaleWorlds.Library;
-using TaleWorlds.MountAndBlade.ViewModelCollection;
 
 namespace EquipBestItem.Behaviors
 {
@@ -20,11 +19,10 @@ namespace EquipBestItem.Behaviors
             Game.Current.EventManager.RegisterEvent(new Action<TutorialContextChangedEvent>(AddNewInventoryLayer));
         }
 
-        public static SPInventoryVM Inventory;
-        InventoryGauntletScreen _inventoryScreen;
-        GauntletLayer _mainLayer;
-        FilterLayer _filterLayer;
-        private FilterArmorLayer _filterArmorLayer;
+
+        private MainLayer _mainLayer;
+        private FilterVM _filterVM;
+        private InventoryGauntletScreen _inventoryScreen;
 
         private void AddNewInventoryLayer(TutorialContextChangedEvent tutorialContextChangedEvent)
         {
@@ -35,25 +33,20 @@ namespace EquipBestItem.Behaviors
                     if (ScreenManager.TopScreen is InventoryGauntletScreen)
                     {
                         _inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
-                        Inventory = _inventoryScreen.GetField("_dataSource") as SPInventoryVM;
-
+                        
                         if (SettingsLoader.Instance.CharacterSettings == null)
                         {
-                            //SettingsLoader.Instance.LoadSettings();
                             SettingsLoader.Instance.LoadCharacterSettings();
                         }
-
-                        _mainLayer = new MainLayer(1000, "GauntletLayer");
-                        _inventoryScreen.AddLayer(_mainLayer);
+                        
+                        _mainLayer = new MainLayer(1000,"GauntletLayer");
+                        _inventoryScreen?.AddLayer(_mainLayer);
                         _mainLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
 
-                        _filterLayer = new FilterLayer(1001, "GauntletLayer");
-                        _inventoryScreen.AddLayer(_filterLayer);
-                        _filterLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
-                        
-                        _filterArmorLayer = new FilterArmorLayer(1002, "GauntletLayer");
-                        _inventoryScreen.AddLayer(_filterArmorLayer);
-                        _filterArmorLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+                        //
+                        // _filterLayer = new FilterLayer(1001, "GauntletLayer");
+                        // _inventoryScreen.AddLayer(_filterLayer);
+                        // _filterLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
                     }
 
                     //Temporarily disabled clearing settings file for characters
@@ -80,17 +73,10 @@ namespace EquipBestItem.Behaviors
                     {
                         if (_inventoryScreen != null && _mainLayer != null)
                         {
-
                             _inventoryScreen.RemoveLayer(_mainLayer);
-                            _mainLayer = null;
+                            _inventoryScreen = null;
                             SettingsLoader.Instance.SaveSettings();
                             SettingsLoader.Instance.SaveCharacterSettings();
-                        }
-
-                        if (_inventoryScreen != null && _filterLayer != null)
-                        {
-                            _inventoryScreen.RemoveLayer(_filterLayer);
-                            _filterLayer = null;
                         }
                     }
                 }

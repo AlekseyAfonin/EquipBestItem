@@ -126,9 +126,9 @@ namespace EquipBestItem.Settings
             }
         }
 
-        public CharacterSettings GetCharacterSettingsByName(string name)
+        public CharacterSettings GetCharacterSettingsByName(string name, bool isInWarSet)
         {
-            if (!InventoryBehavior.Inventory.IsInWarSet)
+            if (!isInWarSet)
                 name = name + "_civil";
 
             if (CharacterSettings != null)
