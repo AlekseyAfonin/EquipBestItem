@@ -319,15 +319,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="GUI\Brushes\EquipBestItemBrush.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GUI\Prefabs\Inventory\EBIInventory.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GUI\Prefabs\Inventory\FiltersLayer.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="GUI\Brushes\EquipBestItemBrush.xml" />
+    <Content Include="GUI\Prefabs\Inventory\EBI_Filters.xml" />
+    <Content Include="GUI\Prefabs\Inventory\EBI_Filter_Armor.xml" />
+    <Content Include="GUI\Prefabs\Inventory\EBI_Main.xml" />
     <Content Include="SubModule.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

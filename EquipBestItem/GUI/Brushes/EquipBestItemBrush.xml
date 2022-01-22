@@ -1,20 +1,20 @@
 <Brushes>
   <Brush Name="Inventory.EquipBetterItem.PlusButton">
     <Layers>
-      <BrushLayer Name="Default" Sprite="TroopTierIcons\icon_tier_2_big" />
+      <BrushLayer Name="Default" Sprite="General\TroopTierIcons\icon_tier_2_big" />
     </Layers>
     <Styles>
       <Style Name="Default">
-        <BrushLayer Name="Default" Sprite="TroopTierIcons\icon_tier_2_big" ColorFactor="0.7" IsHidden="false" />
+        <BrushLayer Name="Default" Sprite="General\TroopTierIcons\icon_tier_2_big" ColorFactor="0.7" IsHidden="false" />
       </Style>
       <Style Name="Hovered">
-        <BrushLayer Name="Default" Sprite="TroopTierIcons\icon_tier_2_big" ColorFactor="1.5" IsHidden="false" />
+        <BrushLayer Name="Default" Sprite="General\TroopTierIcons\icon_tier_2_big" ColorFactor="1.5" IsHidden="false" />
       </Style>
       <Style Name="Pressed">
-        <BrushLayer Name="Default" Sprite="TroopTierIcons\icon_tier_2_big" ColorFactor="2" IsHidden="false" />
+        <BrushLayer Name="Default" Sprite="General\TroopTierIcons\icon_tier_2_big" ColorFactor="2" IsHidden="false" />
       </Style>
       <Style Name="Disabled">
-        <BrushLayer Name="Default" Sprite="TroopTierIcons\icon_tier_2_big" IsHidden="true" />
+        <BrushLayer Name="Default" Sprite="General\TroopTierIcons\icon_tier_2_big" IsHidden="true" />
       </Style>
     </Styles>
     <SoundProperties>
@@ -27,7 +27,7 @@
   </Brush>
   <Brush Name="Inventory.EquipBetterItem.EquipAllButtonIcon">
     <Layers>
-      <BrushLayer Name="Default" Sprite="InventoryPartyExtension\Extension\equip" />
+      <BrushLayer Name="Default" Sprite="Inventory\equip" />
     </Layers>
     <Styles>
       <Style Name="Default">
@@ -78,23 +78,23 @@
   </Brush>
   <Brush Name="Inventory.EquipBetterItem.Filter">
     <Layers>
-      <BrushLayer Name="Default" Sprite="GameMenu\submenu_icon" />
+      <BrushLayer Name="Default" Sprite="SPGeneral\GameMenu\submenu_icon" />
     </Layers>
     <Styles>
       <Style Name="Default">
-        <BrushLayer Name="Default" Sprite="GameMenu\submenu_icon" ColorFactor="0.3" />
+        <BrushLayer Name="Default" Sprite="SPGeneral\GameMenu\submenu_icon" ColorFactor="0.3" />
       </Style>
       <Style Name="Hovered">
-        <BrushLayer Name="Default" Sprite="GameMenu\submenu_icon" ColorFactor="1.2" />
+        <BrushLayer Name="Default" Sprite="SPGeneral\GameMenu\submenu_icon" ColorFactor="1.2" />
       </Style>
       <Style Name="Selected">
-        <BrushLayer Name="Default" Sprite="GameMenu\submenu_icon" ColorFactor="1.0" />
+        <BrushLayer Name="Default" Sprite="SPGeneral\GameMenu\submenu_icon" ColorFactor="1.0" />
       </Style>
       <Style Name="Pressed">
-        <BrushLayer Name="Default" Sprite="GameMenu\submenu_icon" ColorFactor="1.4" />
+        <BrushLayer Name="Default" Sprite="SPGeneral\GameMenu\submenu_icon" ColorFactor="1.4" />
       </Style>
       <Style Name="Disabled">
-        <BrushLayer Name="Default" Sprite="GameMenu\submenu_icon" IsHidden="true" />
+        <BrushLayer Name="Default" Sprite="SPGeneral\GameMenu\submenu_icon" IsHidden="true" />
       </Style>
     </Styles>
     <SoundProperties>
