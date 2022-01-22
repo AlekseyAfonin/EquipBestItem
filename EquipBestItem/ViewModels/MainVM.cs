@@ -220,33 +220,33 @@ namespace EquipBestItem.ViewModels
 
         #endregion DataSourcePropertys
 
-        private readonly MainModel _mainModel;
+        private MainModel _model;
         
         public MainVM(InventoryGauntletScreen inventoryScreen)
         {
-            _mainModel = new MainModel(inventoryScreen.GetField("_dataSource") as SPInventoryVM);
+            _model = new MainModel(inventoryScreen.GetField("_dataSource") as SPInventoryVM);
         }
 
         public override void RefreshValues()
         {
             base.RefreshValues();
-            _mainModel.RefreshValues();
+            _model.RefreshValues();
 
-             IsHelmButtonEnabled = (!_mainModel.BestLeftEquipment[EquipmentIndex.Head].IsEmpty || !_mainModel.BestRightEquipment[EquipmentIndex.Head].IsEmpty);
-             IsCloakButtonEnabled = (!_mainModel.BestLeftEquipment[EquipmentIndex.Cape].IsEmpty || !_mainModel.BestRightEquipment[EquipmentIndex.Cape].IsEmpty);
-             IsArmorButtonEnabled = (!_mainModel.BestLeftEquipment[EquipmentIndex.Body].IsEmpty || !_mainModel.BestRightEquipment[EquipmentIndex.Body].IsEmpty);
-             IsGloveButtonEnabled = (!_mainModel.BestLeftEquipment[EquipmentIndex.Gloves].IsEmpty || !_mainModel.BestRightEquipment[EquipmentIndex.Gloves].IsEmpty);
-             IsBootButtonEnabled = (!_mainModel.BestLeftEquipment[EquipmentIndex.Leg].IsEmpty || !_mainModel.BestRightEquipment[EquipmentIndex.Leg].IsEmpty);
-             IsMountButtonEnabled = (!_mainModel.BestLeftEquipment[EquipmentIndex.Horse].IsEmpty || !_mainModel.BestRightEquipment[EquipmentIndex.Horse].IsEmpty);
-             IsHarnessButtonEnabled = (!_mainModel.BestLeftEquipment[EquipmentIndex.HorseHarness].IsEmpty || !_mainModel.BestRightEquipment[EquipmentIndex.HorseHarness].IsEmpty);
-             IsWeapon1ButtonEnabled = (!_mainModel.BestLeftEquipment[EquipmentIndex.Weapon0].IsEmpty || !_mainModel.BestRightEquipment[EquipmentIndex.Weapon0].IsEmpty);
-             IsWeapon2ButtonEnabled = (!_mainModel.BestLeftEquipment[EquipmentIndex.Weapon1].IsEmpty || !_mainModel.BestRightEquipment[EquipmentIndex.Weapon1].IsEmpty);
-             IsWeapon3ButtonEnabled = (!_mainModel.BestLeftEquipment[EquipmentIndex.Weapon2].IsEmpty || !_mainModel.BestRightEquipment[EquipmentIndex.Weapon2].IsEmpty);
-             IsWeapon4ButtonEnabled = (!_mainModel.BestLeftEquipment[EquipmentIndex.Weapon3].IsEmpty || !_mainModel.BestRightEquipment[EquipmentIndex.Weapon3].IsEmpty);
+             IsHelmButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Head].IsEmpty || !_model.BestRightEquipment[EquipmentIndex.Head].IsEmpty);
+             IsCloakButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Cape].IsEmpty || !_model.BestRightEquipment[EquipmentIndex.Cape].IsEmpty);
+             IsArmorButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Body].IsEmpty || !_model.BestRightEquipment[EquipmentIndex.Body].IsEmpty);
+             IsGloveButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Gloves].IsEmpty || !_model.BestRightEquipment[EquipmentIndex.Gloves].IsEmpty);
+             IsBootButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Leg].IsEmpty || !_model.BestRightEquipment[EquipmentIndex.Leg].IsEmpty);
+             IsMountButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Horse].IsEmpty || !_model.BestRightEquipment[EquipmentIndex.Horse].IsEmpty);
+             IsHarnessButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.HorseHarness].IsEmpty || !_model.BestRightEquipment[EquipmentIndex.HorseHarness].IsEmpty);
+             IsWeapon1ButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Weapon0].IsEmpty || !_model.BestRightEquipment[EquipmentIndex.Weapon0].IsEmpty);
+             IsWeapon2ButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Weapon1].IsEmpty || !_model.BestRightEquipment[EquipmentIndex.Weapon1].IsEmpty);
+             IsWeapon3ButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Weapon2].IsEmpty || !_model.BestRightEquipment[EquipmentIndex.Weapon2].IsEmpty);
+             IsWeapon4ButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Weapon3].IsEmpty || !_model.BestRightEquipment[EquipmentIndex.Weapon3].IsEmpty);
             
              for (EquipmentIndex equipmentIndex = EquipmentIndex.WeaponItemBeginSlot; equipmentIndex < EquipmentIndex.NumEquipmentSetSlots; equipmentIndex++)
              {
-                 if (_mainModel.BestLeftEquipment[equipmentIndex].IsEmpty && _mainModel.BestRightEquipment[equipmentIndex].IsEmpty)
+                 if (_model.BestLeftEquipment[equipmentIndex].IsEmpty && _model.BestRightEquipment[equipmentIndex].IsEmpty)
                      IsEquipCurrentCharacterButtonEnabled = false;
                  else
                  {
@@ -260,68 +260,75 @@ namespace EquipBestItem.ViewModels
 
         public void ExecuteEquipBestHelm()
         {
-            _mainModel.EquipBestItem(EquipmentIndex.Head);
+            _model.EquipBestItem(EquipmentIndex.Head);
         }
 
         public void ExecuteEquipBestCloak()
         {
-            _mainModel.EquipBestItem(EquipmentIndex.Cape);
+            _model.EquipBestItem(EquipmentIndex.Cape);
         }
 
         public void ExecuteEquipBestArmor()
         {
-            _mainModel.EquipBestItem(EquipmentIndex.Body);
+            _model.EquipBestItem(EquipmentIndex.Body);
         }
 
         public void ExecuteEquipBestGlove()
         {
-            _mainModel.EquipBestItem(EquipmentIndex.Gloves);
+            _model.EquipBestItem(EquipmentIndex.Gloves);
         }
 
         public void ExecuteEquipBestBoot()
         {
-            _mainModel.EquipBestItem(EquipmentIndex.Leg);
+            _model.EquipBestItem(EquipmentIndex.Leg);
         }
 
         public void ExecuteEquipBestMount()
         {
-            _mainModel.EquipBestItem(EquipmentIndex.Horse);
+            _model.EquipBestItem(EquipmentIndex.Horse);
         }
 
         public void ExecuteEquipBestHarness()
         {
-            _mainModel.EquipBestItem(EquipmentIndex.HorseHarness);
+            _model.EquipBestItem(EquipmentIndex.HorseHarness);
         }
 
         public void ExecuteEquipBestWeapon1()
         {
-            _mainModel.EquipBestItem(EquipmentIndex.Weapon0);
+            _model.EquipBestItem(EquipmentIndex.Weapon0);
         }
 
         public void ExecuteEquipBestWeapon2()
         {
-            _mainModel.EquipBestItem(EquipmentIndex.Weapon1);
+            _model.EquipBestItem(EquipmentIndex.Weapon1);
         }
 
         public void ExecuteEquipBestWeapon3()
         {
-            _mainModel.EquipBestItem(EquipmentIndex.Weapon2);
+            _model.EquipBestItem(EquipmentIndex.Weapon2);
         }
 
         public void ExecuteEquipBestWeapon4()
         {
-            _mainModel.EquipBestItem(EquipmentIndex.Weapon3);
+            _model.EquipBestItem(EquipmentIndex.Weapon3);
         }
 
         public void ExecuteEquipEveryCharacter()
         {
-            _mainModel.EquipEveryCharacter();
+            _model.EquipEveryCharacter();
         }
 
         public void ExecuteEquipCurrentCharacter()
         {
-            _mainModel.EquipCurrentCharacter();
+            _model.EquipCurrentCharacter();
             RefreshValues();
+        }
+
+        public override void OnFinalize()
+        {
+            _model.OnFinalize();
+            _model = null;
+            base.OnFinalize();
         }
     }
 }

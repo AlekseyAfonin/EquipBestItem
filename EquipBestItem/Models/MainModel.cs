@@ -10,13 +10,13 @@ namespace EquipBestItem.Models
 {
     public class MainModel
     {
-        private readonly InventoryLogic _inventoryLogic;
+        private InventoryLogic _inventoryLogic;
         
         private CharacterSettings _characterSettings;
         private CharacterObject _currentCharacter;
         public Equipment BestLeftEquipment { get; private set; }
         public Equipment BestRightEquipment { get; private set; }
-        private readonly SPInventoryVM _inventory;
+        private SPInventoryVM _inventory;
         private System.Diagnostics.Stopwatch _watch;
         
         public MainModel(SPInventoryVM inventory)
@@ -599,6 +599,15 @@ namespace EquipBestItem.Models
         public void EquipCurrentCharacter()
         {
             EquipCharacter(GetCharacterByName(_inventory.CurrentCharacterName));
+        }
+
+        public void OnFinalize()
+        {
+            _inventory = null;
+            _watch = null;
+            _characterSettings = null;
+            _currentCharacter = null;
+            _inventoryLogic = null;
         }
     }
     

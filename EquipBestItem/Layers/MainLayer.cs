@@ -1,10 +1,7 @@
 ﻿using EquipBestItem.ViewModels;
 using SandBox.GauntletUI;
-using SandBox.View.Map;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Engine.Screens;
-using TaleWorlds.MountAndBlade.View.Missions;
-using TaleWorlds.MountAndBlade.View.Screen;
 
 namespace EquipBestItem.Layers
 {
@@ -40,8 +37,8 @@ namespace EquipBestItem.Layers
 
         protected override void OnFinalize()
         {
-            base.OnFinalize();
             _vm = null;
+            base.OnFinalize();
         }
     }
 }

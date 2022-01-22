@@ -1,14 +1,10 @@
 ﻿using System;
 using EquipBestItem.Layers;
 using EquipBestItem.Settings;
-using EquipBestItem.ViewModels;
 using SandBox.GauntletUI;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
-using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Engine.Screens;
-using TaleWorlds.Library;
 
 namespace EquipBestItem.Behaviors
 {
@@ -21,7 +17,7 @@ namespace EquipBestItem.Behaviors
 
 
         private MainLayer _mainLayer;
-        private FilterVM _filterVM;
+        private FilterLayer _filterLayer;
         private InventoryGauntletScreen _inventoryScreen;
 
         private void AddNewInventoryLayer(TutorialContextChangedEvent tutorialContextChangedEvent)
@@ -39,14 +35,13 @@ namespace EquipBestItem.Behaviors
                             SettingsLoader.Instance.LoadCharacterSettings();
                         }
                         
-                        _mainLayer = new MainLayer(1000,"GauntletLayer");
+                        _mainLayer = new MainLayer(16);
                         _inventoryScreen?.AddLayer(_mainLayer);
-                        _mainLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+                        _mainLayer.InputRestrictions.SetInputRestrictions();
 
-                        //
-                        // _filterLayer = new FilterLayer(1001, "GauntletLayer");
-                        // _inventoryScreen.AddLayer(_filterLayer);
-                        // _filterLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+                        _filterLayer = new FilterLayer(16);
+                        _inventoryScreen?.AddLayer(_filterLayer);
+                        _filterLayer.InputRestrictions.SetInputRestrictions();
                     }
 
                     //Temporarily disabled clearing settings file for characters
@@ -95,7 +90,6 @@ namespace EquipBestItem.Behaviors
 
         public override void SyncData(IDataStore dataStore)
         {
-
         }
     }
 }
