@@ -1,6 +1,6 @@
 namespace EquipBestItem.Models
 {
-    public class FilterArmorModel
+    public class FiltersSettingsModel
     {
         
     }

@@ -7,12 +7,12 @@ namespace EquipBestItem.Layers
 {
     internal class FilterLayer : GauntletLayer
     {
-        private FilterVM _vm;
+        private FiltersVM _vm;
 
 
         public FilterLayer(int localOrder, string categoryId = "GauntletLayer") : base(localOrder, categoryId)
         {
-            _vm = new FilterVM(ScreenManager.TopScreen as InventoryGauntletScreen);
+            _vm = new FiltersVM(ScreenManager.TopScreen as InventoryGauntletScreen);
             LoadMovie("EBI_Filters", _vm);
         }
 

@@ -236,6 +236,7 @@ namespace EquipBestItem.Models
             }
         }
 
+        //TODO async search
         public EquipmentElement GetBetterItemFromSide(MBBindingList<SPItemVM> itemListVM, EquipmentElement equipmentElement, EquipmentIndex slot, bool isCivilian, CharacterObject character)
         {
             EquipmentElement bestEquipmentElement = default;

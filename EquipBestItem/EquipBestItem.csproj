@@ -296,17 +296,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\InventoryBehavior.cs" />
-    <Compile Include="Layers\FilterArmorLayer.cs" />
+    <Compile Include="Layers\FiltersSettingsLayer.cs" />
     <Compile Include="Layers\MainLayer.cs" />
-    <Compile Include="Models\FilterArmorModel.cs" />
-    <Compile Include="Models\FilterModel.cs" />
+    <Compile Include="Models\FiltersSettingsModel.cs" />
+    <Compile Include="Models\FiltersModel.cs" />
     <Compile Include="Models\MainModel.cs" />
     <Compile Include="Settings\FilterElement.cs" />
     <Compile Include="Settings\Filters.cs" />
-    <Compile Include="ViewModels\FilterArmorVM.cs" />
+    <Compile Include="ViewModels\FiltersSettingsVM.Armor.cs" />
+    <Compile Include="ViewModels\FiltersSettingsVM.cs" />
+    <Compile Include="ViewModels\FiltersSettingsVM.HorseHarness.cs" />
+    <Compile Include="ViewModels\FiltersSettingsVM.Horse.cs" />
+    <Compile Include="ViewModels\FiltersSettingsVM.Weapon.cs" />
     <Compile Include="ViewModels\FilterWeaponVM.cs" />
     <Compile Include="ViewModels\MainVM.cs" />
-    <Compile Include="ViewModels\FilterVM.cs" />
+    <Compile Include="ViewModels\FiltersVM.cs" />
     <Compile Include="Settings\FilterWeaponSettings.cs" />
     <Compile Include="Layers\FilterLayer.cs" />
     <Compile Include="Helper.cs" />

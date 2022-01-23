@@ -7,7 +7,7 @@ using TaleWorlds.CampaignSystem.ViewModelCollection;
 
 namespace EquipBestItem.ViewModels
 {
-    public class FilterVM : ViewModel
+    public class FiltersVM : ViewModel
     {
         #region DataSourcePropertys
 
@@ -401,13 +401,13 @@ namespace EquipBestItem.ViewModels
 
         #endregion DataSourceProperties
 
-        private FilterModel _model;
+        private FiltersModel _model;
         private InventoryGauntletScreen _inventoryScreen;
 
-        public FilterVM(InventoryGauntletScreen inventoryScreen)
+        public FiltersVM(InventoryGauntletScreen inventoryScreen)
         {
             _inventoryScreen = inventoryScreen;
-            _model = new FilterModel(this, _inventoryScreen.GetField("_dataSource") as SPInventoryVM);
+            _model = new FiltersModel(this, _inventoryScreen.GetField("_dataSource") as SPInventoryVM);
         }
 
         public sealed override void RefreshValues()
@@ -422,58 +422,58 @@ namespace EquipBestItem.ViewModels
         
         public void ExecuteShowHideWeapon1Filter()
         {
-            
-            RefreshValues();
+
+            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Weapon0);
         }
         
         public void ExecuteShowHideWeapon2Filter()
         {
-            RefreshValues();
+            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Weapon1);
         }
         
         public void ExecuteShowHideWeapon3Filter()
         {
-            RefreshValues();
+            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Weapon2);
         }
         
         public void ExecuteShowHideWeapon4Filter()
         {
-            RefreshValues();
+            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Weapon3);
         }
         
         public void ExecuteShowHideHelmFilter()
         {
-            _model.ShowHideArmorLayer(_inventoryScreen, EquipmentIndex.Head);
+            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Head);
         }
         
         public void ExecuteShowHideCloakFilter()
         {
-            _model.ShowHideArmorLayer(_inventoryScreen, EquipmentIndex.Cape);
+            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Cape);
         }
         
         public void ExecuteShowHideArmorFilter()
         {
-            _model.ShowHideArmorLayer(_inventoryScreen, EquipmentIndex.Body);
+            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Body);
         }
         
         public void ExecuteShowHideGloveFilter()
         {
-            _model.ShowHideArmorLayer(_inventoryScreen, EquipmentIndex.Gloves);
+            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Gloves);
         }
         
         public void ExecuteShowHideBootFilter()
         {
-            _model.ShowHideArmorLayer(_inventoryScreen, EquipmentIndex.Leg);
+            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Leg);
         }
         
         public void ExecuteShowHideMountFilter()
         {
-            RefreshValues();
+            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Horse);
         }
         
         public void ExecuteShowHideHarnessFilter()
         {
-            RefreshValues();
+            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.HorseHarness);
         }
 
         public override void OnFinalize()
