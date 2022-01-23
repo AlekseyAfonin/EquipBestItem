@@ -25,23 +25,6 @@ namespace EquipBestItem.Models
         {
             try
             {
-                _characterSettings = SettingsLoader.Instance.GetCharacterSettingsByName(_inventory.CurrentCharacterName, _inventory.IsInWarSet);
-                if (_characterSettings == null)
-                {
-                    _characterSettings = _inventory.IsInWarSet 
-                        ? new CharacterSettings(_inventory.CurrentCharacterName) 
-                        : new CharacterSettings(_inventory.CurrentCharacterName + "_civil");
-
-                    for (var index = EquipmentIndex.WeaponItemBeginSlot;
-                         index < EquipmentIndex.NumEquipmentSetSlots;
-                         index++)
-                    {
-                        _characterSettings.Filters.SetDefault(index, _inventory.IsInWarSet);
-                    }
-
-                    SettingsLoader.Instance.CharacterSettings.Add(_characterSettings);
-                }
-                
                 //Icon state
                 _vm.IsHelmFilterSelected = !_characterSettings.Filters.IsDefault(EquipmentIndex.Head, _inventory.IsInWarSet);
                 _vm.IsHelmFilterLocked = _characterSettings.Filters.IsLocked(EquipmentIndex.Head);
@@ -65,7 +48,6 @@ namespace EquipBestItem.Models
                 _vm.IsWeapon3FilterLocked = _characterSettings.Filters.IsLocked(EquipmentIndex.Weapon2);
                 _vm.IsWeapon4FilterSelected = !_characterSettings.Filters.IsDefault(EquipmentIndex.Weapon3, _inventory.IsInWarSet);
                 _vm.IsWeapon4FilterLocked = _characterSettings.Filters.IsLocked(EquipmentIndex.Weapon3);
-                
             }
             catch (MBException e)
             {
