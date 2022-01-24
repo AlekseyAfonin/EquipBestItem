@@ -10,14 +10,17 @@ namespace EquipBestItem.Settings
     public class SettingsLoader
     {
         //New settings folder "Documents\Mount and Blade II Bannerlord\Configs\"
-        private PlatformFilePath _settingsFile = new PlatformFilePath(EngineFilePaths.ConfigsPath, "Settings.xml");
-        private PlatformFilePath _characterSettingsFile = new PlatformFilePath(EngineFilePaths.ConfigsPath, "CharacterSettings.xml");
+        private PlatformFilePath _settingsFile = 
+            new PlatformFilePath(EngineFilePaths.ConfigsPath, "Settings.xml");
+
+        private PlatformFilePath _characterSettingsFile =
+            new PlatformFilePath(EngineFilePaths.ConfigsPath, "CharacterSettings.xml");
 
         private static SettingsLoader _instance;
 
         public Settings Settings { get; private set; }
 
-        public List<CharacterSettings> CharacterSettings { get; private set; }
+        private List<CharacterSettings> CharacterSettings { get; set; }
 
         private SettingsLoader()
         {
@@ -128,21 +131,42 @@ namespace EquipBestItem.Settings
 
         public CharacterSettings GetCharacterSettingsByName(string name, bool isInWarSet)
         {
-            if (!isInWarSet)
-                name = name + "_civil";
-
-            if (CharacterSettings != null)
+            CharacterSettings charSettings = null;
+            
+            try
             {
-                foreach (CharacterSettings charSettings in CharacterSettings)
+                if (name == null) throw new MBException("CharacterSettings exception. Name = null.");
+                if (!isInWarSet)
+                    name = name + "_civil";
+                
+                foreach (var charSet in CharacterSettings)
                 {
-                    if (charSettings.Name == name)
-                    {
-                        return charSettings;
-                    }
+                    if (charSet.Name != name) continue;
+                    charSettings = charSet;
+                    return charSettings;
                 }
+
+                charSettings = new CharacterSettings(name);
+
+                for (var index = EquipmentIndex.WeaponItemBeginSlot; index < EquipmentIndex.NumEquipmentSetSlots; index++)
+                    charSettings.Filters.SetDefault(index, isInWarSet);
+
+                CharacterSettings.Add(charSettings);
+            }
+            catch (MBException e)
+            {
+                if (Instance.Settings.Debug)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message + e.StackTrace);
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+
+                InformationManager.DisplayMessage(new InformationMessage(e.Message));
             }
 
-            return null;
+            return charSettings;
         }
     }
 }
+

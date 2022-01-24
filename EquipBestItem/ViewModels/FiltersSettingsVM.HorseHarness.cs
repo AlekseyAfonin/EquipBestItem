@@ -18,7 +18,7 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_speedBonusValue - value) > Tolerance)) return;
                 _speedBonusValue = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithValue(value);
                 OnPropertyChanged("SpeedBonusValueText");
             }
         }
@@ -36,7 +36,7 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_chargeBonusValue - value) > Tolerance)) return;
                 _chargeBonusValue = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithValue(value);
                 OnPropertyChanged("ChargeBonusValueText");
             }
         }
@@ -45,17 +45,17 @@ namespace EquipBestItem.ViewModels
         public string ChargeBonusValueText => ChargeBonusValue.ToString(CultureInfo.InvariantCulture);
         
 
-        private float _maneuverBonusValueValue;
+        private float _maneuverBonusValue;
         
         [DataSourceProperty]
         public float ManeuverBonusValue
         {
-            get => _maneuverBonusValueValue;
+            get => _maneuverBonusValue;
             set
             {
-                if (!(Math.Abs(_maneuverBonusValueValue - value) > Tolerance)) return;
-                _maneuverBonusValueValue = value;
-                OnPropertyChanged();
+                if (!(Math.Abs(_maneuverBonusValue - value) > Tolerance)) return;
+                _maneuverBonusValue = value;
+                OnPropertyChangedWithValue(value);
                 OnPropertyChanged("ManeuverBonusValueText");
             }
         }

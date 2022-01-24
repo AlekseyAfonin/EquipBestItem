@@ -18,7 +18,7 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_headArmorValue - value) > Tolerance)) return;
                 _headArmorValue = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithValue(value);
                 OnPropertyChanged("HeadArmorValueText");
             }
         }
@@ -37,7 +37,7 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_bodyArmorValue - value) > Tolerance)) return;
                 _bodyArmorValue = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithValue(value);
                 OnPropertyChanged("BodyArmorValueText");
             }
         }
@@ -55,7 +55,7 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_cloakArmorValue - value) > Tolerance)) return;
                 _cloakArmorValue = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithValue(value);
                 OnPropertyChanged("CloakArmorValueText");
             }
         }
@@ -73,7 +73,7 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_legArmorValue - value) > Tolerance)) return;
                 _legArmorValue = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithValue(value);
                 OnPropertyChanged("LegArmorValueText");
             }
         }
@@ -91,7 +91,7 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_armArmorValue - value) > Tolerance)) return;
                 _armArmorValue = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithValue(value);
                 OnPropertyChanged("ArmArmorValueText");
             }
         }

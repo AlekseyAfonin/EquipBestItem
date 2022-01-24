@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -308,10 +309,8 @@
     <Compile Include="ViewModels\FiltersSettingsVM.HorseHarness.cs" />
     <Compile Include="ViewModels\FiltersSettingsVM.Horse.cs" />
     <Compile Include="ViewModels\FiltersSettingsVM.Weapon.cs" />
-    <Compile Include="ViewModels\FilterWeaponVM.cs" />
     <Compile Include="ViewModels\MainVM.cs" />
     <Compile Include="ViewModels\FiltersVM.cs" />
-    <Compile Include="Settings\FilterWeaponSettings.cs" />
     <Compile Include="Layers\FilterLayer.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Widgets\LockRightPanelWidget.cs" />

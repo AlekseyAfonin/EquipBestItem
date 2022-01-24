@@ -18,7 +18,7 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_chargeDamageValue - value) > Tolerance)) return;
                 _chargeDamageValue = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithValue(value);
                 OnPropertyChanged("ChargeDamageValueText");
             }
         }
@@ -36,7 +36,7 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_hitPointsValue - value) > Tolerance)) return;
                 _hitPointsValue = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithValue(value);
                 OnPropertyChanged("HitPointsValueText");
             }
         }
@@ -54,7 +54,7 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_maneuverValueValue - value) > Tolerance)) return;
                 _maneuverValueValue = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithValue(value);
                 OnPropertyChanged("ManeuverValueText");
             }
         }
@@ -62,17 +62,17 @@ namespace EquipBestItem.ViewModels
         [DataSourceProperty] 
         public string ManeuverValueText => ManeuverValue.ToString(CultureInfo.InvariantCulture);
         
-        private float _speedValueValue;
+        private float _speedValue;
         
         [DataSourceProperty]
         public float SpeedValue
         {
-            get => _speedValueValue;
+            get => _speedValue;
             set
             {
-                if (!(Math.Abs(_speedValueValue - value) > Tolerance)) return;
-                _speedValueValue = value;
-                OnPropertyChanged();
+                if (!(Math.Abs(_speedValue - value) > Tolerance)) return;
+                _speedValue = value;
+                OnPropertyChangedWithValue(value);
                 OnPropertyChanged("SpeedValueText");
             }
         }
@@ -93,7 +93,7 @@ namespace EquipBestItem.ViewModels
             {
                 if (_isChargeDamageValueIsDefault == value) return;
                 _isChargeDamageValueIsDefault = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithValue(value);
             }
         }
 

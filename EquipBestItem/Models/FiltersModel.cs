@@ -12,17 +12,26 @@ namespace EquipBestItem.Models
     {
         private SPInventoryVM _inventory;
         private FiltersVM _vm;
-
+        private CharacterSettings _characterSettings;
+        
         public FiltersModel(FiltersVM vm, SPInventoryVM inventory)
         {
             _inventory = inventory;
             _vm = vm;
+            _characterSettings =
+                SettingsLoader.Instance.GetCharacterSettingsByName(_inventory.CurrentCharacterName,
+                    _inventory.IsInWarSet);
         }
 
-        private CharacterSettings _characterSettings;
+        
         
         public void RefreshValues()
         {
+            if (_characterSettings.Name != _inventory.CurrentCharacterName)
+                _characterSettings =
+                    SettingsLoader.Instance.GetCharacterSettingsByName(_inventory.CurrentCharacterName,
+                        _inventory.IsInWarSet);
+            
             try
             {
                 //Icon state
@@ -72,7 +81,7 @@ namespace EquipBestItem.Models
             
             if (_currentSlot != selectedSlot)
             {
-                _currentFilterLayer = new FiltersSettingsLayer(16, _inventory, selectedSlot);
+                _currentFilterLayer = new FiltersSettingsLayer(17, _inventory, selectedSlot);
                 inventoryScreen?.AddLayer(_currentFilterLayer);
                 _currentFilterLayer.InputRestrictions.SetInputRestrictions();
                 _currentSlot = selectedSlot;

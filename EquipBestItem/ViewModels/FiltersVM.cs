@@ -415,7 +415,6 @@ namespace EquipBestItem.ViewModels
             base.RefreshValues();
             _model.RefreshValues();
 
-
             Console.WriteLine("FilterVMRefreshValue");
             InformationManager.DisplayMessage(new InformationMessage("FilterVMRefreshValue"));
         }

@@ -321,7 +321,6 @@ namespace EquipBestItem.ViewModels
         public void ExecuteEquipCurrentCharacter()
         {
             _model.EquipCurrentCharacter();
-            RefreshValues();
         }
 
         public override void OnFinalize()

@@ -10,19 +10,20 @@ namespace EquipBestItem.Models
 {
     public class MainModel
     {
-        private InventoryLogic _inventoryLogic;
+        private readonly InventoryLogic _inventoryLogic;
         
-        private CharacterSettings _characterSettings;
         private CharacterObject _currentCharacter;
         public Equipment BestLeftEquipment { get; private set; }
         public Equipment BestRightEquipment { get; private set; }
-        private SPInventoryVM _inventory;
+        private readonly SPInventoryVM _inventory;
         private System.Diagnostics.Stopwatch _watch;
         
         public MainModel(SPInventoryVM inventory)
         {
+            SettingsLoader.Instance.LoadCharacterSettings();
             _inventoryLogic = InventoryManager.InventoryLogic;
             _inventory = inventory;
+            _currentCharacter = GetCharacterByName(_inventory.CurrentCharacterName);
         }
 
         public void RefreshValues()
@@ -32,19 +33,11 @@ namespace EquipBestItem.Models
                 _watch = System.Diagnostics.Stopwatch.StartNew();
             }
 
-            _currentCharacter = GetCharacterByName(_inventory.CurrentCharacterName);
-
-            _characterSettings = SettingsLoader.Instance.GetCharacterSettingsByName(_currentCharacter.Name.ToString(), _inventory.IsInWarSet);
-            if (_characterSettings == null)
+            if (_currentCharacter.Name.ToString() != _inventory.CurrentCharacterName)
             {
-                _characterSettings = new CharacterSettings(_inventory.CurrentCharacterName);
-                for (EquipmentIndex index = EquipmentIndex.WeaponItemBeginSlot; index < EquipmentIndex.NumEquipmentSetSlots; index++)
-                {
-                    _characterSettings.Filters.SetDefault(index, _inventory.IsInWarSet);
-                }
-                SettingsLoader.Instance.CharacterSettings.Add(_characterSettings);
+                _currentCharacter = GetCharacterByName(_inventory.CurrentCharacterName);
             }
-
+            
             Equipment equipment = _inventory.IsInWarSet ? _currentCharacter.FirstBattleEquipment : _currentCharacter.FirstCivilianEquipment;
             BestLeftEquipment = new Equipment();
             BestRightEquipment = new Equipment();
@@ -68,7 +61,7 @@ namespace EquipBestItem.Models
                 }
 
                 if (bestLeftEquipmentElement.Item != null || bestRightEquipmentElement.Item != null)
-                    if (ItemIndexCalculation(bestLeftEquipmentElement, equipmentIndex) > ItemIndexCalculation(bestRightEquipmentElement, equipmentIndex))
+                    if (ItemIndexCalculation(bestLeftEquipmentElement, equipmentIndex, _currentCharacter) > ItemIndexCalculation(bestRightEquipmentElement, equipmentIndex, _currentCharacter))
                     {
                         BestLeftEquipment[equipmentIndex] = bestLeftEquipmentElement;
                     }
@@ -133,7 +126,7 @@ namespace EquipBestItem.Models
                 }
 
                 if (bestLeftEquipmentElement.Item != null || bestRightEquipmentElement.Item != null)
-                    if (ItemIndexCalculation(bestLeftEquipmentElement, equipmentIndex) > ItemIndexCalculation(bestRightEquipmentElement, equipmentIndex))
+                    if (ItemIndexCalculation(bestLeftEquipmentElement, equipmentIndex, character) > ItemIndexCalculation(bestRightEquipmentElement, equipmentIndex, character))
                     {
                         TransferCommand equipCommand = TransferCommand.Transfer(
                             1,
@@ -165,25 +158,13 @@ namespace EquipBestItem.Models
                         EquipMessage(equipmentIndex, character);
                         _inventoryLogic.AddTransferCommand(equipCommand);
                     }
-                _inventory.GetMethod("ExecuteRemoveZeroCounts");
+                _inventory.ExecuteRemoveZeroCounts();
             }
-            _inventory.GetMethod("RefreshInformationValues");
+            _inventory.RefreshValues();
         }
 
         public void EquipCharacter(CharacterObject character)
         {
-            _characterSettings = SettingsLoader.Instance.GetCharacterSettingsByName(character.Name.ToString(), _inventory.IsInWarSet);
-            if (_characterSettings == null)
-            {
-                _characterSettings = new CharacterSettings(_inventory.CurrentCharacterName);
-                for (EquipmentIndex index = EquipmentIndex.WeaponItemBeginSlot; index < EquipmentIndex.NumEquipmentSetSlots; index++)
-                {
-                    _characterSettings.Filters.SetDefault(index, _inventory.IsInWarSet);
-                }
-                SettingsLoader.Instance.CharacterSettings.Add(_characterSettings);
-            }
-
-
             if (_inventory.IsInWarSet)
             {
                 Equipment battleEquipment = character.FirstBattleEquipment;
@@ -251,64 +232,64 @@ namespace EquipBestItem.Models
                         item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon != null &&
                         item.IsEquipableItem &&
                         item.IsCivilianItem &&
-                        CharacterHelper.CanUseItemBasedOnSkill(character, item.ItemRosterElement.EquipmentElement) && !item.IsLocked && item.ItemCount != 0
+                        CharacterHelper.CanUseItemBasedOnSkill(character, item.ItemRosterElement.EquipmentElement) && !item.IsLocked
                         )
                     {
                         if (equipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon.WeaponClass &&
-                            GetItemUsage(item) == equipmentElement.Item.PrimaryWeapon.ItemUsage && !item.IsLocked && item.ItemCount != 0)
+                            GetItemUsage(item) == equipmentElement.Item.PrimaryWeapon.ItemUsage && !item.IsLocked)
                             if (bestEquipmentElement.IsEmpty)
-                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot) &&
-                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) > ItemIndexCalculation(equipmentElement, slot, character) &&
+                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) != 0f)
                                     bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
                                 else
                                     continue;
                             else
-                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot) &&
-                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) > ItemIndexCalculation(bestEquipmentElement, slot, character) &&
+                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) != 0f)
                                 bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
                     }
                     else if (item.ItemType == slot && item.IsEquipableItem && item.IsCivilianItem &&
-                        CharacterHelper.CanUseItemBasedOnSkill(character, item.ItemRosterElement.EquipmentElement) && !item.IsLocked && item.ItemCount != 0)
+                        CharacterHelper.CanUseItemBasedOnSkill(character, item.ItemRosterElement.EquipmentElement) && !item.IsLocked)
                         if (bestEquipmentElement.IsEmpty)
-                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot) &&
-                                ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) > ItemIndexCalculation(equipmentElement, slot, character) &&
+                                ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) != 0f)
                                 bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
                             else
                                 continue;
                         else
-                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot) &&
-                                ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) > ItemIndexCalculation(bestEquipmentElement, slot, character) &&
+                                ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) != 0f)
                             bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
                 }
                 else
                 {
                     if (slot < EquipmentIndex.NonWeaponItemBeginSlot && item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon != null && item.IsEquipableItem &&
-                        CharacterHelper.CanUseItemBasedOnSkill(character, item.ItemRosterElement.EquipmentElement) && !item.IsLocked && item.ItemCount != 0)
+                        CharacterHelper.CanUseItemBasedOnSkill(character, item.ItemRosterElement.EquipmentElement) && !item.IsLocked)
                     {
                         if (equipmentElement.Item.WeaponComponent.PrimaryWeapon.WeaponClass == item.ItemRosterElement.EquipmentElement.Item.PrimaryWeapon.WeaponClass &&
-                            GetItemUsage(item) == equipmentElement.Item.PrimaryWeapon.ItemUsage && !item.IsLocked && item.ItemCount != 0)
+                            GetItemUsage(item) == equipmentElement.Item.PrimaryWeapon.ItemUsage && !item.IsLocked)
                             if (bestEquipmentElement.IsEmpty)
-                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot) &&
-                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) > ItemIndexCalculation(equipmentElement, slot, character) &&
+                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) != 0f)
                                     bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
                                 else
                                     continue;
                             else
-                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot) &&
-                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                                if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) > ItemIndexCalculation(bestEquipmentElement, slot, character) &&
+                                    ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) != 0f)
                                 bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
                     }
                     else if (item.ItemType == slot && item.IsEquipableItem &&
-                        CharacterHelper.CanUseItemBasedOnSkill(character, item.ItemRosterElement.EquipmentElement) && !item.IsLocked && item.ItemCount != 0)
+                        CharacterHelper.CanUseItemBasedOnSkill(character, item.ItemRosterElement.EquipmentElement) && !item.IsLocked)
                         if (bestEquipmentElement.IsEmpty)
-                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(equipmentElement, slot) &&
-                                ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) > ItemIndexCalculation(equipmentElement, slot, character) &&
+                                ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) != 0f)
                                 bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
                             else
                                 continue;
                         else
-                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) > ItemIndexCalculation(bestEquipmentElement, slot) &&
-                                ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot) != 0f)
+                            if (ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) > ItemIndexCalculation(bestEquipmentElement, slot, character) &&
+                                ItemIndexCalculation(item.ItemRosterElement.EquipmentElement, slot, character) != 0f)
                             bestEquipmentElement = item.ItemRosterElement.EquipmentElement;
                 }
             }
@@ -316,15 +297,16 @@ namespace EquipBestItem.Models
             return bestEquipmentElement;
         }
 
-        private float ItemIndexCalculation(EquipmentElement sourceItem, EquipmentIndex index)
+        private float ItemIndexCalculation(EquipmentElement sourceItem, EquipmentIndex index, CharacterObject character)
         {
+            var characterSettings = SettingsLoader.Instance.GetCharacterSettingsByName(character.Name.ToString(), _inventory.IsInWarSet);
 
             if (sourceItem.IsEmpty)
                 return -9999f;
 
             float value = 0f;
 
-            FilterElement filterElement = _characterSettings.Filters[index];
+            FilterElement filterElement = characterSettings.Filters[index];
 
             if (sourceItem.Item.HasArmorComponent)
             {
@@ -337,6 +319,9 @@ namespace EquipBestItem.Models
                     Math.Abs(filterElement.Weight) +
                     Math.Abs(filterElement.LegArmor);
 
+                Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
+                    sourceItem.Item.Name, filterElement.HeadArmor, filterElement.ArmorBodyArmor, filterElement.LegArmor, filterElement.ArmArmor, filterElement.Weight, "filters"));
+                
                 ItemModifier mod =
                     sourceItem.ItemModifier;
 
@@ -345,7 +330,10 @@ namespace EquipBestItem.Models
                     legArmor = armorComponentItem.LegArmor,
                     armArmor = armorComponentItem.ArmArmor;
                 float weight = sourceItem.Weight;
-
+                
+                Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
+                    sourceItem.Item.Name, headArmor, bodyArmor, legArmor, armArmor, weight, "source"));
+                
                 if (mod != null)
                 {
                     headArmor = mod.ModifyArmor(headArmor);
@@ -354,7 +342,9 @@ namespace EquipBestItem.Models
                     armArmor = mod.ModifyArmor(armArmor);
                     //Weight *= mod.WeightMultiplier;
                 }
-
+                Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
+                    sourceItem.Item.Name, headArmor, bodyArmor, legArmor, armArmor, weight, "after mods"));
+                
                 value = (
                     headArmor * filterElement.HeadArmor +
                     bodyArmor * filterElement.ArmorBodyArmor +
@@ -363,9 +353,9 @@ namespace EquipBestItem.Models
                     weight * filterElement.Weight
                 ) / sum;
 
-                //Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5}",
-                //                sourceItem.Item.Name, HeadArmor, BodyArmor, LegArmor, ArmArmor, Weight));
-                //Console.WriteLine("Total score: " + value);
+                Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
+                                sourceItem.Item.Name, headArmor, bodyArmor, legArmor, armArmor, weight, "after filters"));
+                Console.WriteLine("Total score: " + value);
 
                 return value;
             }
@@ -563,7 +553,7 @@ namespace EquipBestItem.Models
                 _inventoryLogic.AddTransferCommand(transferCommand);
             }
             //Equip
-            if (ItemIndexCalculation(BestLeftEquipment[equipmentIndex], equipmentIndex) > ItemIndexCalculation(BestRightEquipment[equipmentIndex], equipmentIndex))
+            if (ItemIndexCalculation(BestLeftEquipment[equipmentIndex], equipmentIndex, _currentCharacter) > ItemIndexCalculation(BestRightEquipment[equipmentIndex], equipmentIndex, _currentCharacter))
             {
                 TransferCommand equipCommand = TransferCommand.Transfer(
                     1,
@@ -593,8 +583,8 @@ namespace EquipBestItem.Models
 
                 _inventoryLogic.AddTransferCommand(equipCommand);
             }
-            _inventory.GetMethod("ExecuteRemoveZeroCounts");
-            _inventory.GetMethod("RefreshInformationValues");
+            _inventory.ExecuteRemoveZeroCounts();
+            _inventory.RefreshValues();
         }
 
         public void EquipCurrentCharacter()
@@ -604,11 +594,10 @@ namespace EquipBestItem.Models
 
         public void OnFinalize()
         {
-            _inventory = null;
+            BestLeftEquipment = null;
+            BestRightEquipment = null;
             _watch = null;
-            _characterSettings = null;
             _currentCharacter = null;
-            _inventoryLogic = null;
         }
     }
     

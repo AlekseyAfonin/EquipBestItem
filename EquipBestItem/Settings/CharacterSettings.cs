@@ -22,9 +22,10 @@ namespace EquipBestItem.Settings
             {
                 _filters = new Filters(true);
             }
-
-            if (_filters == null)
+            else
+            {
                 _filters = new Filters();
+            }
         }
 
         public CharacterSettings()

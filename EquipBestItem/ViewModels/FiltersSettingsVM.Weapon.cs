@@ -18,13 +18,13 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_maxDataValue - value) > Tolerance)) return;
                 _maxDataValue = value;
-                OnPropertyChanged();
-                OnPropertyChanged("MaxDataValueText");
+                OnPropertyChangedWithValue(value);
+                UpdateWeaponProperties();
             }
         }
         
         [DataSourceProperty] 
-        public string MaxDataValueText => MaxDataValue.ToString(CultureInfo.InvariantCulture);
+        public string MaxDataValueText => GetValuePercentText(MaxDataValue);
         
         private float _thrustSpeedValue;
         
@@ -36,13 +36,13 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_thrustSpeedValue - value) > Tolerance)) return;
                 _thrustSpeedValue = value;
-                OnPropertyChanged();
-                OnPropertyChanged("ThrustSpeedValueText");
+                OnPropertyChangedWithValue(value);
+                UpdateWeaponProperties();
             }
         }
         
         [DataSourceProperty] 
-        public string ThrustSpeedValueText => ThrustSpeedValue.ToString(CultureInfo.InvariantCulture);
+        public string ThrustSpeedValueText => GetValuePercentText(ThrustSpeedValue);
         
         private float _swingSpeedValue;
         
@@ -54,13 +54,13 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_swingSpeedValue - value) > Tolerance)) return;
                 _swingSpeedValue = value;
-                OnPropertyChanged();
-                OnPropertyChanged("SwingSpeedValueText");
+                OnPropertyChangedWithValue(value);
+                UpdateWeaponProperties();
             }
         }
         
         [DataSourceProperty] 
-        public string SwingSpeedValueText => SwingSpeedValue.ToString(CultureInfo.InvariantCulture);
+        public string SwingSpeedValueText => GetValuePercentText(SwingSpeedValue);
         
         private float _missileSpeedValue;
         
@@ -72,13 +72,13 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_missileSpeedValue - value) > Tolerance)) return;
                 _missileSpeedValue = value;
-                OnPropertyChanged();
-                OnPropertyChanged("MissileSpeedValueText");
+                OnPropertyChangedWithValue(value);
+                UpdateWeaponProperties();
             }
         }
         
         [DataSourceProperty] 
-        public string MissileSpeedValueText => MissileSpeedValue.ToString(CultureInfo.InvariantCulture);
+        public string MissileSpeedValueText => GetValuePercentText(MissileSpeedValue);
         
         private float _weaponLengthValue;
         
@@ -90,13 +90,13 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_weaponLengthValue - value) > Tolerance)) return;
                 _weaponLengthValue = value;
-                OnPropertyChanged();
-                OnPropertyChanged("WeaponLengthValueText");
+                OnPropertyChangedWithValue(value);
+                UpdateWeaponProperties();
             }
         }
         
         [DataSourceProperty] 
-        public string WeaponLengthValueText => WeaponLengthValue.ToString(CultureInfo.InvariantCulture);
+        public string WeaponLengthValueText => GetValuePercentText(WeaponLengthValue);
         
         private float _thrustDamageValue;
         
@@ -108,13 +108,13 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_thrustDamageValue - value) > Tolerance)) return;
                 _thrustDamageValue = value;
-                OnPropertyChanged();
-                OnPropertyChanged("ThrustDamageValueText");
+                OnPropertyChangedWithValue(value);
+                UpdateWeaponProperties();
             }
         }
         
         [DataSourceProperty] 
-        public string ThrustDamageValueText => ThrustDamageValue.ToString(CultureInfo.InvariantCulture);
+        public string ThrustDamageValueText => GetValuePercentText(ThrustDamageValue);
         
         private float _swingDamageValue;
         
@@ -126,13 +126,13 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_swingDamageValue - value) > Tolerance)) return;
                 _swingDamageValue = value;
-                OnPropertyChanged();
-                OnPropertyChanged("SwingDamageValueText");
+                OnPropertyChangedWithValue(value);
+                UpdateWeaponProperties();
             }
         }
         
         [DataSourceProperty] 
-        public string SwingDamageValueText => SwingDamageValue.ToString(CultureInfo.InvariantCulture);
+        public string SwingDamageValueText => GetValuePercentText(SwingDamageValue);
         
         private float _accuracyValue;
         
@@ -144,13 +144,13 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_accuracyValue - value) > Tolerance)) return;
                 _accuracyValue = value;
-                OnPropertyChanged();
-                OnPropertyChanged("AccuracyValueText");
+                OnPropertyChangedWithValue(value);
+                UpdateWeaponProperties();
             }
         }
         
         [DataSourceProperty] 
-        public string AccuracyValueText => AccuracyValue.ToString(CultureInfo.InvariantCulture);
+        public string AccuracyValueText => GetValuePercentText(AccuracyValue);
         
         private float _handlingValue;
         
@@ -162,12 +162,12 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_handlingValue - value) > Tolerance)) return;
                 _handlingValue = value;
-                OnPropertyChanged();
-                OnPropertyChanged("HandlingValueText");
+                OnPropertyChangedWithValue(value);
+                UpdateWeaponProperties();
             }
         }
         [DataSourceProperty] 
-        public string HandlingValueText => HandlingValue.ToString(CultureInfo.InvariantCulture);
+        public string HandlingValueText => GetValuePercentText(HandlingValue);
         
         private float _weaponBodyArmorValue;
         
@@ -179,12 +179,12 @@ namespace EquipBestItem.ViewModels
             {
                 if (!(Math.Abs(_weaponBodyArmorValue - value) > Tolerance)) return;
                 _weaponBodyArmorValue = value;
-                OnPropertyChanged();
-                OnPropertyChanged("WeaponBodyArmorValueText");
+                OnPropertyChangedWithValue(value);
+                UpdateWeaponProperties();
             }
         }
         [DataSourceProperty] 
-        public string WeaponBodyArmorValueText => WeaponBodyArmorValue.ToString(CultureInfo.InvariantCulture);
+        public string WeaponBodyArmorValueText => GetValuePercentText(WeaponBodyArmorValue);
 
         #endregion
 
@@ -543,5 +543,20 @@ namespace EquipBestItem.ViewModels
         }
         
         #endregion
+
+        private void UpdateWeaponProperties()
+        {
+            OnPropertyChanged("MaxDataValueText");
+            OnPropertyChanged("ThrustSpeedValueText");
+            OnPropertyChanged("SwingSpeedValueText");
+            OnPropertyChanged("MissileSpeedValueText");
+            OnPropertyChanged("WeaponLengthValueText");
+            OnPropertyChanged("ThrustDamageValueText");
+            OnPropertyChanged("SwingDamageValueText");
+            OnPropertyChanged("AccuracyValueText");
+            OnPropertyChanged("HandlingValueText");
+            OnPropertyChanged("WeaponBodyArmorValueText");
+            OnPropertyChanged("WeightValueText");
+        }
     }
 }

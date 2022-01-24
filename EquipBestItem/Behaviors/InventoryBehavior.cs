@@ -30,16 +30,11 @@ namespace EquipBestItem.Behaviors
                     {
                         _inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
                         
-                        if (SettingsLoader.Instance.CharacterSettings == null)
-                        {
-                            SettingsLoader.Instance.LoadCharacterSettings();
-                        }
-                        
-                        _mainLayer = new MainLayer(16);
+                        _mainLayer = new MainLayer(17);
                         _inventoryScreen?.AddLayer(_mainLayer);
                         _mainLayer.InputRestrictions.SetInputRestrictions();
 
-                        _filterLayer = new FilterLayer(16);
+                        _filterLayer = new FilterLayer(17);
                         _inventoryScreen?.AddLayer(_filterLayer);
                         _filterLayer.InputRestrictions.SetInputRestrictions();
                     }
@@ -68,10 +63,10 @@ namespace EquipBestItem.Behaviors
                     {
                         if (_inventoryScreen != null && _mainLayer != null)
                         {
-                            _inventoryScreen.RemoveLayer(_mainLayer);
-                            _inventoryScreen = null;
                             SettingsLoader.Instance.SaveSettings();
                             SettingsLoader.Instance.SaveCharacterSettings();
+                            _inventoryScreen.RemoveLayer(_mainLayer);
+                            _inventoryScreen = null;
                         }
                     }
                 }

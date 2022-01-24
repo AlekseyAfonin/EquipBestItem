@@ -72,6 +72,7 @@ namespace EquipBestItem.Layers
                 {
                     _vm.HeaderText = "Mount";
                     _vm.IsHiddenBodyArmor = true;
+                    _vm.IsHiddenWeight = true;
                     HideArmor();
                     HideHorseHarness();
                     HideWeapon();
