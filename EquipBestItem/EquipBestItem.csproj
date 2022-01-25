@@ -324,7 +324,7 @@
   <ItemGroup>
     <Content Include="GUI\Brushes\EquipBestItemBrush.xml" />
     <Content Include="GUI\Prefabs\Inventory\EBI_Filters.xml" />
-    <Content Include="GUI\Prefabs\Inventory\EBI_Filter_Armor.xml" />
+    <Content Include="GUI\Prefabs\Inventory\EBI_FiltersSettings.xml" />
     <Content Include="GUI\Prefabs\Inventory\EBI_Main.xml" />
     <Content Include="SubModule.xml" />
   </ItemGroup>

@@ -1,3 +1,4 @@
+using EquipBestItem.Models;
 using EquipBestItem.ViewModels;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
@@ -5,13 +6,15 @@ using TaleWorlds.Engine.GauntletUI;
 
 namespace EquipBestItem.Layers
 {
-    internal class FiltersSettingsLayer : GauntletLayer
+    public class FiltersSettingsLayer : GauntletLayer
     {
         private FiltersSettingsVM _vm;
+        public FiltersModel Model;
         
-        public FiltersSettingsLayer(int localOrder, SPInventoryVM inventory, EquipmentIndex selectedSlot, string categoryId = "GauntletLayer") : base(localOrder, categoryId)
+        public FiltersSettingsLayer(int localOrder, SPInventoryVM inventory, EquipmentIndex selectedSlot, FiltersModel model, string categoryId = "GauntletLayer") : base(localOrder, categoryId)
         {
-            _vm = new FiltersSettingsVM(inventory, selectedSlot);
+            Model = model;
+            _vm = new FiltersSettingsVM(inventory, selectedSlot, this);
             LoadMovie("EBI_FiltersSettings", _vm);
             
             switch (selectedSlot)

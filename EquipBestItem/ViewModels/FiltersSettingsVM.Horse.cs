@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using EquipBestItem.Settings;
 using TaleWorlds.Library;
 
 namespace EquipBestItem.ViewModels
@@ -19,12 +20,13 @@ namespace EquipBestItem.ViewModels
                 if (!(Math.Abs(_chargeDamageValue - value) > Tolerance)) return;
                 _chargeDamageValue = value;
                 OnPropertyChangedWithValue(value);
+                UpdateHorseProperties();
                 OnPropertyChanged("ChargeDamageValueText");
             }
         }
         
         [DataSourceProperty] 
-        public string ChargeDamageValueText => ChargeDamageValue.ToString(CultureInfo.InvariantCulture);
+        public string ChargeDamageValueText => GetHorseValuePercentText(ChargeDamageValue);
         
         private float _hitPointsValue;
         
@@ -37,12 +39,13 @@ namespace EquipBestItem.ViewModels
                 if (!(Math.Abs(_hitPointsValue - value) > Tolerance)) return;
                 _hitPointsValue = value;
                 OnPropertyChangedWithValue(value);
+                UpdateHorseProperties();
                 OnPropertyChanged("HitPointsValueText");
             }
         }
         
         [DataSourceProperty] 
-        public string HitPointsValueText => HitPointsValue.ToString(CultureInfo.InvariantCulture);
+        public string HitPointsValueText => GetHorseValuePercentText(HitPointsValue);
         
         private float _maneuverValueValue;
         
@@ -55,12 +58,13 @@ namespace EquipBestItem.ViewModels
                 if (!(Math.Abs(_maneuverValueValue - value) > Tolerance)) return;
                 _maneuverValueValue = value;
                 OnPropertyChangedWithValue(value);
+                UpdateHorseProperties();
                 OnPropertyChanged("ManeuverValueText");
             }
         }
         
         [DataSourceProperty] 
-        public string ManeuverValueText => ManeuverValue.ToString(CultureInfo.InvariantCulture);
+        public string ManeuverValueText => GetHorseValuePercentText(ManeuverValue);
         
         private float _speedValue;
         
@@ -73,12 +77,13 @@ namespace EquipBestItem.ViewModels
                 if (!(Math.Abs(_speedValue - value) > Tolerance)) return;
                 _speedValue = value;
                 OnPropertyChangedWithValue(value);
+                UpdateHorseProperties();
                 OnPropertyChanged("SpeedValueText");
             }
         }
         
         [DataSourceProperty] 
-        public string SpeedValueText => SpeedValue.ToString(CultureInfo.InvariantCulture);
+        public string SpeedValueText => GetHorseValuePercentText(SpeedValue);
         
         #endregion
 
@@ -212,22 +217,61 @@ namespace EquipBestItem.ViewModels
         
         public void ExecuteHitPointsValueDefault()
         {
-            IsHitPointsValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.HitPoints), HitPointsValue);
+            _model.DefaultFilter[_currentSlot].HitPoints = HitPointsValue;
+            RefreshValues();
         }
         
         public void ExecuteChargeDamageValueDefault()
         {
-            IsChargeDamageValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.ChargeDamage), ChargeDamageValue);
+            _model.DefaultFilter[_currentSlot].ChargeDamage = ChargeDamageValue;
+            RefreshValues();
         }
         
         public void ExecuteManeuverValueDefault()
         {
-            IsManeuverValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.Maneuver), ManeuverValue);
+            _model.DefaultFilter[_currentSlot].Maneuver = ManeuverValue;
+            RefreshValues();
         }
         
         public void ExecuteSpeedValueDefault()
         {
-            IsSpeedValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.Speed), SpeedValue);
+            _model.DefaultFilter[_currentSlot].Speed = SpeedValue;
+            RefreshValues();
+        }
+        
+        private void UpdateHorseProperties()
+        {
+            OnPropertyChanged("HitPointsValueText");
+            OnPropertyChanged("ChargeDamageValueText");
+            OnPropertyChanged("ManeuverValueText");
+            OnPropertyChanged("SpeedValueText");
+        }
+        
+        private void UpdateHorseCheckBoxStates()
+        {
+            IsHitPointsValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].HitPoints - HitPointsValue) < Tolerance;
+            IsChargeDamageValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].ChargeDamage - ChargeDamageValue) < Tolerance;
+            IsManeuverValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].Maneuver - ManeuverValue) < Tolerance;
+            IsSpeedValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].Speed - SpeedValue) < Tolerance;
+        }
+        
+        private string GetHorseValuePercentText(float propertyValue)
+        {
+            float sum = Math.Abs(HitPointsValue) +
+                        Math.Abs(ChargeDamageValue) +
+                        Math.Abs(ManeuverValue) +
+                        Math.Abs(SpeedValue);
+            if (sum == 0) return "0%";
+            
+            return Math.Round(propertyValue / sum * 100).ToString(CultureInfo.InvariantCulture) + "%";
         }
     }
 }

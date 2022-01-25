@@ -26,7 +26,7 @@ namespace EquipBestItem.Models
             _currentCharacter = GetCharacterByName(_inventory.CurrentCharacterName);
         }
 
-        public void RefreshValues()
+        public async void RefreshValues()
         {
             if (SettingsLoader.Instance.Settings.Debug)
             {
@@ -53,6 +53,7 @@ namespace EquipBestItem.Models
 
                 if (!SettingsLoader.Instance.Settings.IsLeftPanelLocked)
                 {
+                    
                     bestLeftEquipmentElement = GetBetterItemFromSide(_inventory.LeftItemListVM, equipment[equipmentIndex], equipmentIndex, !_inventory.IsInWarSet, _currentCharacter);
                 }
                 if (!SettingsLoader.Instance.Settings.IsRightPanelLocked)
@@ -317,7 +318,10 @@ namespace EquipBestItem.Models
                     Math.Abs(filterElement.ArmArmor) +
                     Math.Abs(filterElement.ArmorBodyArmor) +
                     Math.Abs(filterElement.Weight) +
-                    Math.Abs(filterElement.LegArmor);
+                    Math.Abs(filterElement.LegArmor) +
+                    Math.Abs(filterElement.ChargeBonus) +
+                    Math.Abs(filterElement.ManeuverBonus) +
+                    Math.Abs(filterElement.SpeedBonus);
 
                 Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
                     sourceItem.Item.Name, filterElement.HeadArmor, filterElement.ArmorBodyArmor, filterElement.LegArmor, filterElement.ArmArmor, filterElement.Weight, "filters"));
@@ -328,7 +332,10 @@ namespace EquipBestItem.Models
                 int headArmor = armorComponentItem.HeadArmor,
                     bodyArmor = armorComponentItem.BodyArmor,
                     legArmor = armorComponentItem.LegArmor,
-                    armArmor = armorComponentItem.ArmArmor;
+                    armArmor = armorComponentItem.ArmArmor,
+                    chargeBonus = armorComponentItem.ChargeBonus,
+                    maneuverBonus = armorComponentItem.ManeuverBonus,
+                    speedBonus = armorComponentItem.SpeedBonus;
                 float weight = sourceItem.Weight;
                 
                 Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
@@ -340,7 +347,6 @@ namespace EquipBestItem.Models
                     bodyArmor = mod.ModifyArmor(bodyArmor);
                     legArmor = mod.ModifyArmor(legArmor);
                     armArmor = mod.ModifyArmor(armArmor);
-                    //Weight *= mod.WeightMultiplier;
                 }
                 Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
                     sourceItem.Item.Name, headArmor, bodyArmor, legArmor, armArmor, weight, "after mods"));
@@ -350,7 +356,10 @@ namespace EquipBestItem.Models
                     bodyArmor * filterElement.ArmorBodyArmor +
                     legArmor * filterElement.LegArmor +
                     armArmor * filterElement.ArmArmor +
-                    weight * filterElement.Weight
+                    weight * filterElement.Weight +
+                    chargeBonus * filterElement.ChargeBonus +
+                    maneuverBonus * filterElement.ManeuverBonus +
+                    speedBonus * filterElement.SpeedBonus
                 ) / sum;
 
                 Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
@@ -387,22 +396,24 @@ namespace EquipBestItem.Models
                     thrustDamage = primaryWeaponItem.ThrustDamage,
                     thrustSpeed = primaryWeaponItem.ThrustSpeed,
                     weaponLength = primaryWeaponItem.WeaponLength;
+                    //missileDamage = primaryWeaponItem.MissileDamage;
                 float weaponWeight = sourceItem.Weight;
 
                 ItemModifier mod = sourceItem.ItemModifier;
                 if (mod != null)
                 {
+                    handling = mod.ModifySpeed(handling);
                     bodyArmor = mod.ModifyArmor(bodyArmor);
                     missileSpeed = mod.ModifyMissileSpeed(missileSpeed);
+                    //missileDamage = mod.ModifyDamage(missileDamage);
                     swingDamage = mod.ModifyDamage(swingDamage);
                     swingSpeed = mod.ModifySpeed(swingSpeed);
                     thrustDamage = mod.ModifyDamage(thrustDamage);
                     thrustSpeed = mod.ModifySpeed(thrustSpeed);
-                    //MaxDataValue += mod.ModifyMountHitPoints();
-                    //WeaponWeight *= mod.WeightMultiplier;
-
+                    maxDataValue = mod.ModifyHitPoints((short)maxDataValue);
                 }
-
+                
+                //TODO add stack count and missile damage
                 value = (
                     accuracy * filterElement.Accuracy +
                     bodyArmor * filterElement.WeaponBodyArmor +
@@ -415,6 +426,7 @@ namespace EquipBestItem.Models
                     thrustSpeed * filterElement.ThrustSpeed +
                     weaponLength * filterElement.WeaponLength +
                     weaponWeight * filterElement.Weight
+                    //missileDamage * filterElement.MissileDamage;
                 ) / sum;
 
                 //Console.WriteLine(String.Format("{0}: Acc {1}, BA {2}, HL {3}, HP {4}, MS {5}, SD {6}, SS {7}, TD {8}, TS {9}, WL {10}, W {11}",

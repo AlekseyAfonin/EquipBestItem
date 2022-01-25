@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using EquipBestItem.Settings;
 using TaleWorlds.Library;
 
 namespace EquipBestItem.ViewModels
@@ -24,7 +25,7 @@ namespace EquipBestItem.ViewModels
         }
         
         [DataSourceProperty] 
-        public string MaxDataValueText => GetValuePercentText(MaxDataValue);
+        public string MaxDataValueText => GetWeaponValuePercentText(MaxDataValue);
         
         private float _thrustSpeedValue;
         
@@ -42,7 +43,7 @@ namespace EquipBestItem.ViewModels
         }
         
         [DataSourceProperty] 
-        public string ThrustSpeedValueText => GetValuePercentText(ThrustSpeedValue);
+        public string ThrustSpeedValueText => GetWeaponValuePercentText(ThrustSpeedValue);
         
         private float _swingSpeedValue;
         
@@ -60,7 +61,7 @@ namespace EquipBestItem.ViewModels
         }
         
         [DataSourceProperty] 
-        public string SwingSpeedValueText => GetValuePercentText(SwingSpeedValue);
+        public string SwingSpeedValueText => GetWeaponValuePercentText(SwingSpeedValue);
         
         private float _missileSpeedValue;
         
@@ -78,7 +79,7 @@ namespace EquipBestItem.ViewModels
         }
         
         [DataSourceProperty] 
-        public string MissileSpeedValueText => GetValuePercentText(MissileSpeedValue);
+        public string MissileSpeedValueText => GetWeaponValuePercentText(MissileSpeedValue);
         
         private float _weaponLengthValue;
         
@@ -96,7 +97,7 @@ namespace EquipBestItem.ViewModels
         }
         
         [DataSourceProperty] 
-        public string WeaponLengthValueText => GetValuePercentText(WeaponLengthValue);
+        public string WeaponLengthValueText => GetWeaponValuePercentText(WeaponLengthValue);
         
         private float _thrustDamageValue;
         
@@ -114,7 +115,7 @@ namespace EquipBestItem.ViewModels
         }
         
         [DataSourceProperty] 
-        public string ThrustDamageValueText => GetValuePercentText(ThrustDamageValue);
+        public string ThrustDamageValueText => GetWeaponValuePercentText(ThrustDamageValue);
         
         private float _swingDamageValue;
         
@@ -132,7 +133,7 @@ namespace EquipBestItem.ViewModels
         }
         
         [DataSourceProperty] 
-        public string SwingDamageValueText => GetValuePercentText(SwingDamageValue);
+        public string SwingDamageValueText => GetWeaponValuePercentText(SwingDamageValue);
         
         private float _accuracyValue;
         
@@ -150,7 +151,7 @@ namespace EquipBestItem.ViewModels
         }
         
         [DataSourceProperty] 
-        public string AccuracyValueText => GetValuePercentText(AccuracyValue);
+        public string AccuracyValueText => GetWeaponValuePercentText(AccuracyValue);
         
         private float _handlingValue;
         
@@ -167,7 +168,7 @@ namespace EquipBestItem.ViewModels
             }
         }
         [DataSourceProperty] 
-        public string HandlingValueText => GetValuePercentText(HandlingValue);
+        public string HandlingValueText => GetWeaponValuePercentText(HandlingValue);
         
         private float _weaponBodyArmorValue;
         
@@ -184,7 +185,7 @@ namespace EquipBestItem.ViewModels
             }
         }
         [DataSourceProperty] 
-        public string WeaponBodyArmorValueText => GetValuePercentText(WeaponBodyArmorValue);
+        public string WeaponBodyArmorValueText => GetWeaponValuePercentText(WeaponBodyArmorValue);
 
         #endregion
 
@@ -494,52 +495,72 @@ namespace EquipBestItem.ViewModels
         
         public void ExecuteMaxDataValueDefault()
         {
-            IsMaxDataValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.MaxDataValue), MaxDataValue);
+            _model.DefaultFilter[_currentSlot].MaxDataValue = MaxDataValue;
+            RefreshValues();
         }
         
         public void ExecuteThrustSpeedValueDefault()
         {
-            IsThrustSpeedValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.ThrustSpeed), ThrustSpeedValue);
+            _model.DefaultFilter[_currentSlot].ThrustSpeed = ThrustSpeedValue;
+            RefreshValues();
         }
         
         public void ExecuteSwingSpeedValueDefault()
         {
-            IsSwingSpeedValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.SwingSpeed), SwingSpeedValue);
+            _model.DefaultFilter[_currentSlot].SwingSpeed = SwingSpeedValue;
+            RefreshValues();
         }
         
         public void ExecuteMissileSpeedValueDefault()
         {
-            IsMissileSpeedValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.MissileSpeed), MissileSpeedValue);
+            _model.DefaultFilter[_currentSlot].MissileSpeed = MissileSpeedValue;
+            RefreshValues();
         }
         
         public void ExecuteWeaponLengthValueDefault()
         {
-            IsWeaponLengthValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.WeaponLength), WeaponLengthValue);
+            _model.DefaultFilter[_currentSlot].WeaponLength = WeaponLengthValue;
+            RefreshValues();
         }
         
         public void ExecuteThrustDamageValueDefault()
         {
-            IsThrustDamageValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.ThrustDamage), ThrustDamageValue);
+            _model.DefaultFilter[_currentSlot].ThrustDamage = ThrustDamageValue;
+            RefreshValues();
         }
         
         public void ExecuteSwingDamageValueDefault()
         {
-            IsSwingDamageValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.SwingDamage), SwingDamageValue);
+            _model.DefaultFilter[_currentSlot].SwingDamage = SwingDamageValue;
+            RefreshValues();
         }
         
         public void ExecuteAccuracyValueDefault()
         {
-            IsAccuracyValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.Accuracy), AccuracyValue);
+            _model.DefaultFilter[_currentSlot].Accuracy = AccuracyValue;
+            RefreshValues();
         }
         
         public void ExecuteHandlingValueDefault()
         {
-            IsHandlingValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.Handling), HandlingValue);
+            _model.DefaultFilter[_currentSlot].Handling = HandlingValue;
+            RefreshValues();
         }
         
         public void ExecuteWeaponBodyArmorValueDefault()
         {
-            IsWeaponBodyArmorValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.WeaponBodyArmor), WeaponBodyArmorValue);
+            _model.DefaultFilter[_currentSlot].WeaponBodyArmor = WeaponBodyArmorValue;
+            RefreshValues();
         }
         
         #endregion
@@ -558,5 +579,50 @@ namespace EquipBestItem.ViewModels
             OnPropertyChanged("WeaponBodyArmorValueText");
             OnPropertyChanged("WeightValueText");
         }
+
+        private void UpdateWeaponCheckBoxStates()
+        {
+            IsMaxDataValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].MaxDataValue - MaxDataValue) < Tolerance;
+            IsThrustSpeedValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].ThrustSpeed - ThrustSpeedValue) < Tolerance;
+            IsSwingSpeedValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].SwingSpeed - SwingSpeedValue) < Tolerance;
+            IsMissileSpeedValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].MissileSpeed - MissileSpeedValue) < Tolerance;
+            IsWeaponLengthValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].WeaponLength - WeaponLengthValue) < Tolerance;
+            IsThrustDamageValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].ThrustDamage - ThrustDamageValue) < Tolerance;
+            IsSwingDamageValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].SwingDamage - SwingDamageValue) < Tolerance;
+            IsAccuracyValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].Accuracy - AccuracyValue) < Tolerance;
+            IsHandlingValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].Handling - HandlingValue) < Tolerance;
+            IsWeaponBodyArmorValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].WeaponBodyArmor - WeaponBodyArmorValue) < Tolerance;
+            IsWeightValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].Weight - WeightValue) < Tolerance;
+        }
+        
+        private string GetWeaponValuePercentText(float propertyValue)
+        {
+            float sum = Math.Abs(AccuracyValue) +
+                        Math.Abs(WeaponBodyArmorValue) +
+                        Math.Abs(HandlingValue) +
+                        Math.Abs(MaxDataValue) +
+                        Math.Abs(MissileSpeedValue) +
+                        Math.Abs(SwingDamageValue) +
+                        Math.Abs(SwingSpeedValue) +
+                        Math.Abs(ThrustDamageValue) +
+                        Math.Abs(ThrustSpeedValue) +
+                        Math.Abs(WeaponLengthValue) +
+                        Math.Abs(WeightValue);
+            if (sum == 0) return "0%";
+            
+            return Math.Round(propertyValue / sum * 100).ToString(CultureInfo.InvariantCulture) + "%";
+        }
+
     }
 }

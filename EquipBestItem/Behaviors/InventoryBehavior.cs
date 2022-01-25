@@ -18,7 +18,8 @@ namespace EquipBestItem.Behaviors
 
         private MainLayer _mainLayer;
         private FilterLayer _filterLayer;
-        private InventoryGauntletScreen _inventoryScreen;
+        //TODO
+        public static InventoryGauntletScreen InventoryScreen;
 
         private void AddNewInventoryLayer(TutorialContextChangedEvent tutorialContextChangedEvent)
         {
@@ -28,14 +29,14 @@ namespace EquipBestItem.Behaviors
                 {
                     if (ScreenManager.TopScreen is InventoryGauntletScreen)
                     {
-                        _inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
+                        InventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
                         
                         _mainLayer = new MainLayer(17);
-                        _inventoryScreen?.AddLayer(_mainLayer);
+                        InventoryScreen?.AddLayer(_mainLayer);
                         _mainLayer.InputRestrictions.SetInputRestrictions();
 
                         _filterLayer = new FilterLayer(17);
-                        _inventoryScreen?.AddLayer(_filterLayer);
+                        InventoryScreen?.AddLayer(_filterLayer);
                         _filterLayer.InputRestrictions.SetInputRestrictions();
                     }
 
@@ -61,12 +62,12 @@ namespace EquipBestItem.Behaviors
                 {
                     if (tutorialContextChangedEvent.NewContext == TutorialContexts.None)
                     {
-                        if (_inventoryScreen != null && _mainLayer != null)
+                        if (InventoryScreen != null && _mainLayer != null)
                         {
                             SettingsLoader.Instance.SaveSettings();
                             SettingsLoader.Instance.SaveCharacterSettings();
-                            _inventoryScreen.RemoveLayer(_mainLayer);
-                            _inventoryScreen = null;
+                            InventoryScreen.RemoveLayer(_mainLayer);
+                            InventoryScreen = null;
                         }
                     }
                 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using EquipBestItem.Behaviors;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;

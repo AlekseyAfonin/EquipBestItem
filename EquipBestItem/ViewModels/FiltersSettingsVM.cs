@@ -1,14 +1,18 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
+using System.ComponentModel;
+using EquipBestItem.Behaviors;
+using EquipBestItem.Layers;
 using EquipBestItem.Models;
+using EquipBestItem.Settings;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 
 namespace EquipBestItem.ViewModels
 {
-    [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
+    /// <summary>
+    /// The main part with general methods and fields
+    /// </summary>
     public partial class FiltersSettingsVM : ViewModel
     {
         const float Tolerance = 0.000000001f;
@@ -39,12 +43,35 @@ namespace EquipBestItem.ViewModels
                 _weightValue = value;
                 OnPropertyChangedWithValue(value);
                 UpdateWeaponProperties();
+                UpdateArmorProperties();
+                UpdateHorseHarnessProperties();
                 OnPropertyChanged("WeightValueText");
             }
         }
         
         [DataSourceProperty] 
-        public string WeightValueText => GetValuePercentText(WeightValue);
+        public string WeightValueText
+        {
+            get
+            {
+                if (_currentSlot >= EquipmentIndex.WeaponItemBeginSlot && _currentSlot < EquipmentIndex.NumAllWeaponSlots)
+                {
+                    return GetWeaponValuePercentText(WeightValue);
+                }
+
+                if (_currentSlot >= EquipmentIndex.ArmorItemBeginSlot && _currentSlot < EquipmentIndex.ArmorItemEndSlot)
+                {
+                    return GetArmorValuePercentText(WeightValue);
+                }
+                
+                if (_currentSlot == EquipmentIndex.HorseHarness)
+                {
+                    return GetHorseHarnessValuePercentText(WeightValue);
+                }
+
+                return "err";
+            }
+        }
 
         private bool _weightValueIsDefault;
         
@@ -77,41 +104,60 @@ namespace EquipBestItem.ViewModels
         [DataSourceProperty]
         public string WeightText { get; } = "Weight";
 
+        
+
         private EquipmentIndex _currentSlot;
         private SPInventoryVM _inventory;
         private FiltersSettingsModel _model;
+        private FiltersSettingsLayer _layer;
         
-        public FiltersSettingsVM(SPInventoryVM inventory, EquipmentIndex currentSlot)
+        public FiltersSettingsVM(SPInventoryVM inventory, EquipmentIndex currentSlot, FiltersSettingsLayer layer)
         {
+            _layer = layer;
             _currentSlot = currentSlot;
             _inventory = inventory;
             _model = new FiltersSettingsModel(this, _inventory, _currentSlot);
+            PropertyChanged += FilterSettingsVM_PropertyChanged;
+            //RefreshValues();
         }
-        
+
+        private void FilterSettingsVM_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RefreshValues();
+        }
+
         public sealed override void RefreshValues()
         {
             base.RefreshValues();
+            _model.RefreshValues();
+            //TODO
+            UpdateWeaponCheckBoxStates();
+            UpdateArmorCheckBoxStates();
+            UpdateHorseCheckBoxStates();
+            UpdateHorseHarnessCheckBoxStates();
         }
         
         public void ExecuteWeightValueDefault()
         {
-            IsWeightValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.Weight), WeightValue);
+            _model.DefaultFilter[_currentSlot].Weight = WeightValue;
+            RefreshValues();
         }
-
-        private string GetValuePercentText(float propertyValue)
+        
+        public void ExecuteDefault()
         {
-            float sum = Math.Abs(AccuracyValue) +
-                        Math.Abs(WeaponBodyArmorValue) +
-                        Math.Abs(HandlingValue) +
-                        Math.Abs(MaxDataValue) +
-                        Math.Abs(MissileSpeedValue) +
-                        Math.Abs(SwingDamageValue) +
-                        Math.Abs(SwingSpeedValue) +
-                        Math.Abs(ThrustDamageValue) +
-                        Math.Abs(ThrustSpeedValue) +
-                        Math.Abs(WeaponLengthValue) +
-                        Math.Abs(WeightValue);
-            return Math.Round(propertyValue / sum * 100).ToString(CultureInfo.InvariantCulture);
+            _model.SetFiltersSettingsDefault(_currentSlot);
+        }
+        
+        public void ExecuteLock()
+        {
+            _model.SetFiltersSettingsLock(_currentSlot);
+        }
+        
+        public void ExecuteClose()
+        {
+            //TODO
+            _layer.Model.ShowHideFilterSettingsLayer(InventoryBehavior.InventoryScreen, EquipmentIndex.None);
         }
 
         public override void OnFinalize()

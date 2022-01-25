@@ -1,5 +1,7 @@
 using System;
 using System.Globalization;
+using EquipBestItem.Settings;
+using TaleWorlds.Core;
 using TaleWorlds.Library;
 
 namespace EquipBestItem.ViewModels
@@ -19,12 +21,13 @@ namespace EquipBestItem.ViewModels
                 if (!(Math.Abs(_headArmorValue - value) > Tolerance)) return;
                 _headArmorValue = value;
                 OnPropertyChangedWithValue(value);
+                UpdateArmorProperties();
                 OnPropertyChanged("HeadArmorValueText");
             }
         }
         
         [DataSourceProperty] 
-        public string HeadArmorValueText => HeadArmorValue.ToString(CultureInfo.InvariantCulture);
+        public string HeadArmorValueText => GetArmorValuePercentText(HeadArmorValue);
         
         
         private float _bodyArmorValue;
@@ -38,30 +41,30 @@ namespace EquipBestItem.ViewModels
                 if (!(Math.Abs(_bodyArmorValue - value) > Tolerance)) return;
                 _bodyArmorValue = value;
                 OnPropertyChangedWithValue(value);
+                UpdateArmorProperties();
+                UpdateHorseHarnessProperties();
                 OnPropertyChanged("BodyArmorValueText");
             }
         }
         
         [DataSourceProperty] 
-        public string BodyArmorValueText => BodyArmorValue.ToString(CultureInfo.InvariantCulture);
-        
-        private float _cloakArmorValue;
-        
-        [DataSourceProperty]
-        public float CloakArmorValue
+        public string BodyArmorValueText
         {
-            get => _cloakArmorValue;
-            set
+            get
             {
-                if (!(Math.Abs(_cloakArmorValue - value) > Tolerance)) return;
-                _cloakArmorValue = value;
-                OnPropertyChangedWithValue(value);
-                OnPropertyChanged("CloakArmorValueText");
+                if (_currentSlot >= EquipmentIndex.ArmorItemBeginSlot && _currentSlot < EquipmentIndex.ArmorItemEndSlot)
+                {
+                    return GetArmorValuePercentText(BodyArmorValue);
+                }
+                
+                if (_currentSlot == EquipmentIndex.HorseHarness)
+                {
+                    return GetHorseHarnessValuePercentText(BodyArmorValue);
+                }
+                
+                return "err";
             }
         }
-        
-        [DataSourceProperty] 
-        public string CloakArmorValueText => CloakArmorValue.ToString(CultureInfo.InvariantCulture);
 
         private float _legArmorValue;
         
@@ -74,12 +77,13 @@ namespace EquipBestItem.ViewModels
                 if (!(Math.Abs(_legArmorValue - value) > Tolerance)) return;
                 _legArmorValue = value;
                 OnPropertyChangedWithValue(value);
+                UpdateArmorProperties();
                 OnPropertyChanged("LegArmorValueText");
             }
         }
-        
+
         [DataSourceProperty] 
-        public string LegArmorValueText => LegArmorValue.ToString(CultureInfo.InvariantCulture);
+        public string LegArmorValueText => GetArmorValuePercentText(LegArmorValue);
 
         private float _armArmorValue;
         
@@ -92,65 +96,66 @@ namespace EquipBestItem.ViewModels
                 if (!(Math.Abs(_armArmorValue - value) > Tolerance)) return;
                 _armArmorValue = value;
                 OnPropertyChangedWithValue(value);
+                UpdateArmorProperties();
                 OnPropertyChanged("ArmArmorValueText");
             }
         }
         
         [DataSourceProperty] 
-        public string ArmArmorValueText => ArmArmorValue.ToString(CultureInfo.InvariantCulture);
+        public string ArmArmorValueText => GetArmorValuePercentText(ArmArmorValue);
         
         #endregion
 
         #region CheckBox properties
 
-        private bool _headArmorValueIsDefault;
+        private bool _isHeadArmorValueIsDefault;
         [DataSourceProperty]
-        public bool HeadArmorValueIsDefault
+        public bool IsHeadArmorValueIsDefault
         {
-            get => _headArmorValueIsDefault;
+            get => _isHeadArmorValueIsDefault;
             set
             {
-                if (_headArmorValueIsDefault == value) return;
-                _headArmorValueIsDefault = value;
+                if (_isHeadArmorValueIsDefault == value) return;
+                _isHeadArmorValueIsDefault = value;
                 OnPropertyChanged();
             }
         }
 
-        private bool _bodyArmorValueIsDefault;
+        private bool _isBodyArmorValueIsDefault;
         [DataSourceProperty]
-        public bool BodyArmorValueIsDefault
+        public bool IsBodyArmorValueIsDefault
         {
-            get => _bodyArmorValueIsDefault;
+            get => _isBodyArmorValueIsDefault;
             set
             {
-                if (_bodyArmorValueIsDefault == value) return;
-                _bodyArmorValueIsDefault = value;
+                if (_isBodyArmorValueIsDefault == value) return;
+                _isBodyArmorValueIsDefault = value;
                 OnPropertyChanged();
             }
         }
 
-        private bool _legArmorValueIsDefault;
+        private bool _isLegArmorValueIsDefault;
         [DataSourceProperty]
-        public bool LegArmorValueIsDefault
+        public bool IsLegArmorValueIsDefault
         {
-            get => _legArmorValueIsDefault;
+            get => _isLegArmorValueIsDefault;
             set
             {
-                if (_legArmorValueIsDefault == value) return;
-                _legArmorValueIsDefault = value;
+                if (_isLegArmorValueIsDefault == value) return;
+                _isLegArmorValueIsDefault = value;
                 OnPropertyChanged();
             }
         }
 
-        private bool _armArmorValueIsDefault;
+        private bool _isArmArmorValueIsDefault;
         [DataSourceProperty]
-        public bool ArmArmorValueIsDefault
+        public bool IsArmArmorValueIsDefault
         {
-            get => _armArmorValueIsDefault;
+            get => _isArmArmorValueIsDefault;
             set
             {
-                if (_armArmorValueIsDefault == value) return;
-                _armArmorValueIsDefault = value;
+                if (_isArmArmorValueIsDefault == value) return;
+                _isArmArmorValueIsDefault = value;
                 OnPropertyChanged();
             }
         }
@@ -231,22 +236,65 @@ namespace EquipBestItem.ViewModels
         
         public void ExecuteHeadArmorValueDefault()
         {
-            HeadArmorValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.HeadArmor), HeadArmorValue);
+            _model.DefaultFilter[_currentSlot].HeadArmor = HeadArmorValue;
+            RefreshValues();
         }
         
         public void ExecuteBodyArmorValueDefault()
         {
-            BodyArmorValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.ArmorBodyArmor), BodyArmorValue);
+            _model.DefaultFilter[_currentSlot].ArmorBodyArmor = BodyArmorValue;
+            RefreshValues();
         }
         
         public void ExecuteLegArmorValueDefault()
         {
-            LegArmorValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.LegArmor), LegArmorValue);
+            _model.DefaultFilter[_currentSlot].LegArmor = LegArmorValue;
+            RefreshValues();
         }
         
         public void ExecuteArmArmorValueDefault()
         {
-            ArmArmorValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.ArmArmor), ArmArmorValue);
+            _model.DefaultFilter[_currentSlot].ArmArmor = ArmArmorValue;
+            RefreshValues();
+        }
+        
+        private void UpdateArmorProperties()
+        {
+            OnPropertyChanged("HeadArmorValueText");
+            OnPropertyChanged("BodyArmorValueText");
+            OnPropertyChanged("LegArmorValueText");
+            OnPropertyChanged("ArmArmorValueText");
+            OnPropertyChanged("WeightValueText");
+        }
+        
+        private void UpdateArmorCheckBoxStates()
+        {
+            IsHeadArmorValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].HeadArmor - HeadArmorValue) < Tolerance;
+            IsBodyArmorValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].ArmorBodyArmor - BodyArmorValue) < Tolerance;
+            IsLegArmorValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].LegArmor - LegArmorValue) < Tolerance;
+            IsArmArmorValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].ArmArmor - ArmArmorValue) < Tolerance;
+            IsWeightValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].Weight - WeightValue) < Tolerance;
+        }
+        
+        private string GetArmorValuePercentText(float propertyValue)
+        {
+            float sum = Math.Abs(HeadArmorValue) +
+                        Math.Abs(BodyArmorValue) +
+                        Math.Abs(LegArmorValue) +
+                        Math.Abs(ArmArmorValue) +
+                        Math.Abs(WeightValue);
+            if (sum == 0) return "0%";
+            
+            return Math.Round(propertyValue / sum * 100).ToString(CultureInfo.InvariantCulture) + "%";
         }
     }
 }

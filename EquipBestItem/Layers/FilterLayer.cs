@@ -23,23 +23,6 @@ namespace EquipBestItem.Layers
         {
             base.OnLateUpdate(dt);
 
-            // if (_lastSetState != InventoryBehavior.Inventory.IsInWarSet)
-            // {
-            //     _vm.RefreshValues();
-            //     _lastSetState = InventoryBehavior.Inventory.IsInWarSet;
-            // }
-            //
-            // if (InventoryBehavior.Inventory.IsInWarSet)
-            // {
-            //     if (_vm.CharacterSettings.Name != InventoryBehavior.Inventory.CurrentCharacterName)
-            //         _vm.RefreshValues();
-            // }
-            // else
-            // {
-            //     if (_vm.CharacterSettings.Name.Replace("_civil", null) != InventoryBehavior.Inventory.CurrentCharacterName)
-            //         _vm.RefreshValues();
-            // }
-
             // if (TaleWorlds.InputSystem.Input.IsKeyDown(TaleWorlds.InputSystem.InputKey.LeftAlt) && !IsAltPressed)
             // {
             //     IsAltPressed = true;

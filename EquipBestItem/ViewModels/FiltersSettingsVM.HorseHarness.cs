@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using EquipBestItem.Settings;
 using TaleWorlds.Library;
 
 namespace EquipBestItem.ViewModels
@@ -19,12 +20,13 @@ namespace EquipBestItem.ViewModels
                 if (!(Math.Abs(_speedBonusValue - value) > Tolerance)) return;
                 _speedBonusValue = value;
                 OnPropertyChangedWithValue(value);
+                UpdateHorseHarnessProperties();
                 OnPropertyChanged("SpeedBonusValueText");
             }
         }
         
         [DataSourceProperty] 
-        public string SpeedBonusValueText => SpeedBonusValue.ToString(CultureInfo.InvariantCulture);
+        public string SpeedBonusValueText => GetHorseHarnessValuePercentText(SpeedBonusValue);
         
         private float _chargeBonusValue;
         
@@ -37,12 +39,13 @@ namespace EquipBestItem.ViewModels
                 if (!(Math.Abs(_chargeBonusValue - value) > Tolerance)) return;
                 _chargeBonusValue = value;
                 OnPropertyChangedWithValue(value);
+                UpdateHorseHarnessProperties();
                 OnPropertyChanged("ChargeBonusValueText");
             }
         }
         
         [DataSourceProperty] 
-        public string ChargeBonusValueText => ChargeBonusValue.ToString(CultureInfo.InvariantCulture);
+        public string ChargeBonusValueText => GetHorseHarnessValuePercentText(ChargeBonusValue);
         
 
         private float _maneuverBonusValue;
@@ -56,12 +59,13 @@ namespace EquipBestItem.ViewModels
                 if (!(Math.Abs(_maneuverBonusValue - value) > Tolerance)) return;
                 _maneuverBonusValue = value;
                 OnPropertyChangedWithValue(value);
+                UpdateHorseHarnessProperties();
                 OnPropertyChanged("ManeuverBonusValueText");
             }
         }
         
         [DataSourceProperty] 
-        public string ManeuverBonusValueText => ManeuverBonusValue.ToString(CultureInfo.InvariantCulture);
+        public string ManeuverBonusValueText => GetHorseHarnessValuePercentText(ManeuverBonusValue);
         
         #endregion
 
@@ -168,17 +172,58 @@ namespace EquipBestItem.ViewModels
         
         public void ExecuteChargeBonusValueDefault()
         {
-            IsChargeBonusValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.ChargeBonus), ChargeBonusValue);
+            _model.DefaultFilter[_currentSlot].ChargeBonus = ChargeBonusValue;
+            RefreshValues();
         }
         
         public void ExecuteManeuverBonusValueDefault()
         {
-            IsManeuverBonusValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.ManeuverBonus), ManeuverBonusValue);
+            _model.DefaultFilter[_currentSlot].ManeuverBonus = ManeuverBonusValue;
+            RefreshValues();
         }
         
         public void ExecuteSpeedBonusValueDefault()
         {
-            IsSpeedBonusValueIsDefault = true;
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.SpeedBonus), SpeedBonusValue);
+            _model.DefaultFilter[_currentSlot].SpeedBonus = SpeedBonusValue;
+            RefreshValues();
+        }
+        
+        private void UpdateHorseHarnessProperties()
+        {
+            OnPropertyChanged("BodyArmorValueText");
+            OnPropertyChanged("ChargeBonusValueText");
+            OnPropertyChanged("ManeuverBonusValueText");
+            OnPropertyChanged("SpeedBonusValueText");
+            OnPropertyChanged("WeightValueText");
+        }
+        
+        private void UpdateHorseHarnessCheckBoxStates()
+        {
+            IsBodyArmorValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].ArmorBodyArmor - BodyArmorValue) < Tolerance;
+            IsChargeBonusValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].ChargeBonus - ChargeBonusValue) < Tolerance;
+            IsManeuverBonusValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].ManeuverBonus - ManeuverBonusValue) < Tolerance;
+            IsSpeedBonusValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].SpeedBonus - SpeedBonusValue) < Tolerance;
+            IsWeightValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].Weight - WeightValue) < Tolerance;
+        }
+        
+        private string GetHorseHarnessValuePercentText(float propertyValue)
+        {
+            float sum = Math.Abs(BodyArmorValue) +
+                        Math.Abs(ChargeBonusValue) +
+                        Math.Abs(ManeuverBonusValue) +
+                        Math.Abs(SpeedBonusValue) +
+                        Math.Abs(WeightValue);
+            if (sum == 0) return "0%";
+            
+            return Math.Round(propertyValue / sum * 100).ToString(CultureInfo.InvariantCulture) + "%";
         }
     }
 }
