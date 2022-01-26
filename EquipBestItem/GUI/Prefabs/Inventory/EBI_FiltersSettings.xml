@@ -606,59 +606,6 @@
 								</ListPanel>
 								<!-- List Row End-->
 								<!-- List Row Begin-->
-								<ListPanel Id="WeightRow" IsHidden="@IsHiddenWeight" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" LayoutImp.LayoutMethod="HorizontalLeftToRight" MarginTop="!EBI.MainWindow.MarginTop" Sprite="BlankWhiteSquare_9" Color="#8B5C2200">
-									<Children>
-										<!-- Left Column -->
-										<ListPanel Id="LeftListPanel" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" SuggestedWidth="200" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Top" MarginLeft="0" MarginRight="0" LayoutImp.LayoutMethod="HorizontalLeftToRight" Sprite="BlankWhiteSquare_9" Color="#8B5C2200">
-											<Children>
-												<Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="!EBI.Slider.Height" VerticalAlignment="Center" MarginLeft="!EBI.Slider.MarginLeft">
-													<Children>
-														<ListPanel Id="NumericOption" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" IsVisible="true">
-															<Children>
-																<RichTextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginRight="0" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" IsEnabled="false" Text="@WeightText"/>
-															</Children>
-														</ListPanel>
-													</Children>
-												</Widget>
-											</Children>
-										</ListPanel>
-										<!-- Right Column -->
-										<ListPanel Id="RightListPanel" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Top" MarginLeft="0" LayoutImp.LayoutMethod="HorizontalLeftToRight" Sprite="BlankWhiteSquare_9" Color="#3B5C2200">
-											<Children>
-												<Widget Id="Option" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="!EBI.Slider.Height" VerticalAlignment="Center" MarginLeft="!EBI.Slider.MarginLeft">
-													<Children>
-														<ListPanel Id="NumericOption" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" IsVisible="true">
-															<Children>
-																<!-- Slider -->
-																<SliderWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="138" SuggestedHeight="42" VerticalAlignment="Center" DoNotUpdateHandleSize="true" Filler="Filler" Handle="SliderHandle" IsDiscrete="true" MaxValueFloat="100.0" MinValueFloat="0.0" ValueFloat="@WeightValue">
-																	<Children>
-																		<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="138" SuggestedHeight="38" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPGeneral\SPOptions\standart_slider_canvas" IsEnabled="false"/>
-																		<Widget Id="Filler" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" VerticalAlignment="Center" Sprite="SPGeneral\SPOptions\standart_slider_fill" ClipContents="true">
-																			<Children>
-																				<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" HorizontalAlignment="Left" VerticalAlignment="Center" Sprite="SPGeneral\SPOptions\standart_slider_fill"/>
-																			</Children>
-																		</Widget>
-																		<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!EBI.Slider.Width" SuggestedHeight="65" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPGeneral\SPOptions\standart_slider_frame" IsEnabled="false"/>
-																		<ImageWidget Id="SliderHandle" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="14" SuggestedHeight="38" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="SPOptions.Slider.Handle"/>
-																	</Children>
-																</SliderWidget>
-																<RichTextWidget WidthSizePolicy="Fixed" SuggestedWidth="50" HeightSizePolicy="CoverChildren" MarginLeft="!EBI.Slider.Value.MarginLeft" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" IsEnabled="false" Text="@WeightValueText"/>
-																<!--Default CheckBox-->
-																<ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="40" SuggestedHeight="40" MarginLeft="!EBI.CheckBox.MarginLeft" Brush="SPOptions.Checkbox.Empty.Button" VerticalAlignment="Center" HorizontalAlignment="Right" ButtonType="Toggle" Command.Click="ExecuteWeightValueDefault" IsSelected="@IsWeightValueIsDefault" ToggleIndicator="ToggleIndicator" UpdateChildrenStates="true">
-																	<Children>
-																		<ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button"/>
-																	</Children>
-																</ButtonWidget>
-															</Children>
-														</ListPanel>
-													</Children>
-												</Widget>
-											</Children>
-										</ListPanel>
-									</Children>
-								</ListPanel>
-								<!-- List Row End-->
-								<!-- List Row Begin-->
 								<ListPanel Id="MaxDataRow" IsHidden="@IsHiddenMaxData" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" LayoutImp.LayoutMethod="HorizontalLeftToRight" MarginTop="!EBI.MainWindow.MarginTop" Sprite="BlankWhiteSquare_9" Color="#8B5C2200">
 									<Children>
 										<!-- Left Column -->
@@ -857,6 +804,59 @@
 																<RichTextWidget WidthSizePolicy="Fixed" SuggestedWidth="50" HeightSizePolicy="CoverChildren" MarginLeft="!EBI.Slider.Value.MarginLeft" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" IsEnabled="false" Text="@MissileSpeedValueText"/>
 																<!--Default CheckBox-->
 																<ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="40" SuggestedHeight="40" MarginLeft="!EBI.CheckBox.MarginLeft" Brush="SPOptions.Checkbox.Empty.Button" VerticalAlignment="Center" HorizontalAlignment="Right" ButtonType="Toggle" Command.Click="ExecuteMissileSpeedValueDefault" IsSelected="@IsMissileSpeedValueIsDefault" ToggleIndicator="ToggleIndicator" UpdateChildrenStates="true">
+																	<Children>
+																		<ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button"/>
+																	</Children>
+																</ButtonWidget>
+															</Children>
+														</ListPanel>
+													</Children>
+												</Widget>
+											</Children>
+										</ListPanel>
+									</Children>
+								</ListPanel>
+								<!-- List Row End-->
+								<!-- List Row Begin-->
+								<ListPanel Id="MissileDamageRow" IsHidden="@IsHiddenMissileDamage" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" LayoutImp.LayoutMethod="HorizontalLeftToRight" MarginTop="!EBI.MainWindow.MarginTop" Sprite="BlankWhiteSquare_9" Color="#8B5C2200">
+									<Children>
+										<!-- Left Column -->
+										<ListPanel Id="LeftListPanel" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" SuggestedWidth="200" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Top" MarginLeft="0" MarginRight="0" LayoutImp.LayoutMethod="HorizontalLeftToRight" Sprite="BlankWhiteSquare_9" Color="#8B5C2200">
+											<Children>
+												<Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="!EBI.Slider.Height" VerticalAlignment="Center" MarginLeft="!EBI.Slider.MarginLeft">
+													<Children>
+														<ListPanel Id="NumericOption" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" IsVisible="true">
+															<Children>
+																<RichTextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginRight="0" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" IsEnabled="false" Text="@MissileDamageText"/>
+															</Children>
+														</ListPanel>
+													</Children>
+												</Widget>
+											</Children>
+										</ListPanel>
+										<!-- Right Column -->
+										<ListPanel Id="RightListPanel" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Top" MarginLeft="0" LayoutImp.LayoutMethod="HorizontalLeftToRight" Sprite="BlankWhiteSquare_9" Color="#3B5C2200">
+											<Children>
+												<Widget Id="Option" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="!EBI.Slider.Height" VerticalAlignment="Center" MarginLeft="!EBI.Slider.MarginLeft">
+													<Children>
+														<ListPanel Id="NumericOption" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" IsVisible="true">
+															<Children>
+																<!-- Slider -->
+																<SliderWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="138" SuggestedHeight="42" VerticalAlignment="Center" DoNotUpdateHandleSize="true" Filler="Filler" Handle="SliderHandle" IsDiscrete="true" MaxValueFloat="100.0" MinValueFloat="0.0" ValueFloat="@MissileDamageValue">
+																	<Children>
+																		<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="138" SuggestedHeight="38" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPGeneral\SPOptions\standart_slider_canvas" IsEnabled="false"/>
+																		<Widget Id="Filler" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" VerticalAlignment="Center" Sprite="SPGeneral\SPOptions\standart_slider_fill" ClipContents="true">
+																			<Children>
+																				<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" HorizontalAlignment="Left" VerticalAlignment="Center" Sprite="SPGeneral\SPOptions\standart_slider_fill"/>
+																			</Children>
+																		</Widget>
+																		<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!EBI.Slider.Width" SuggestedHeight="65" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPGeneral\SPOptions\standart_slider_frame" IsEnabled="false"/>
+																		<ImageWidget Id="SliderHandle" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="14" SuggestedHeight="38" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="SPOptions.Slider.Handle"/>
+																	</Children>
+																</SliderWidget>
+																<RichTextWidget WidthSizePolicy="Fixed" SuggestedWidth="50" HeightSizePolicy="CoverChildren" MarginLeft="!EBI.Slider.Value.MarginLeft" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" IsEnabled="false" Text="@MissileDamageValueText"/>
+																<!--Default CheckBox-->
+																<ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="40" SuggestedHeight="40" MarginLeft="!EBI.CheckBox.MarginLeft" Brush="SPOptions.Checkbox.Empty.Button" VerticalAlignment="Center" HorizontalAlignment="Right" ButtonType="Toggle" Command.Click="ExecuteMissileDamageValueDefault" IsSelected="@IsMissileDamageValueIsDefault" ToggleIndicator="ToggleIndicator" UpdateChildrenStates="true">
 																	<Children>
 																		<ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button"/>
 																	</Children>
@@ -1175,6 +1175,59 @@
 																<RichTextWidget WidthSizePolicy="Fixed" SuggestedWidth="50" HeightSizePolicy="CoverChildren" MarginLeft="!EBI.Slider.Value.MarginLeft" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" IsEnabled="false" Text="@WeaponBodyArmorValueText"/>
 																<!--Default CheckBox-->
 																<ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="40" SuggestedHeight="40" MarginLeft="!EBI.CheckBox.MarginLeft" Brush="SPOptions.Checkbox.Empty.Button" VerticalAlignment="Center" HorizontalAlignment="Right" ButtonType="Toggle" Command.Click="ExecuteWeaponBodyArmorValueDefault" IsSelected="@IsWeaponBodyArmorValueIsDefault" ToggleIndicator="ToggleIndicator" UpdateChildrenStates="true">
+																	<Children>
+																		<ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button"/>
+																	</Children>
+																</ButtonWidget>
+															</Children>
+														</ListPanel>
+													</Children>
+												</Widget>
+											</Children>
+										</ListPanel>
+									</Children>
+								</ListPanel>
+								<!-- List Row End-->
+								<!-- List Row Begin-->
+								<ListPanel Id="WeightRow" IsHidden="@IsHiddenWeight" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" LayoutImp.LayoutMethod="HorizontalLeftToRight" MarginTop="!EBI.MainWindow.MarginTop" Sprite="BlankWhiteSquare_9" Color="#8B5C2200">
+									<Children>
+										<!-- Left Column -->
+										<ListPanel Id="LeftListPanel" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" SuggestedWidth="200" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Top" MarginLeft="0" MarginRight="0" LayoutImp.LayoutMethod="HorizontalLeftToRight" Sprite="BlankWhiteSquare_9" Color="#8B5C2200">
+											<Children>
+												<Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="!EBI.Slider.Height" VerticalAlignment="Center" MarginLeft="!EBI.Slider.MarginLeft">
+													<Children>
+														<ListPanel Id="NumericOption" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" IsVisible="true">
+															<Children>
+																<RichTextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginRight="0" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" IsEnabled="false" Text="@WeightText"/>
+															</Children>
+														</ListPanel>
+													</Children>
+												</Widget>
+											</Children>
+										</ListPanel>
+										<!-- Right Column -->
+										<ListPanel Id="RightListPanel" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Top" MarginLeft="0" LayoutImp.LayoutMethod="HorizontalLeftToRight" Sprite="BlankWhiteSquare_9" Color="#3B5C2200">
+											<Children>
+												<Widget Id="Option" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="!EBI.Slider.Height" VerticalAlignment="Center" MarginLeft="!EBI.Slider.MarginLeft">
+													<Children>
+														<ListPanel Id="NumericOption" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" IsVisible="true">
+															<Children>
+																<!-- Slider -->
+																<SliderWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="138" SuggestedHeight="42" VerticalAlignment="Center" DoNotUpdateHandleSize="true" Filler="Filler" Handle="SliderHandle" IsDiscrete="true" MaxValueFloat="100.0" MinValueFloat="0.0" ValueFloat="@WeightValue">
+																	<Children>
+																		<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="138" SuggestedHeight="38" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPGeneral\SPOptions\standart_slider_canvas" IsEnabled="false"/>
+																		<Widget Id="Filler" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" VerticalAlignment="Center" Sprite="SPGeneral\SPOptions\standart_slider_fill" ClipContents="true">
+																			<Children>
+																				<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" HorizontalAlignment="Left" VerticalAlignment="Center" Sprite="SPGeneral\SPOptions\standart_slider_fill"/>
+																			</Children>
+																		</Widget>
+																		<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!EBI.Slider.Width" SuggestedHeight="65" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPGeneral\SPOptions\standart_slider_frame" IsEnabled="false"/>
+																		<ImageWidget Id="SliderHandle" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="14" SuggestedHeight="38" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="SPOptions.Slider.Handle"/>
+																	</Children>
+																</SliderWidget>
+																<RichTextWidget WidthSizePolicy="Fixed" SuggestedWidth="50" HeightSizePolicy="CoverChildren" MarginLeft="!EBI.Slider.Value.MarginLeft" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" IsEnabled="false" Text="@WeightValueText"/>
+																<!--Default CheckBox-->
+																<ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="40" SuggestedHeight="40" MarginLeft="!EBI.CheckBox.MarginLeft" Brush="SPOptions.Checkbox.Empty.Button" VerticalAlignment="Center" HorizontalAlignment="Right" ButtonType="Toggle" Command.Click="ExecuteWeightValueDefault" IsSelected="@IsWeightValueIsDefault" ToggleIndicator="ToggleIndicator" UpdateChildrenStates="true">
 																	<Children>
 																		<ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button"/>
 																	</Children>
