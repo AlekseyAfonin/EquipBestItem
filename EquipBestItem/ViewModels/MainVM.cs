@@ -229,76 +229,43 @@ namespace EquipBestItem.ViewModels
         {
             base.RefreshValues();
             _model.RefreshValues();
-            // Action onStarted = () =>
-            // {
-            //     IsHelmButtonEnabled = false;
-            //     IsCloakButtonEnabled = false;
-            //     IsArmorButtonEnabled = false;
-            //     IsGloveButtonEnabled = false;
-            //     IsBootButtonEnabled = false;
-            //     IsMountButtonEnabled = false;
-            //     IsHarnessButtonEnabled = false;
-            //     IsWeapon1ButtonEnabled = false;
-            //     IsWeapon2ButtonEnabled = false;
-            //     IsWeapon3ButtonEnabled = false;
-            //     IsWeapon4ButtonEnabled = false;
-            // };
 
-            // Action onCompleted = () =>
-            // {
-                IsHelmButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Head].IsEmpty ||
-                                       !_model.BestRightEquipment[EquipmentIndex.Head].IsEmpty);
-                IsCloakButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Cape].IsEmpty ||
-                                        !_model.BestRightEquipment[EquipmentIndex.Cape].IsEmpty);
-                IsArmorButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Body].IsEmpty ||
-                                        !_model.BestRightEquipment[EquipmentIndex.Body].IsEmpty);
-                IsGloveButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Gloves].IsEmpty ||
-                                        !_model.BestRightEquipment[EquipmentIndex.Gloves].IsEmpty);
-                IsBootButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Leg].IsEmpty ||
-                                       !_model.BestRightEquipment[EquipmentIndex.Leg].IsEmpty);
-                IsMountButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Horse].IsEmpty ||
-                                        !_model.BestRightEquipment[EquipmentIndex.Horse].IsEmpty);
-                IsHarnessButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.HorseHarness].IsEmpty ||
-                                          !_model.BestRightEquipment[EquipmentIndex.HorseHarness].IsEmpty);
-                IsWeapon1ButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Weapon0].IsEmpty ||
-                                          !_model.BestRightEquipment[EquipmentIndex.Weapon0].IsEmpty);
-                IsWeapon2ButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Weapon1].IsEmpty ||
-                                          !_model.BestRightEquipment[EquipmentIndex.Weapon1].IsEmpty);
-                IsWeapon3ButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Weapon2].IsEmpty ||
-                                          !_model.BestRightEquipment[EquipmentIndex.Weapon2].IsEmpty);
-                IsWeapon4ButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Weapon3].IsEmpty ||
-                                          !_model.BestRightEquipment[EquipmentIndex.Weapon3].IsEmpty);
-                
-                for (EquipmentIndex equipmentIndex = EquipmentIndex.WeaponItemBeginSlot;
-                     equipmentIndex < EquipmentIndex.NumEquipmentSetSlots;
-                     equipmentIndex++)
+            IsHelmButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Head].IsEmpty ||
+                                   !_model.BestRightEquipment[EquipmentIndex.Head].IsEmpty);
+            IsCloakButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Cape].IsEmpty ||
+                                    !_model.BestRightEquipment[EquipmentIndex.Cape].IsEmpty);
+            IsArmorButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Body].IsEmpty ||
+                                    !_model.BestRightEquipment[EquipmentIndex.Body].IsEmpty);
+            IsGloveButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Gloves].IsEmpty ||
+                                    !_model.BestRightEquipment[EquipmentIndex.Gloves].IsEmpty);
+            IsBootButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Leg].IsEmpty ||
+                                   !_model.BestRightEquipment[EquipmentIndex.Leg].IsEmpty);
+            IsMountButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Horse].IsEmpty ||
+                                    !_model.BestRightEquipment[EquipmentIndex.Horse].IsEmpty);
+            IsHarnessButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.HorseHarness].IsEmpty ||
+                                      !_model.BestRightEquipment[EquipmentIndex.HorseHarness].IsEmpty);
+            IsWeapon1ButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Weapon0].IsEmpty ||
+                                      !_model.BestRightEquipment[EquipmentIndex.Weapon0].IsEmpty);
+            IsWeapon2ButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Weapon1].IsEmpty ||
+                                      !_model.BestRightEquipment[EquipmentIndex.Weapon1].IsEmpty);
+            IsWeapon3ButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Weapon2].IsEmpty ||
+                                      !_model.BestRightEquipment[EquipmentIndex.Weapon2].IsEmpty);
+            IsWeapon4ButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Weapon3].IsEmpty ||
+                                      !_model.BestRightEquipment[EquipmentIndex.Weapon3].IsEmpty);
+
+            for (EquipmentIndex equipmentIndex = EquipmentIndex.WeaponItemBeginSlot;
+                 equipmentIndex < EquipmentIndex.NumEquipmentSetSlots;
+                 equipmentIndex++)
+            {
+                if (_model.BestLeftEquipment[equipmentIndex].IsEmpty &&
+                    _model.BestRightEquipment[equipmentIndex].IsEmpty)
+                    IsEquipCurrentCharacterButtonEnabled = false;
+                else
                 {
-                    if (_model.BestLeftEquipment[equipmentIndex].IsEmpty &&
-                        _model.BestRightEquipment[equipmentIndex].IsEmpty)
-                        IsEquipCurrentCharacterButtonEnabled = false;
-                    else
-                    {
-                        IsEquipCurrentCharacterButtonEnabled = true;
-                        break;
-                    }
+                    IsEquipCurrentCharacterButtonEnabled = true;
+                    break;
                 }
-            // };
-            //
-            // var thread = new Thread(
-            //     () =>
-            //     {
-            //         try
-            //         {
-            //             onStarted();
-            //             _model.RefreshValues();
-            //         }
-            //         finally
-            //         {
-            //             onCompleted();
-            //         }
-            //     });
-            //     
-            // thread.Start();
+            }
         }
 
 

@@ -9,11 +9,13 @@ namespace EquipBestItem.Settings
     public class SettingsLoader
     {
         //New settings folder "Documents\Mount and Blade II Bannerlord\Configs\"
-        private PlatformFilePath _settingsFile = 
-            new PlatformFilePath(EngineFilePaths.ConfigsPath, "Settings.xml");
+        private readonly PlatformFilePath _settingsFile = 
+            new PlatformFilePath(new PlatformDirectoryPath(EngineFilePaths.ConfigsPath.Type, 
+                EngineFilePaths.ConfigsPath.Path + "/ModSettings/EquipBestItem/"), "Settings.xml");
 
-        private PlatformFilePath _characterSettingsFile =
-            new PlatformFilePath(EngineFilePaths.ConfigsPath, "CharacterSettings.xml");
+        private readonly PlatformFilePath _characterSettingsFile =
+            new PlatformFilePath(new PlatformDirectoryPath(EngineFilePaths.ConfigsPath.Type, 
+                EngineFilePaths.ConfigsPath.Path + "/ModSettings/EquipBestItem/"), "CharacterSettings.xml");
 
         private static SettingsLoader _instance;
 
@@ -27,14 +29,7 @@ namespace EquipBestItem.Settings
 
         public static SettingsLoader Instance
         {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new SettingsLoader();
-                }
-                return _instance;
-            }
+            get { return _instance ??= new SettingsLoader(); }
         }
 
         public void LoadSettings()
