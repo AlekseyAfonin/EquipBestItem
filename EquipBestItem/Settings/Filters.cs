@@ -23,16 +23,6 @@ namespace EquipBestItem.Settings
 			{
 				_filterElements[i] = new FilterElement();
 			}
-		}
-
-		public Filters(bool isDefault)
-		{
-			_filterElements = new FilterElement[12];
-
-			for (int i = 0; i < 12; i++)
-			{
-				_filterElements[i] = new FilterElement();
-			}
 
 			for (EquipmentIndex index = EquipmentIndex.WeaponItemBeginSlot; index < EquipmentIndex.NumEquipmentSetSlots; index++)
 			{
@@ -42,23 +32,24 @@ namespace EquipBestItem.Settings
 					this[index].ThrustSpeed = 100f;
 					this[index].SwingSpeed = 100f;
 					this[index].MissileSpeed = 100f;
+					this[index].MissileDamage = 100f;
 					this[index].WeaponLength = 100f;
 					this[index].ThrustDamage = 100f;
 					this[index].SwingDamage = 100f;
 					this[index].Accuracy = 100f;
 					this[index].Handling = 100f;
-					this[index].Weight = 100f;
+					this[index].Weight = 0f;
 					this[index].WeaponBodyArmor = 100f;
 				}
 				else if (index == EquipmentIndex.Head)
 				{
 					this[index].HeadArmor = 100f;
-					this[index].Weight = 100f;
+					this[index].Weight = 0f;
 				}
 				else if (index == EquipmentIndex.Cape)
 				{
 					this[index].ArmorBodyArmor = 100f;
-					this[index].Weight = 100f;
+					this[index].Weight = 0f;
 				}
 				else if (index == EquipmentIndex.Body)
 				{
@@ -66,7 +57,7 @@ namespace EquipBestItem.Settings
 					this[index].ArmorBodyArmor = 100f;
 					this[index].ArmArmor = 100f;
 					this[index].LegArmor = 100f;
-					this[index].Weight = 100f;
+					this[index].Weight = 0f;
 				}
 				else if (index == EquipmentIndex.Leg)
 				{
@@ -76,7 +67,7 @@ namespace EquipBestItem.Settings
 				else if (index == EquipmentIndex.Gloves)
 				{
 					this[index].ArmArmor = 100f;
-					this[index].Weight = 100f;
+					this[index].Weight = 0f;
 				}
 				else if (index == EquipmentIndex.Horse)
 				{
@@ -88,10 +79,10 @@ namespace EquipBestItem.Settings
 				else if (index == EquipmentIndex.HorseHarness)
 				{
 					this[index].ArmorBodyArmor = 100f;
-					this[index].ManeuverBonus = 100f;
-					this[index].SpeedBonus = 100f;
-					this[index].ChargeBonus = 100f;
-					this[index].Weight = 100f;
+					this[index].ManeuverBonus = 0f;
+					this[index].SpeedBonus = 0f;
+					this[index].ChargeBonus = 0f;
+					this[index].Weight = 0f;
 				}
 			}
 		}
@@ -118,6 +109,7 @@ namespace EquipBestItem.Settings
 				if (Math.Abs(this[index].ThrustSpeed - defaultFilters[index].ThrustSpeed) > Tolerance) return false;
 				if (Math.Abs(this[index].SwingSpeed - defaultFilters[index].SwingSpeed) > Tolerance) return false;
 				if (Math.Abs(this[index].MissileSpeed - defaultFilters[index].MissileSpeed) > Tolerance) return false;
+				if (Math.Abs(this[index].MissileDamage - defaultFilters[index].MissileDamage) > Tolerance) return false;
 				if (Math.Abs(this[index].WeaponLength - defaultFilters[index].WeaponLength) > Tolerance) return false;
 				if (Math.Abs(this[index].ThrustDamage - defaultFilters[index].ThrustDamage) > Tolerance) return false;
 				if (Math.Abs(this[index].SwingDamage - defaultFilters[index].SwingDamage) > Tolerance) return false;
@@ -157,10 +149,11 @@ namespace EquipBestItem.Settings
 		{
 			if (index >= EquipmentIndex.WeaponItemBeginSlot && index < EquipmentIndex.NumAllWeaponSlots)
 			{
-				if (this[index].MaxDataValue != 0) return false;
+				if (this[index].MaxDataValue != 0f) return false;
 				if (this[index].ThrustSpeed != 0) return false;
 				if (this[index].SwingSpeed != 0) return false;
 				if (this[index].MissileSpeed != 0) return false;
+				if (this[index].MissileDamage != 0) return false;
 				if (this[index].WeaponLength != 0) return false;
 				if (this[index].ThrustDamage != 0) return false;
 				if (this[index].SwingDamage != 0) return false;
@@ -206,6 +199,7 @@ namespace EquipBestItem.Settings
 				this[index].ThrustSpeed = defaultFilters[index].ThrustSpeed;
 				this[index].SwingSpeed = defaultFilters[index].SwingSpeed;
 				this[index].MissileSpeed = defaultFilters[index].MissileSpeed;
+				this[index].MissileDamage = defaultFilters[index].MissileDamage;
 				this[index].WeaponLength = defaultFilters[index].WeaponLength;
 				this[index].ThrustDamage = defaultFilters[index].ThrustDamage;
 				this[index].SwingDamage = defaultFilters[index].SwingDamage;
@@ -267,6 +261,7 @@ namespace EquipBestItem.Settings
 				this[index].ThrustSpeed = 0f;
 				this[index].SwingSpeed = 0f;
 				this[index].MissileSpeed = 0f;
+				this[index].MissileDamage = 0f;
 				this[index].WeaponLength = 0f;
 				this[index].ThrustDamage = 0f;
 				this[index].SwingDamage = 0f;

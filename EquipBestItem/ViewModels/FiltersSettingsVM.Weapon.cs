@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using EquipBestItem.Settings;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 
 namespace EquipBestItem.ViewModels
 {
@@ -80,6 +81,24 @@ namespace EquipBestItem.ViewModels
         
         [DataSourceProperty] 
         public string MissileSpeedValueText => GetWeaponValuePercentText(MissileSpeedValue);
+        
+        private float _missileDamageValue;
+        
+        [DataSourceProperty]
+        public float MissileDamageValue
+        {
+            get => _missileDamageValue;
+            set
+            {
+                if (!(Math.Abs(_missileDamageValue - value) > Tolerance)) return;
+                _missileDamageValue = value;
+                OnPropertyChangedWithValue(value);
+                UpdateWeaponProperties();
+            }
+        }
+        
+        [DataSourceProperty] 
+        public string MissileDamageValueText => GetWeaponValuePercentText(MissileDamageValue);
         
         private float _weaponLengthValue;
         
@@ -242,6 +261,19 @@ namespace EquipBestItem.ViewModels
                 OnPropertyChanged();
             }
         }
+        
+        private bool _isMissileDamageValueIsDefault;
+        [DataSourceProperty]
+        public bool IsMissileDamageValueIsDefault
+        {
+            get => _isMissileDamageValueIsDefault;
+            set
+            {
+                if (_isMissileDamageValueIsDefault == value) return;
+                _isMissileDamageValueIsDefault = value;
+                OnPropertyChanged();
+            }
+        }
 
         private bool _isWeaponLengthValueIsDefault;
         [DataSourceProperty]
@@ -376,6 +408,19 @@ namespace EquipBestItem.ViewModels
                 OnPropertyChanged();
             }
         }
+        
+        private bool _hiddenMissileDamage;
+        [DataSourceProperty]
+        public bool IsHiddenMissileDamage
+        {
+            get => _hiddenMissileDamage;
+            set
+            {
+                if (_hiddenMissileDamage == value) return;
+                _hiddenMissileDamage = value;
+                OnPropertyChanged();
+            }
+        }
 
         private bool _hiddenWeaponLength;
         [DataSourceProperty]
@@ -459,35 +504,27 @@ namespace EquipBestItem.ViewModels
 
         #region Param name
 
-        [DataSourceProperty]
-        public string MaxDataText { get; } = "Max Data weapon";
+        [DataSourceProperty] public string MaxDataText { get; } = new TextObject("{=aCkzVUCR}Hit Points: ").ToString();
+
+        [DataSourceProperty] public string ThrustSpeedText { get; } = new TextObject("{=VPYazFVH}Thrust Speed: ").ToString();
+
+        [DataSourceProperty] public string SwingSpeedText { get; } = new TextObject("{=nfQhamAF}Swing Speed: ").ToString();
+
+        [DataSourceProperty] public string MissileSpeedText { get; } = new TextObject("{=YukbQgHJ}Missile Speed: ").ToString();
         
-        [DataSourceProperty]
-        public string ThrustSpeedText { get; } = "Thrust speed";
+        [DataSourceProperty] public string MissileDamageText { get; } = new TextObject("{=c9c5dfed2ca6bcb7a73d905004c97b23}Damage: ").ToString();
         
-        [DataSourceProperty]
-        public string SwingSpeedText { get; } = "Swing speed";
+        [DataSourceProperty] public string WeaponLengthText { get; } = new TextObject("{=XUtiwiYP}Length: ").ToString();
+
+        [DataSourceProperty] public string ThrustDamageText { get; } = new TextObject("{=7sUhWG0E}Thrust Damage: ").ToString();
+
+        [DataSourceProperty] public string SwingDamageText { get; } = new TextObject("{=fMmlUHyz}Swing Damage: ").ToString();
         
-        [DataSourceProperty]
-        public string MissileSpeedText { get; } = "Missile speed";
+        [DataSourceProperty] public string AccuracyText { get; } = new TextObject("{=xEWwbGVK}Accuracy: ").ToString();
         
-        [DataSourceProperty]
-        public string WeaponLengthText { get; } = "Length";
+        [DataSourceProperty] public string HandlingText { get; } = new TextObject("{=YOSEIvyf}Handling: ").ToString();
         
-        [DataSourceProperty]
-        public string ThrustDamageText { get; } = "Thrust damage";
-        
-        [DataSourceProperty]
-        public string SwingDamageText { get; } = "Swing damage";
-        
-        [DataSourceProperty]
-        public string AccuracyText { get; } = "Accuracy";
-        
-        [DataSourceProperty]
-        public string HandlingText { get; } = "Handling";
-        
-        [DataSourceProperty]
-        public string WeaponBodyArmorText { get; } = "Armor";
+        [DataSourceProperty] public string WeaponBodyArmorText { get; } = new TextObject("{=bLWyjOdS}Body Armor: ").ToString();
         
         #endregion
 
@@ -518,6 +555,13 @@ namespace EquipBestItem.ViewModels
         {
             _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.MissileSpeed), MissileSpeedValue);
             _model.DefaultFilter[_currentSlot].MissileSpeed = MissileSpeedValue;
+            RefreshValues();
+        }
+        
+        public void ExecuteMissileDamageValueDefault()
+        {
+            _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.MissileDamage), MissileDamageValue);
+            _model.DefaultFilter[_currentSlot].MissileDamage = MissileDamageValue;
             RefreshValues();
         }
         
@@ -571,6 +615,7 @@ namespace EquipBestItem.ViewModels
             OnPropertyChanged("ThrustSpeedValueText");
             OnPropertyChanged("SwingSpeedValueText");
             OnPropertyChanged("MissileSpeedValueText");
+            OnPropertyChanged("MissileDamageValueText");
             OnPropertyChanged("WeaponLengthValueText");
             OnPropertyChanged("ThrustDamageValueText");
             OnPropertyChanged("SwingDamageValueText");
@@ -590,6 +635,8 @@ namespace EquipBestItem.ViewModels
                 Math.Abs(_model.DefaultFilter[_currentSlot].SwingSpeed - SwingSpeedValue) < Tolerance;
             IsMissileSpeedValueIsDefault =
                 Math.Abs(_model.DefaultFilter[_currentSlot].MissileSpeed - MissileSpeedValue) < Tolerance;
+            IsMissileDamageValueIsDefault =
+                Math.Abs(_model.DefaultFilter[_currentSlot].MissileDamage - MissileDamageValue) < Tolerance;
             IsWeaponLengthValueIsDefault =
                 Math.Abs(_model.DefaultFilter[_currentSlot].WeaponLength - WeaponLengthValue) < Tolerance;
             IsThrustDamageValueIsDefault =
@@ -613,6 +660,7 @@ namespace EquipBestItem.ViewModels
                         Math.Abs(HandlingValue) +
                         Math.Abs(MaxDataValue) +
                         Math.Abs(MissileSpeedValue) +
+                        Math.Abs(MissileDamageValue) +
                         Math.Abs(SwingDamageValue) +
                         Math.Abs(SwingSpeedValue) +
                         Math.Abs(ThrustDamageValue) +

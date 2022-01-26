@@ -115,6 +115,7 @@ namespace EquipBestItem.Models
                 _vm.ThrustSpeedValue = _filterElement.ThrustSpeed;
                 _vm.SwingSpeedValue = _filterElement.SwingSpeed;
                 _vm.MissileSpeedValue = _filterElement.MissileSpeed;
+                _vm.MissileDamageValue = _filterElement.MissileDamage;
                 _vm.WeaponLengthValue = _filterElement.WeaponLength;
                 _vm.ThrustDamageValue = _filterElement.ThrustDamage;
                 _vm.SwingDamageValue = _filterElement.SwingDamage;
@@ -152,6 +153,8 @@ namespace EquipBestItem.Models
                 case nameof(_vm.ManeuverBonusValue): _filterElement.ManeuverBonus = (float)e.Value;
                     break;
                 case nameof(_vm.MissileSpeedValue): _filterElement.MissileSpeed = (float)e.Value;
+                    break;
+                case nameof(_vm.MissileDamageValue): _filterElement.MissileDamage = (float)e.Value;
                     break;
                 case nameof(_vm.SpeedBonusValue): _filterElement.SpeedBonus = (float)e.Value;
                     break;
@@ -280,6 +283,11 @@ namespace EquipBestItem.Models
                             if (Math.Abs(filters[_currentSlot].MissileSpeed -
                                          DefaultFilter[_currentSlot].MissileSpeed) < tolerance)
                                 filters[_currentSlot].MissileSpeed = value;
+                            break;
+                        case "MissileDamage":
+                            if (Math.Abs(filters[_currentSlot].MissileDamage -
+                                         DefaultFilter[_currentSlot].MissileDamage) < tolerance)
+                                filters[_currentSlot].MissileDamage = value;
                             break;
                         case "WeaponLength":
                             if (Math.Abs(filters[_currentSlot].WeaponLength -

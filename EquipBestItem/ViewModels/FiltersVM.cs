@@ -1,4 +1,3 @@
-using System;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using EquipBestItem.Models;
@@ -415,8 +414,8 @@ namespace EquipBestItem.ViewModels
             base.RefreshValues();
             _model.RefreshValues();
 
-            Console.WriteLine("FilterVMRefreshValue");
-            InformationManager.DisplayMessage(new InformationMessage("FilterVMRefreshValue"));
+            //Console.WriteLine("FilterVMRefreshValue");
+            //InformationManager.DisplayMessage(new InformationMessage("FilterVMRefreshValue"));
         }
         
         public void ExecuteShowHideWeapon1Filter()

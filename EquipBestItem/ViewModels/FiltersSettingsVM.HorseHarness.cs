@@ -162,13 +162,13 @@ namespace EquipBestItem.ViewModels
         #endregion
         
         [DataSourceProperty]
-        public string ChargeBonusText { get; } = "Charge bonus";
+        public string ChargeBonusText { get; } = "Not implemented";
         
         [DataSourceProperty]
-        public string ManeuverBonusText { get; } = "Maneuver bonus";
+        public string ManeuverBonusText { get; } = "Not implemented";
         
         [DataSourceProperty]
-        public string SpeedBonusText { get; } = "Speed bonus";
+        public string SpeedBonusText { get; } = "Not implemented";
         
         public void ExecuteChargeBonusValueDefault()
         {

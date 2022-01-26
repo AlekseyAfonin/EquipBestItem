@@ -3,6 +3,7 @@ using EquipBestItem.ViewModels;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
+using TaleWorlds.Localization;
 
 namespace EquipBestItem.Layers
 {
@@ -21,7 +22,7 @@ namespace EquipBestItem.Layers
             {
                 case EquipmentIndex.Head:
                 {
-                    _vm.HeaderText = "Helmet";
+                    _vm.HeaderText = new TextObject("{=O3dhjtOS}Head Armor").ToString();
                     _vm.IsHiddenBodyArmor = true;
                     _vm.IsHiddenLegArmor = true;
                     _vm.IsHiddenArmArmor = true;
@@ -32,7 +33,7 @@ namespace EquipBestItem.Layers
                 }
                 case EquipmentIndex.Cape:
                 {
-                    _vm.HeaderText = "Cloak";
+                    _vm.HeaderText = new TextObject("{=k8QpbFnj}Cape").ToString();
                     _vm.IsHiddenHeadArmor = true;
                     _vm.IsHiddenLegArmor = true;
                     _vm.IsHiddenArmArmor = true;
@@ -43,7 +44,7 @@ namespace EquipBestItem.Layers
                 }
                 case EquipmentIndex.Body:
                 {
-                    _vm.HeaderText = "Body Armor";
+                    _vm.HeaderText = new TextObject("{=HkfY3Ds5}Body Armor").ToString();
                     HideHorse();
                     HideHorseHarness();
                     HideWeapon();
@@ -51,7 +52,7 @@ namespace EquipBestItem.Layers
                 }
                 case EquipmentIndex.Gloves:
                 {
-                    _vm.HeaderText = "Gloves";
+                    _vm.HeaderText = new TextObject("{=kx7q8ybD}Arm Armor").ToString();
                     _vm.IsHiddenHeadArmor = true;
                     _vm.IsHiddenLegArmor = true;
                     _vm.IsHiddenBodyArmor = true;
@@ -62,7 +63,7 @@ namespace EquipBestItem.Layers
                 }
                 case EquipmentIndex.Leg:
                 {
-                    _vm.HeaderText = "Boots";
+                    _vm.HeaderText = new TextObject("{=11aiaODt}Foot Armor").ToString();
                     _vm.IsHiddenBodyArmor = true;
                     _vm.IsHiddenArmArmor = true;
                     _vm.IsHiddenHeadArmor = true;
@@ -73,7 +74,7 @@ namespace EquipBestItem.Layers
                 }
                 case EquipmentIndex.Horse:
                 {
-                    _vm.HeaderText = "Mount";
+                    _vm.HeaderText = new TextObject("{=mountnoun}Mount").ToString();
                     _vm.IsHiddenBodyArmor = true;
                     _vm.IsHiddenWeight = true;
                     HideArmor();
@@ -83,7 +84,9 @@ namespace EquipBestItem.Layers
                 }
                 case EquipmentIndex.HorseHarness:
                 {
-                    _vm.HeaderText = "Mount harness";
+                    _vm.HeaderText = new TextObject("{=b5t34yLX}Horse Harness").ToString();
+                    _vm.BodyArmorText = new TextObject("{=305cf7f98458b22e9af72b60a131714f}Horse Armor: ").ToString();
+                    HideHorseHarness();  //Not implemented in game function (maybe the developers will add this in the future)
                     HideHorse();
                     HideArmor();
                     HideWeapon();
@@ -91,7 +94,7 @@ namespace EquipBestItem.Layers
                 }
                 case EquipmentIndex.Weapon0:
                 {
-                    _vm.HeaderText = "Weapon 1";
+                    _vm.HeaderText = new TextObject("{=2RIyK1bp}Weapons") + " 1";
                     _vm.IsHiddenBodyArmor = true;
                     HideHorse();
                     HideHorseHarness();
@@ -100,7 +103,7 @@ namespace EquipBestItem.Layers
                 }
                 case EquipmentIndex.Weapon1:
                 {
-                    _vm.HeaderText = "Weapon 2";
+                    _vm.HeaderText = new TextObject("{=2RIyK1bp}Weapons") + " 2";
                     _vm.IsHiddenBodyArmor = true;
                     HideHorse();
                     HideHorseHarness();
@@ -109,7 +112,7 @@ namespace EquipBestItem.Layers
                 }
                 case EquipmentIndex.Weapon2:
                 {
-                    _vm.HeaderText = "Weapon 3";
+                    _vm.HeaderText = new TextObject("{=2RIyK1bp}Weapons") + " 3";
                     _vm.IsHiddenBodyArmor = true;
                     HideHorse();
                     HideHorseHarness();
@@ -118,7 +121,7 @@ namespace EquipBestItem.Layers
                 }
                 case EquipmentIndex.Weapon3:
                 {
-                    _vm.HeaderText = "Weapon 4";
+                    _vm.HeaderText = new TextObject("{=2RIyK1bp}Weapons") + " 4";
                     _vm.IsHiddenBodyArmor = true;
                     HideHorse();
                     HideHorseHarness();
@@ -148,6 +151,7 @@ namespace EquipBestItem.Layers
                 _vm.IsHiddenThrustSpeed = true;
                 _vm.IsHiddenSwingSpeed = true;
                 _vm.IsHiddenMissileSpeed = true;
+                _vm.IsHiddenMissileDamage = true;
                 _vm.IsHiddenWeaponLength = true;
                 _vm.IsHiddenThrustDamage = true;
                 _vm.IsHiddenSwingDamage = true;

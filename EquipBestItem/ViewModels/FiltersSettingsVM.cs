@@ -102,7 +102,7 @@ namespace EquipBestItem.ViewModels
         }
         
         [DataSourceProperty]
-        public string WeightText { get; } = "Weight";
+        public string WeightText { get; } = GameTexts.FindText("str_weight_text").ToString();
 
         
 

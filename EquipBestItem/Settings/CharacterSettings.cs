@@ -20,17 +20,15 @@ namespace EquipBestItem.Settings
 
             if (name == "default_equipbestitem" || name == "default_equipbestitem_civil")
             {
-                _filters = new Filters(true);
+                //_filters = new Filters(true);
+                
             }
-            else
-            {
-                _filters = new Filters();
-            }
+            _filters = new Filters();
         }
 
         public CharacterSettings()
         {
-            Console.WriteLine("CharacterSettings() Constructor call");
+            //Console.WriteLine("CharacterSettings() Constructor call");
         }
     }
 }

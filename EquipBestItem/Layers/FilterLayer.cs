@@ -19,9 +19,23 @@ namespace EquipBestItem.Layers
         //bool IsAltPressed = false;
         //bool _lastSetState;
 
+        //TODO refactor
+        bool _leftMouseButtonWasReleased;
+        
         protected override void OnLateUpdate(float dt)
         {
             base.OnLateUpdate(dt);
+            
+            if (TaleWorlds.InputSystem.Input.IsKeyReleased(TaleWorlds.InputSystem.InputKey.LeftMouseButton) && !_leftMouseButtonWasReleased)
+            {
+                _vm.RefreshValues();
+                _leftMouseButtonWasReleased = true;
+            }
+
+            if (TaleWorlds.InputSystem.Input.IsKeyPressed(TaleWorlds.InputSystem.InputKey.LeftMouseButton) && _leftMouseButtonWasReleased)
+            {
+                _leftMouseButtonWasReleased = false;
+            }
 
             // if (TaleWorlds.InputSystem.Input.IsKeyDown(TaleWorlds.InputSystem.InputKey.LeftAlt) && !IsAltPressed)
             // {

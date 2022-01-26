@@ -26,7 +26,7 @@ namespace EquipBestItem.Models
             _currentCharacter = GetCharacterByName(_inventory.CurrentCharacterName);
         }
 
-        public async void RefreshValues()
+        public void RefreshValues()
         {
             if (SettingsLoader.Instance.Settings.Debug)
             {
@@ -323,8 +323,8 @@ namespace EquipBestItem.Models
                     Math.Abs(filterElement.ManeuverBonus) +
                     Math.Abs(filterElement.SpeedBonus);
 
-                Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
-                    sourceItem.Item.Name, filterElement.HeadArmor, filterElement.ArmorBodyArmor, filterElement.LegArmor, filterElement.ArmArmor, filterElement.Weight, "filters"));
+                //Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
+                //    sourceItem.Item.Name, filterElement.HeadArmor, filterElement.ArmorBodyArmor, filterElement.LegArmor, filterElement.ArmArmor, filterElement.Weight, "filters"));
                 
                 ItemModifier mod =
                     sourceItem.ItemModifier;
@@ -338,8 +338,8 @@ namespace EquipBestItem.Models
                     speedBonus = armorComponentItem.SpeedBonus;
                 float weight = sourceItem.Weight;
                 
-                Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
-                    sourceItem.Item.Name, headArmor, bodyArmor, legArmor, armArmor, weight, "source"));
+                //Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
+                //    sourceItem.Item.Name, headArmor, bodyArmor, legArmor, armArmor, weight, "source"));
                 
                 if (mod != null)
                 {
@@ -348,23 +348,23 @@ namespace EquipBestItem.Models
                     legArmor = mod.ModifyArmor(legArmor);
                     armArmor = mod.ModifyArmor(armArmor);
                 }
-                Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
-                    sourceItem.Item.Name, headArmor, bodyArmor, legArmor, armArmor, weight, "after mods"));
+                //Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
+                //    sourceItem.Item.Name, headArmor, bodyArmor, legArmor, armArmor, weight, "after mods"));
                 
                 value = (
                     headArmor * filterElement.HeadArmor +
                     bodyArmor * filterElement.ArmorBodyArmor +
                     legArmor * filterElement.LegArmor +
                     armArmor * filterElement.ArmArmor +
-                    weight * filterElement.Weight +
+                    weight * -filterElement.Weight +
                     chargeBonus * filterElement.ChargeBonus +
                     maneuverBonus * filterElement.ManeuverBonus +
                     speedBonus * filterElement.SpeedBonus
                 ) / sum;
 
-                Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
-                                sourceItem.Item.Name, headArmor, bodyArmor, legArmor, armArmor, weight, "after filters"));
-                Console.WriteLine("Total score: " + value);
+                //Console.WriteLine(String.Format("{0}: HA {1}, BA {2}, LA {3}, AA {4}, W {5} - {6}",
+                //                sourceItem.Item.Name, headArmor, bodyArmor, legArmor, armArmor, weight, "after filters"));
+                //Console.WriteLine("Total score: " + value);
 
                 return value;
             }
@@ -379,6 +379,7 @@ namespace EquipBestItem.Models
                     Math.Abs(filterElement.Handling) +
                     Math.Abs(filterElement.MaxDataValue) +
                     Math.Abs(filterElement.MissileSpeed) +
+                    Math.Abs(filterElement.MissileDamage) +
                     Math.Abs(filterElement.SwingDamage) +
                     Math.Abs(filterElement.SwingSpeed) +
                     Math.Abs(filterElement.ThrustDamage) +
@@ -391,6 +392,7 @@ namespace EquipBestItem.Models
                     handling = primaryWeaponItem.Handling,
                     maxDataValue = primaryWeaponItem.MaxDataValue,
                     missileSpeed = primaryWeaponItem.MissileSpeed,
+                    missileDamage = primaryWeaponItem.MissileDamage,
                     swingDamage = primaryWeaponItem.SwingDamage,
                     swingSpeed = primaryWeaponItem.SwingSpeed,
                     thrustDamage = primaryWeaponItem.ThrustDamage,
@@ -405,7 +407,7 @@ namespace EquipBestItem.Models
                     handling = mod.ModifySpeed(handling);
                     bodyArmor = mod.ModifyArmor(bodyArmor);
                     missileSpeed = mod.ModifyMissileSpeed(missileSpeed);
-                    //missileDamage = mod.ModifyDamage(missileDamage);
+                    missileDamage = mod.ModifyDamage(missileDamage);
                     swingDamage = mod.ModifyDamage(swingDamage);
                     swingSpeed = mod.ModifySpeed(swingSpeed);
                     thrustDamage = mod.ModifyDamage(thrustDamage);
@@ -420,13 +422,13 @@ namespace EquipBestItem.Models
                     handling * filterElement.Handling +
                     maxDataValue * filterElement.MaxDataValue +
                     missileSpeed * filterElement.MissileSpeed +
+                    missileDamage * filterElement.MissileDamage +
                     swingDamage * filterElement.SwingDamage +
                     swingSpeed * filterElement.SwingSpeed +
                     thrustDamage * filterElement.ThrustDamage +
                     thrustSpeed * filterElement.ThrustSpeed +
                     weaponLength * filterElement.WeaponLength +
-                    weaponWeight * filterElement.Weight
-                    //missileDamage * filterElement.MissileDamage;
+                    weaponWeight * -filterElement.Weight
                 ) / sum;
 
                 //Console.WriteLine(String.Format("{0}: Acc {1}, BA {2}, HL {3}, HP {4}, MS {5}, SD {6}, SS {7}, TD {8}, TS {9}, WL {10}, W {11}",

@@ -7,6 +7,6 @@ namespace EquipBestItem.Settings
     {
         public bool IsLeftPanelLocked { get; set; } = true;
         public bool IsRightPanelLocked { get; set; }
-        public bool Debug { get; set; } = true;
+        public bool Debug { get; set; } = false;
     }
 }

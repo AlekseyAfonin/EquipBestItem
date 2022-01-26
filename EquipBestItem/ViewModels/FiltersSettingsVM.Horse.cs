@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using EquipBestItem.Settings;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 
 namespace EquipBestItem.ViewModels
 {
@@ -204,16 +205,16 @@ namespace EquipBestItem.ViewModels
         #endregion
         
         [DataSourceProperty]
-        public string HitPointsText { get; } = "Hit Points";
+        public string HitPointsText { get; } = new TextObject("{=aCkzVUCR}Hit Points: ").ToString();
         
         [DataSourceProperty]
-        public string ChargeDamageText { get; } = "Charge damage";
+        public string ChargeDamageText { get; } = new TextObject("{=c7638a0869219ae845de0f660fd57a9d}Charge Damage: ").ToString();
         
         [DataSourceProperty]
-        public string ManeuverText { get; } = "Maneuver";
+        public string ManeuverText { get; } = new TextObject("{=3025020b83b218707499f0de3135ed0a}Maneuver: ").ToString();
         
         [DataSourceProperty]
-        public string SpeedText { get; } = "Speed";
+        public string SpeedText { get; } = new TextObject("{=74dc1908cb0b990e80fb977b5a0ef10d}Speed: ").ToString();
         
         public void ExecuteHitPointsValueDefault()
         {

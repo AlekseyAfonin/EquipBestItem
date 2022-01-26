@@ -71,7 +71,7 @@ namespace EquipBestItem.Models
             }
         }
 
-        private EquipmentIndex _currentSlot;
+        private EquipmentIndex _currentSlot = EquipmentIndex.None;
         private FiltersSettingsLayer _currentFilterLayer;
 
         public void ShowHideFilterSettingsLayer(InventoryGauntletScreen inventoryScreen, EquipmentIndex selectedSlot)
@@ -79,7 +79,7 @@ namespace EquipBestItem.Models
             if (_currentFilterLayer != null || selectedSlot == EquipmentIndex.None)
                 inventoryScreen.RemoveLayer(_currentFilterLayer);
             
-            if (_currentSlot != selectedSlot)
+            if (_currentSlot != selectedSlot && selectedSlot != EquipmentIndex.None)
             {
                 //TODO
                 _currentFilterLayer = new FiltersSettingsLayer(17, _inventory, selectedSlot, this);

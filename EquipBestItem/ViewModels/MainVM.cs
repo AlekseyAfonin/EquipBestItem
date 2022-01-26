@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using EquipBestItem.Models;
+﻿using EquipBestItem.Models;
 using SandBox.GauntletUI;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
@@ -227,27 +225,27 @@ namespace EquipBestItem.ViewModels
             _model = new MainModel(inventoryScreen.GetField("_dataSource") as SPInventoryVM);
         }
 
-        public override async void RefreshValues()
+        public override void RefreshValues()
         {
             base.RefreshValues();
+            _model.RefreshValues();
+            // Action onStarted = () =>
+            // {
+            //     IsHelmButtonEnabled = false;
+            //     IsCloakButtonEnabled = false;
+            //     IsArmorButtonEnabled = false;
+            //     IsGloveButtonEnabled = false;
+            //     IsBootButtonEnabled = false;
+            //     IsMountButtonEnabled = false;
+            //     IsHarnessButtonEnabled = false;
+            //     IsWeapon1ButtonEnabled = false;
+            //     IsWeapon2ButtonEnabled = false;
+            //     IsWeapon3ButtonEnabled = false;
+            //     IsWeapon4ButtonEnabled = false;
+            // };
 
-            Action onStarted = () =>
-            {
-                IsHelmButtonEnabled = false;
-                IsCloakButtonEnabled = false;
-                IsArmorButtonEnabled = false;
-                IsGloveButtonEnabled = false;
-                IsBootButtonEnabled = false;
-                IsMountButtonEnabled = false;
-                IsHarnessButtonEnabled = false;
-                IsWeapon1ButtonEnabled = false;
-                IsWeapon2ButtonEnabled = false;
-                IsWeapon3ButtonEnabled = false;
-                IsWeapon4ButtonEnabled = false;
-            };
-
-            Action onCompleted = () =>
-            {
+            // Action onCompleted = () =>
+            // {
                 IsHelmButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Head].IsEmpty ||
                                        !_model.BestRightEquipment[EquipmentIndex.Head].IsEmpty);
                 IsCloakButtonEnabled = (!_model.BestLeftEquipment[EquipmentIndex.Cape].IsEmpty ||
@@ -284,23 +282,23 @@ namespace EquipBestItem.ViewModels
                         break;
                     }
                 }
-            };
-            
-            var thread = new Thread(
-                () =>
-                {
-                    try
-                    {
-                        onStarted();
-                        _model.RefreshValues();
-                    }
-                    finally
-                    {
-                        onCompleted();
-                    }
-                });
-                
-            thread.Start();
+            // };
+            //
+            // var thread = new Thread(
+            //     () =>
+            //     {
+            //         try
+            //         {
+            //             onStarted();
+            //             _model.RefreshValues();
+            //         }
+            //         finally
+            //         {
+            //             onCompleted();
+            //         }
+            //     });
+            //     
+            // thread.Start();
         }
 
 

@@ -3,6 +3,7 @@ using System.Globalization;
 using EquipBestItem.Settings;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 
 namespace EquipBestItem.ViewModels
 {
@@ -223,16 +224,26 @@ namespace EquipBestItem.ViewModels
         #endregion
         
         [DataSourceProperty]
-        public string HeadArmorText { get; } = "Head Armor";
+        public string HeadArmorText { get; } = GameTexts.FindText("str_head_armor").ToString();
+        
+        
+        private string _bodyArmorText = GameTexts.FindText("str_body_armor").ToString();
+        [DataSourceProperty]
+        public string BodyArmorText { 
+            get => _bodyArmorText;
+            set
+            {
+                if (_bodyArmorText == value) return;
+                _bodyArmorText = value;
+                OnPropertyChanged();
+            }
+        }
         
         [DataSourceProperty]
-        public string BodyArmorText { get; } = "Body Armor";
+        public string ArmArmorText { get; } = new TextObject("{=cf61cce254c7dca65be9bebac7fb9bf5}Arm Armor: ").ToString();
         
         [DataSourceProperty]
-        public string ArmArmorText { get; } = "Arm Armor";
-        
-        [DataSourceProperty]
-        public string LegArmorText { get; } = "Leg Armor";
+        public string LegArmorText { get; } = GameTexts.FindText("str_leg_armor").ToString();
         
         public void ExecuteHeadArmorValueDefault()
         {
