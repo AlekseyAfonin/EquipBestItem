@@ -5,14 +5,7 @@ namespace EquipBestItem.Settings
     [Serializable]
     public class CharacterSettings
     {
-        public string Name { get; set; }
-
         private Filters _filters;
-        public Filters Filters
-        {
-            get => _filters;
-            set => _filters = value;
-        }
 
         public CharacterSettings(string name)
         {
@@ -21,14 +14,17 @@ namespace EquipBestItem.Settings
             if (name == "default_equipbestitem" || name == "default_equipbestitem_civil")
             {
                 //_filters = new Filters(true);
-                
             }
+
             _filters = new Filters();
         }
 
-        public CharacterSettings()
+        public string Name { get; set; }
+
+        public Filters Filters
         {
-            //Console.WriteLine("CharacterSettings() Constructor call");
+            get => _filters;
+            set => _filters = value;
         }
     }
 }

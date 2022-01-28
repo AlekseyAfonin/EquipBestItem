@@ -1,24 +1,41 @@
 using System;
 using System.ComponentModel;
-using EquipBestItem.Behaviors;
 using EquipBestItem.Layers;
 using EquipBestItem.Models;
 using EquipBestItem.Settings;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 
 namespace EquipBestItem.ViewModels
 {
     /// <summary>
-    /// The main part with general methods and fields
+    ///     The main part with general methods and fields
     /// </summary>
     public partial class FiltersSettingsVM : ViewModel
     {
-        const float Tolerance = 0.000000001f;
+        private const float Tolerance = 0.000000001f;
+
+
+        private readonly EquipmentIndex _currentSlot;
+        private readonly EquipBestItemManager _manager;
 
         private string _headerText;
-        
+
+        private bool _hiddenWeight;
+        private FiltersSettingsModel _model;
+
+        private float _weightValue;
+
+        private bool _weightValueIsDefault;
+
+        public FiltersSettingsVM(EquipmentIndex currentSlot)
+        {
+            _manager = EquipBestItemManager.Instance;
+            _currentSlot = currentSlot;
+            _model = new FiltersSettingsModel(this, _currentSlot);
+            PropertyChanged += FilterSettingsVM_PropertyChanged;
+        }
+
         [DataSourceProperty]
         public string HeaderText
         {
@@ -30,9 +47,7 @@ namespace EquipBestItem.ViewModels
                 OnPropertyChanged();
             }
         }
-        
-        private float _weightValue;
-        
+
         [DataSourceProperty]
         public float WeightValue
         {
@@ -45,36 +60,27 @@ namespace EquipBestItem.ViewModels
                 UpdateWeaponProperties();
                 UpdateArmorProperties();
                 UpdateHorseHarnessProperties();
-                OnPropertyChanged("WeightValueText");
+                OnPropertyChanged(nameof(WeightValueText));
             }
         }
-        
-        [DataSourceProperty] 
+
+        [DataSourceProperty]
         public string WeightValueText
         {
             get
             {
-                if (_currentSlot >= EquipmentIndex.WeaponItemBeginSlot && _currentSlot < EquipmentIndex.NumAllWeaponSlots)
-                {
+                if (_currentSlot is >= EquipmentIndex.WeaponItemBeginSlot and < EquipmentIndex.NumAllWeaponSlots)
                     return GetWeaponValuePercentText(WeightValue);
-                }
 
-                if (_currentSlot >= EquipmentIndex.ArmorItemBeginSlot && _currentSlot < EquipmentIndex.ArmorItemEndSlot)
-                {
+                if (_currentSlot is >= EquipmentIndex.ArmorItemBeginSlot and < EquipmentIndex.ArmorItemEndSlot)
                     return GetArmorValuePercentText(WeightValue);
-                }
-                
-                if (_currentSlot == EquipmentIndex.HorseHarness)
-                {
-                    return GetHorseHarnessValuePercentText(WeightValue);
-                }
+
+                if (_currentSlot == EquipmentIndex.HorseHarness) return GetHorseHarnessValuePercentText(WeightValue);
 
                 return "err";
             }
         }
 
-        private bool _weightValueIsDefault;
-        
         [DataSourceProperty]
         public bool IsWeightValueIsDefault
         {
@@ -86,9 +92,7 @@ namespace EquipBestItem.ViewModels
                 OnPropertyChanged();
             }
         }
-        
-        private bool _hiddenWeight;
-        
+
         [DataSourceProperty]
         public bool IsHiddenWeight
         {
@@ -100,26 +104,8 @@ namespace EquipBestItem.ViewModels
                 OnPropertyChanged();
             }
         }
-        
-        [DataSourceProperty]
-        public string WeightText { get; } = GameTexts.FindText("str_weight_text").ToString();
 
-        
-
-        private EquipmentIndex _currentSlot;
-        private SPInventoryVM _inventory;
-        private FiltersSettingsModel _model;
-        private FiltersSettingsLayer _layer;
-        
-        public FiltersSettingsVM(SPInventoryVM inventory, EquipmentIndex currentSlot, FiltersSettingsLayer layer)
-        {
-            _layer = layer;
-            _currentSlot = currentSlot;
-            _inventory = inventory;
-            _model = new FiltersSettingsModel(this, _inventory, _currentSlot);
-            PropertyChanged += FilterSettingsVM_PropertyChanged;
-            //RefreshValues();
-        }
+        [DataSourceProperty] public string WeightText { get; } = GameTexts.FindText("str_weight_text").ToString();
 
         private void FilterSettingsVM_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -136,33 +122,32 @@ namespace EquipBestItem.ViewModels
             UpdateHorseCheckBoxStates();
             UpdateHorseHarnessCheckBoxStates();
         }
-        
+
         public void ExecuteWeightValueDefault()
         {
             _model.SetEveryCharacterNewDefaultValue(nameof(FilterElement.Weight), WeightValue);
             _model.DefaultFilter[_currentSlot].Weight = WeightValue;
             RefreshValues();
         }
-        
+
         public void ExecuteDefault()
         {
             _model.SetFiltersSettingsDefault(_currentSlot);
         }
-        
+
         public void ExecuteLock()
         {
             _model.SetFiltersSettingsLock(_currentSlot);
         }
-        
+
         public void ExecuteClose()
         {
-            //TODO
-            _layer.Model.ShowHideFilterSettingsLayer(InventoryBehavior.InventoryScreen, EquipmentIndex.None);
+            var filtersSettingsLayer = _manager.FindLayer<FiltersSettingsLayer>();
+            _manager.RemoveLayer(filtersSettingsLayer);
         }
 
         public override void OnFinalize()
         {
-            _inventory = null;
             _model.OnFinalize();
             _model = null;
             base.OnFinalize();

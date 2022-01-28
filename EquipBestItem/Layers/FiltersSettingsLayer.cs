@@ -1,6 +1,4 @@
-using EquipBestItem.Models;
 using EquipBestItem.ViewModels;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Localization;
@@ -9,15 +7,16 @@ namespace EquipBestItem.Layers
 {
     public class FiltersSettingsLayer : GauntletLayer
     {
+        public readonly EquipmentIndex SelectedSlot;
         private FiltersSettingsVM _vm;
-        public FiltersModel Model;
-        
-        public FiltersSettingsLayer(int localOrder, SPInventoryVM inventory, EquipmentIndex selectedSlot, FiltersModel model, string categoryId = "GauntletLayer") : base(localOrder, categoryId)
+
+        public FiltersSettingsLayer(int localOrder, EquipmentIndex selectedSlot, string categoryId = "GauntletLayer") :
+            base(localOrder, categoryId)
         {
-            Model = model;
-            _vm = new FiltersSettingsVM(inventory, selectedSlot, this);
+            SelectedSlot = selectedSlot;
+            _vm = new FiltersSettingsVM(selectedSlot);
             LoadMovie("EBI_FiltersSettings", _vm);
-            
+
             switch (selectedSlot)
             {
                 case EquipmentIndex.Head:
@@ -86,7 +85,7 @@ namespace EquipBestItem.Layers
                 {
                     _vm.HeaderText = new TextObject("{=b5t34yLX}Horse Harness").ToString();
                     _vm.BodyArmorText = new TextObject("{=305cf7f98458b22e9af72b60a131714f}Horse Armor: ").ToString();
-                    HideHorseHarness();  //Not implemented in game function (maybe the developers will add this in the future)
+                    HideHorseHarness(); //Not implemented in game function (maybe the developers will add this in the future)
                     HideHorse();
                     HideArmor();
                     HideWeapon();
@@ -166,8 +165,6 @@ namespace EquipBestItem.Layers
                 _vm.IsHiddenLegArmor = true;
                 _vm.IsHiddenArmArmor = true;
             }
-            
-            
         }
 
         protected override void OnFinalize()

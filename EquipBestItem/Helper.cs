@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 using TaleWorlds.Core;
@@ -10,12 +11,10 @@ namespace EquipBestItem
 {
     public static class Helper
     {
-
         internal static object GetMethod(this object o, string methodName, params object[] args)
         {
-            var mi = o.GetType().GetMethod(methodName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var mi = o.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
             if (mi != null)
-            {
                 try
                 {
                     return mi.Invoke(o, args);
@@ -24,15 +23,14 @@ namespace EquipBestItem
                 {
                     throw new MBException(methodName + " GetField() exception");
                 }
-            }
+
             return null;
         }
 
         internal static object GetField(this object o, string fieldName)
         {
-            var mi = o.GetType().GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var mi = o.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
             if (mi != null)
-            {
                 try
                 {
                     return mi.GetValue(o);
@@ -41,21 +39,21 @@ namespace EquipBestItem
                 {
                     throw new MBException(fieldName + " GetField() exception");
                 }
-            }
+
             return null;
         }
 
         public static void Serialize<T>(PlatformFilePath platformFilePath, T data)
         {
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            var ns = new XmlSerializerNamespaces();
             ns.Add("", "");
 
             try
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                var serializer = new XmlSerializer(typeof(T));
                 var stringWriter = new StringWriter();
                 serializer.Serialize(stringWriter, data);
-                
+
                 FileHelper.SaveFileString(platformFilePath, stringWriter.ToString());
             }
             catch
@@ -67,30 +65,26 @@ namespace EquipBestItem
 
         public static T Deserialize<T>(PlatformFilePath platformFilePath)
         {
-            string fileString = FileHelper.GetFileContentString(platformFilePath);
-            T data = default (T);
-            
+            var fileString = FileHelper.GetFileContentString(platformFilePath);
+            var data = default(T);
+
             try
             {
                 StringReader stringReader;
                 using (stringReader = new StringReader(fileString))
                 {
                     var xmlReader = XmlReader.Create(stringReader);
-                    XmlSerializer serializer = new XmlSerializer(typeof(T));
-                    
-                    if (serializer.CanDeserialize(xmlReader))
-                    {
-                        data = (T)serializer.Deserialize(xmlReader);
-                    }
+                    var serializer = new XmlSerializer(typeof(T));
+
+                    if (serializer.CanDeserialize(xmlReader)) data = (T) serializer.Deserialize(xmlReader);
                 }
             }
             catch (Exception e)
             {
                 throw new MBException(platformFilePath.FileName + " " + e.Message);
             }
-            
+
             return data;
         }
-
     }
 }

@@ -1,13 +1,86 @@
+using EquipBestItem.Models;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
-using EquipBestItem.Models;
-using SandBox.GauntletUI;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 
 namespace EquipBestItem.ViewModels
 {
     public class FiltersVM : ViewModel
     {
+        private FiltersModel _model;
+
+        public FiltersVM()
+        {
+            _model = new FiltersModel(this);
+        }
+
+        public sealed override void RefreshValues()
+        {
+            base.RefreshValues();
+            _model.RefreshValues();
+        }
+
+        public void ExecuteShowHideWeapon1Filter()
+        {
+            _model.ShowHideFilterSettingsLayer(EquipmentIndex.Weapon0);
+        }
+
+        public void ExecuteShowHideWeapon2Filter()
+        {
+            _model.ShowHideFilterSettingsLayer(EquipmentIndex.Weapon1);
+        }
+
+        public void ExecuteShowHideWeapon3Filter()
+        {
+            _model.ShowHideFilterSettingsLayer(EquipmentIndex.Weapon2);
+        }
+
+        public void ExecuteShowHideWeapon4Filter()
+        {
+            _model.ShowHideFilterSettingsLayer(EquipmentIndex.Weapon3);
+        }
+
+        public void ExecuteShowHideHelmFilter()
+        {
+            _model.ShowHideFilterSettingsLayer(EquipmentIndex.Head);
+        }
+
+        public void ExecuteShowHideCloakFilter()
+        {
+            _model.ShowHideFilterSettingsLayer(EquipmentIndex.Cape);
+        }
+
+        public void ExecuteShowHideArmorFilter()
+        {
+            _model.ShowHideFilterSettingsLayer(EquipmentIndex.Body);
+        }
+
+        public void ExecuteShowHideGloveFilter()
+        {
+            _model.ShowHideFilterSettingsLayer(EquipmentIndex.Gloves);
+        }
+
+        public void ExecuteShowHideBootFilter()
+        {
+            _model.ShowHideFilterSettingsLayer(EquipmentIndex.Leg);
+        }
+
+        public void ExecuteShowHideMountFilter()
+        {
+            _model.ShowHideFilterSettingsLayer(EquipmentIndex.Horse);
+        }
+
+        public void ExecuteShowHideHarnessFilter()
+        {
+            _model.ShowHideFilterSettingsLayer(EquipmentIndex.HorseHarness);
+        }
+
+        public override void OnFinalize()
+        {
+            _model.OnFinalize();
+            _model = null;
+            base.OnFinalize();
+        }
+
         #region DataSourcePropertys
 
         private bool _isHelmFilterSelected;
@@ -18,11 +91,9 @@ namespace EquipBestItem.ViewModels
             get => _isHelmFilterSelected;
             set
             {
-                if (_isHelmFilterSelected != value)
-                {
-                    _isHelmFilterSelected = value;
-                    OnPropertyChanged();
-                }
+                if (_isHelmFilterSelected == value) return;
+                _isHelmFilterSelected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -34,11 +105,9 @@ namespace EquipBestItem.ViewModels
             get => _isHelmFilterLocked;
             set
             {
-                if (_isHelmFilterLocked != value)
-                {
-                    _isHelmFilterLocked = value;
-                    OnPropertyChanged();
-                }
+                if (_isHelmFilterLocked == value) return;
+                _isHelmFilterLocked = value;
+                OnPropertyChanged();
             }
         }
 
@@ -50,11 +119,9 @@ namespace EquipBestItem.ViewModels
             get => _isCloakFilterSelected;
             set
             {
-                if (_isCloakFilterSelected != value)
-                {
-                    _isCloakFilterSelected = value;
-                    OnPropertyChanged();
-                }
+                if (_isCloakFilterSelected == value) return;
+                _isCloakFilterSelected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -66,14 +133,11 @@ namespace EquipBestItem.ViewModels
             get => _isCloakFilterLocked;
             set
             {
-                if (_isCloakFilterLocked != value)
-                {
-                    _isCloakFilterLocked = value;
-                    OnPropertyChanged();
-                }
+                if (_isCloakFilterLocked == value) return;
+                _isCloakFilterLocked = value;
+                OnPropertyChanged();
             }
         }
-
 
 
         private bool _isArmorFilterSelected;
@@ -84,11 +148,9 @@ namespace EquipBestItem.ViewModels
             get => _isArmorFilterSelected;
             set
             {
-                if (_isArmorFilterSelected != value)
-                {
-                    _isArmorFilterSelected = value;
-                    OnPropertyChanged();
-                }
+                if (_isArmorFilterSelected == value) return;
+                _isArmorFilterSelected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -100,14 +162,11 @@ namespace EquipBestItem.ViewModels
             get => _isArmorFilterLocked;
             set
             {
-                if (_isArmorFilterLocked != value)
-                {
-                    _isArmorFilterLocked = value;
-                    OnPropertyChanged();
-                }
+                if (_isArmorFilterLocked == value) return;
+                _isArmorFilterLocked = value;
+                OnPropertyChanged();
             }
         }
-
 
 
         private bool _isGloveFilterSelected;
@@ -118,11 +177,9 @@ namespace EquipBestItem.ViewModels
             get => _isGloveFilterSelected;
             set
             {
-                if (_isGloveFilterSelected != value)
-                {
-                    _isGloveFilterSelected = value;
-                    OnPropertyChanged();
-                }
+                if (_isGloveFilterSelected == value) return;
+                _isGloveFilterSelected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -134,11 +191,9 @@ namespace EquipBestItem.ViewModels
             get => _isGloveFilterLocked;
             set
             {
-                if (_isGloveFilterLocked != value)
-                {
-                    _isGloveFilterLocked = value;
-                    OnPropertyChanged();
-                }
+                if (_isGloveFilterLocked == value) return;
+                _isGloveFilterLocked = value;
+                OnPropertyChanged();
             }
         }
 
@@ -150,11 +205,9 @@ namespace EquipBestItem.ViewModels
             get => _isBootFilterSelected;
             set
             {
-                if (_isBootFilterSelected != value)
-                {
-                    _isBootFilterSelected = value;
-                    OnPropertyChanged();
-                }
+                if (_isBootFilterSelected == value) return;
+                _isBootFilterSelected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -166,11 +219,9 @@ namespace EquipBestItem.ViewModels
             get => _isBootFilterLocked;
             set
             {
-                if (_isBootFilterLocked != value)
-                {
-                    _isBootFilterLocked = value;
-                    OnPropertyChanged();
-                }
+                if (_isBootFilterLocked == value) return;
+                _isBootFilterLocked = value;
+                OnPropertyChanged();
             }
         }
 
@@ -182,11 +233,9 @@ namespace EquipBestItem.ViewModels
             get => _isMountFilterSelected;
             set
             {
-                if (_isMountFilterSelected != value)
-                {
-                    _isMountFilterSelected = value;
-                    OnPropertyChanged();
-                }
+                if (_isMountFilterSelected == value) return;
+                _isMountFilterSelected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -198,11 +247,9 @@ namespace EquipBestItem.ViewModels
             get => _isMountFilterLocked;
             set
             {
-                if (_isMountFilterLocked != value)
-                {
-                    _isMountFilterLocked = value;
-                    OnPropertyChanged();
-                }
+                if (_isMountFilterLocked == value) return;
+                _isMountFilterLocked = value;
+                OnPropertyChanged();
             }
         }
 
@@ -214,11 +261,9 @@ namespace EquipBestItem.ViewModels
             get => _isHarnessFilterSelected;
             set
             {
-                if (_isHarnessFilterSelected != value)
-                {
-                    _isHarnessFilterSelected = value;
-                    OnPropertyChanged();
-                }
+                if (_isHarnessFilterSelected == value) return;
+                _isHarnessFilterSelected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -230,11 +275,9 @@ namespace EquipBestItem.ViewModels
             get => _isHarnessFilterLocked;
             set
             {
-                if (_isHarnessFilterLocked != value)
-                {
-                    _isHarnessFilterLocked = value;
-                    OnPropertyChanged();
-                }
+                if (_isHarnessFilterLocked == value) return;
+                _isHarnessFilterLocked = value;
+                OnPropertyChanged();
             }
         }
 
@@ -246,11 +289,9 @@ namespace EquipBestItem.ViewModels
             get => _isWeapon1FilterSelected;
             set
             {
-                if (_isWeapon1FilterSelected != value)
-                {
-                    _isWeapon1FilterSelected = value;
-                    OnPropertyChanged();
-                }
+                if (_isWeapon1FilterSelected == value) return;
+                _isWeapon1FilterSelected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -262,11 +303,9 @@ namespace EquipBestItem.ViewModels
             get => _isWeapon1FilterLocked;
             set
             {
-                if (_isWeapon1FilterLocked != value)
-                {
-                    _isWeapon1FilterLocked = value;
-                    OnPropertyChanged();
-                }
+                if (_isWeapon1FilterLocked == value) return;
+                _isWeapon1FilterLocked = value;
+                OnPropertyChanged();
             }
         }
 
@@ -278,11 +317,9 @@ namespace EquipBestItem.ViewModels
             get => _isWeapon2FilterSelected;
             set
             {
-                if (_isWeapon2FilterSelected != value)
-                {
-                    _isWeapon2FilterSelected = value;
-                    OnPropertyChanged();
-                }
+                if (_isWeapon2FilterSelected == value) return;
+                _isWeapon2FilterSelected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -294,11 +331,9 @@ namespace EquipBestItem.ViewModels
             get => _isWeapon2FilterLocked;
             set
             {
-                if (_isWeapon2FilterLocked != value)
-                {
-                    _isWeapon2FilterLocked = value;
-                    OnPropertyChanged();
-                }
+                if (_isWeapon2FilterLocked == value) return;
+                _isWeapon2FilterLocked = value;
+                OnPropertyChanged();
             }
         }
 
@@ -310,11 +345,9 @@ namespace EquipBestItem.ViewModels
             get => _isWeapon3FilterSelected;
             set
             {
-                if (_isWeapon3FilterSelected != value)
-                {
-                    _isWeapon3FilterSelected = value;
-                    OnPropertyChanged();
-                }
+                if (_isWeapon3FilterSelected == value) return;
+                _isWeapon3FilterSelected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -326,11 +359,9 @@ namespace EquipBestItem.ViewModels
             get => _isWeapon3FilterLocked;
             set
             {
-                if (_isWeapon3FilterLocked != value)
-                {
-                    _isWeapon3FilterLocked = value;
-                    OnPropertyChanged();
-                }
+                if (_isWeapon3FilterLocked == value) return;
+                _isWeapon3FilterLocked = value;
+                OnPropertyChanged();
             }
         }
 
@@ -342,11 +373,9 @@ namespace EquipBestItem.ViewModels
             get => _isWeapon4FilterSelected;
             set
             {
-                if (_isWeapon4FilterSelected != value)
-                {
-                    _isWeapon4FilterSelected = value;
-                    OnPropertyChanged();
-                }
+                if (_isWeapon4FilterSelected == value) return;
+                _isWeapon4FilterSelected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -358,11 +387,9 @@ namespace EquipBestItem.ViewModels
             get => _isWeapon4FilterLocked;
             set
             {
-                if (_isWeapon4FilterLocked != value)
-                {
-                    _isWeapon4FilterLocked = value;
-                    OnPropertyChanged();
-                }
+                if (_isWeapon4FilterLocked == value) return;
+                _isWeapon4FilterLocked = value;
+                OnPropertyChanged();
             }
         }
 
@@ -374,11 +401,9 @@ namespace EquipBestItem.ViewModels
             get => _isHidden;
             set
             {
-                if (_isHidden != value)
-                {
-                    _isHidden = value;
-                    OnPropertyChanged();
-                }
+                if (_isHidden == value) return;
+                _isHidden = value;
+                OnPropertyChanged();
             }
         }
 
@@ -390,99 +415,12 @@ namespace EquipBestItem.ViewModels
             get => _title;
             set
             {
-                if (_title != value)
-                {
-                    _title = value;
-                    OnPropertyChanged();
-                }
+                if (_title == value) return;
+                _title = value;
+                OnPropertyChanged();
             }
         }
 
         #endregion DataSourceProperties
-
-        private FiltersModel _model;
-        private InventoryGauntletScreen _inventoryScreen;
-
-        public FiltersVM(InventoryGauntletScreen inventoryScreen)
-        {
-            _inventoryScreen = inventoryScreen;
-            _model = new FiltersModel(this, _inventoryScreen.GetField("_dataSource") as SPInventoryVM);
-        }
-
-        public sealed override void RefreshValues()
-        {
-            base.RefreshValues();
-            _model.RefreshValues();
-
-            //Console.WriteLine("FilterVMRefreshValue");
-            //InformationManager.DisplayMessage(new InformationMessage("FilterVMRefreshValue"));
-        }
-        
-        public void ExecuteShowHideWeapon1Filter()
-        {
-
-            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Weapon0);
-        }
-        
-        public void ExecuteShowHideWeapon2Filter()
-        {
-            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Weapon1);
-        }
-        
-        public void ExecuteShowHideWeapon3Filter()
-        {
-            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Weapon2);
-        }
-        
-        public void ExecuteShowHideWeapon4Filter()
-        {
-            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Weapon3);
-        }
-        
-        public void ExecuteShowHideHelmFilter()
-        {
-            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Head);
-        }
-        
-        public void ExecuteShowHideCloakFilter()
-        {
-            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Cape);
-        }
-        
-        public void ExecuteShowHideArmorFilter()
-        {
-            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Body);
-        }
-        
-        public void ExecuteShowHideGloveFilter()
-        {
-            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Gloves);
-        }
-        
-        public void ExecuteShowHideBootFilter()
-        {
-            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Leg);
-        }
-        
-        public void ExecuteShowHideMountFilter()
-        {
-            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.Horse);
-        }
-        
-        public void ExecuteShowHideHarnessFilter()
-        {
-            _model.ShowHideFilterSettingsLayer(_inventoryScreen, EquipmentIndex.HorseHarness);
-        }
-
-        public override void OnFinalize()
-        {
-            _model.OnFinalize();
-            _model = null;
-            _inventoryScreen = null;
-            base.OnFinalize();
-        }
     }
 }
-
-    
-

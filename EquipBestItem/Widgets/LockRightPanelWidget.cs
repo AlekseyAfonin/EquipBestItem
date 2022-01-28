@@ -5,13 +5,13 @@ namespace EquipBestItem.Widgets
 {
     public class LockRightPanelWidget : ButtonWidget
     {
-        public bool IsRightPanelLocked { get; set; }
-
         public LockRightPanelWidget(UIContext context) : base(context)
         {
             IsRightPanelLocked = SettingsLoader.Instance.Settings.IsRightPanelLocked;
             IsSelected = IsRightPanelLocked;
         }
+
+        public bool IsRightPanelLocked { get; set; }
 
         protected override void OnClick()
         {
@@ -26,6 +26,5 @@ namespace EquipBestItem.Widgets
             base.OnLateUpdate(dt);
             //InformationManager.DisplayMessage(new InformationMessage("IsRightPanelLocked: " + this.IsRightPanelLocked.ToString()));
         }
-
     }
 }

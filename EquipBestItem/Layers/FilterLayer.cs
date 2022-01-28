@@ -1,51 +1,47 @@
 ﻿using EquipBestItem.ViewModels;
-using SandBox.GauntletUI;
 using TaleWorlds.Engine.GauntletUI;
-using TaleWorlds.Engine.Screens;
+using TaleWorlds.InputSystem;
 
 namespace EquipBestItem.Layers
 {
     internal class FilterLayer : GauntletLayer
     {
+        private bool _lastSetState;
+
+        //TODO refactor
+        private bool _leftMouseButtonWasReleased;
         private FiltersVM _vm;
+
+        private bool IsAltPressed = false;
 
 
         public FilterLayer(int localOrder, string categoryId = "GauntletLayer") : base(localOrder, categoryId)
         {
-            _vm = new FiltersVM(ScreenManager.TopScreen as InventoryGauntletScreen);
+            _vm = new FiltersVM();
             LoadMovie("EBI_Filters", _vm);
         }
 
-        //bool IsAltPressed = false;
-        //bool _lastSetState;
-
-        //TODO refactor
-        bool _leftMouseButtonWasReleased;
-        
         protected override void OnLateUpdate(float dt)
         {
             base.OnLateUpdate(dt);
-            
-            if (TaleWorlds.InputSystem.Input.IsKeyReleased(TaleWorlds.InputSystem.InputKey.LeftMouseButton) && !_leftMouseButtonWasReleased)
+
+            if (TaleWorlds.InputSystem.Input.IsKeyReleased(InputKey.LeftMouseButton) && !_leftMouseButtonWasReleased)
             {
                 _vm.RefreshValues();
                 _leftMouseButtonWasReleased = true;
             }
 
-            if (TaleWorlds.InputSystem.Input.IsKeyPressed(TaleWorlds.InputSystem.InputKey.LeftMouseButton) && _leftMouseButtonWasReleased)
-            {
+            if (TaleWorlds.InputSystem.Input.IsKeyPressed(InputKey.LeftMouseButton) && _leftMouseButtonWasReleased)
                 _leftMouseButtonWasReleased = false;
-            }
 
             // if (TaleWorlds.InputSystem.Input.IsKeyDown(TaleWorlds.InputSystem.InputKey.LeftAlt) && !IsAltPressed)
             // {
             //     IsAltPressed = true;
-            //     if (_vm.IsHiddenFilterLayer && (!_vm.IsArmorSlotHidden || !_vm.IsMountSlotHidden || !_vm.IsMeleeWeaponSlotHidden || !_vm.IsRangeWeaponSlotHidden))
-            //         _vm.IsArmorSlotHidden = _vm.IsMountSlotHidden = _vm.IsMeleeWeaponSlotHidden = _vm.IsRangeWeaponSlotHidden = true;
             //     if (!_vm.IsHiddenFilterLayer)
             //     {
             //         _vm.IsHiddenFilterLayer = true;
             //     }
+            //     EventManager<InventoryBehavior>.DelegateEvent.
             //
             //     _vm.IsLayerHidden = true;
             // }

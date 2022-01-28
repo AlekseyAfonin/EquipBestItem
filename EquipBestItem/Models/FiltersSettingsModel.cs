@@ -10,27 +10,28 @@ namespace EquipBestItem.Models
 {
     public class FiltersSettingsModel
     {
+        private readonly CharacterSettings _characterSettings;
+        private readonly EquipmentIndex _currentSlot;
         private readonly SPInventoryVM _inventory;
         private readonly FiltersSettingsVM _vm;
-        private readonly EquipmentIndex _currentSlot;
-        private readonly CharacterSettings _characterSettings;
         private FilterElement _filterElement;
-        
-        public Filters DefaultFilter => SettingsLoader.Instance.GetCharacterSettingsByName("default_equipbestitem", _inventory.IsInWarSet).Filters;
-        
-        public FiltersSettingsModel(FiltersSettingsVM vm, SPInventoryVM inventory, EquipmentIndex currentSlot)
+
+        public FiltersSettingsModel(FiltersSettingsVM vm, EquipmentIndex currentSlot)
         {
             _currentSlot = currentSlot;
             _vm = vm;
             _vm.PropertyChangedWithValue += VMPropertyChangedWithValue;
-            _inventory = inventory;
+            _inventory = EquipBestItemManager.Instance.Inventory;
             _characterSettings = SettingsLoader.Instance.GetCharacterSettingsByName(_inventory.CurrentCharacterName,
                 _inventory.IsInWarSet);
             _filterElement = _characterSettings.Filters[_currentSlot];
             LoadFiltersSettings();
         }
 
-        public void LoadFiltersSettings()
+        public Filters DefaultFilter => SettingsLoader.Instance
+            .GetCharacterSettingsByName("default_equipbestitem", _inventory.IsInWarSet).Filters;
+
+        private void LoadFiltersSettings()
         {
             if (_characterSettings.Name != _inventory.CurrentCharacterName)
                 SettingsLoader.Instance.GetCharacterSettingsByName(_inventory.CurrentCharacterName,
@@ -109,6 +110,7 @@ namespace EquipBestItem.Models
                     break;
                 }
             }
+
             void WeaponFilterSettingsLoad()
             {
                 _vm.MaxDataValue = _filterElement.MaxDataValue;
@@ -125,56 +127,79 @@ namespace EquipBestItem.Models
                 _vm.WeaponBodyArmorValue = _filterElement.WeaponBodyArmor;
             }
         }
-        
+
         private void VMPropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case nameof(_vm.AccuracyValue): _filterElement.Accuracy = (float)e.Value;
+                case nameof(_vm.AccuracyValue):
+                    _filterElement.Accuracy = (float) e.Value;
                     break;
-                case nameof(_vm.HandlingValue): _filterElement.Handling = (float)e.Value;
+                case nameof(_vm.HandlingValue):
+                    _filterElement.Handling = (float) e.Value;
                     break;
-                case nameof(_vm.ManeuverValue): _filterElement.Maneuver = (float)e.Value;
+                case nameof(_vm.ManeuverValue):
+                    _filterElement.Maneuver = (float) e.Value;
                     break;
-                case nameof(_vm.WeightValue): _filterElement.Weight = (float)e.Value;
+                case nameof(_vm.WeightValue):
+                    _filterElement.Weight = (float) e.Value;
                     break;
-                case nameof(_vm.ArmArmorValue): _filterElement.ArmArmor = (float)e.Value;
+                case nameof(_vm.ArmArmorValue):
+                    _filterElement.ArmArmor = (float) e.Value;
                     break;
-                case nameof(_vm.ChargeBonusValue): _filterElement.ChargeBonus = (float)e.Value;
+                case nameof(_vm.ChargeBonusValue):
+                    _filterElement.ChargeBonus = (float) e.Value;
                     break;
-                case nameof(_vm.ChargeDamageValue): _filterElement.ChargeDamage = (float)e.Value;
+                case nameof(_vm.ChargeDamageValue):
+                    _filterElement.ChargeDamage = (float) e.Value;
                     break;
-                case nameof(_vm.HeadArmorValue): _filterElement.HeadArmor = (float)e.Value;
+                case nameof(_vm.HeadArmorValue):
+                    _filterElement.HeadArmor = (float) e.Value;
                     break;
-                case nameof(_vm.HitPointsValue): _filterElement.HitPoints = (float)e.Value;
+                case nameof(_vm.HitPointsValue):
+                    _filterElement.HitPoints = (float) e.Value;
                     break;
-                case nameof(_vm.LegArmorValue): _filterElement.LegArmor = (float)e.Value;
+                case nameof(_vm.LegArmorValue):
+                    _filterElement.LegArmor = (float) e.Value;
                     break;
-                case nameof(_vm.ManeuverBonusValue): _filterElement.ManeuverBonus = (float)e.Value;
+                case nameof(_vm.ManeuverBonusValue):
+                    _filterElement.ManeuverBonus = (float) e.Value;
                     break;
-                case nameof(_vm.MissileSpeedValue): _filterElement.MissileSpeed = (float)e.Value;
+                case nameof(_vm.MissileSpeedValue):
+                    _filterElement.MissileSpeed = (float) e.Value;
                     break;
-                case nameof(_vm.MissileDamageValue): _filterElement.MissileDamage = (float)e.Value;
+                case nameof(_vm.MissileDamageValue):
+                    _filterElement.MissileDamage = (float) e.Value;
                     break;
-                case nameof(_vm.SpeedBonusValue): _filterElement.SpeedBonus = (float)e.Value;
+                case nameof(_vm.SpeedBonusValue):
+                    _filterElement.SpeedBonus = (float) e.Value;
                     break;
-                case nameof(_vm.SpeedValue): _filterElement.Speed = (float)e.Value;
+                case nameof(_vm.SpeedValue):
+                    _filterElement.Speed = (float) e.Value;
                     break;
-                case nameof(_vm.SwingDamageValue): _filterElement.SwingDamage = (float)e.Value;
+                case nameof(_vm.SwingDamageValue):
+                    _filterElement.SwingDamage = (float) e.Value;
                     break;
-                case nameof(_vm.SwingSpeedValue): _filterElement.SwingSpeed = (float)e.Value;
+                case nameof(_vm.SwingSpeedValue):
+                    _filterElement.SwingSpeed = (float) e.Value;
                     break;
-                case nameof(_vm.ThrustDamageValue): _filterElement.ThrustDamage = (float)e.Value;
+                case nameof(_vm.ThrustDamageValue):
+                    _filterElement.ThrustDamage = (float) e.Value;
                     break;
-                case nameof(_vm.ThrustSpeedValue): _filterElement.ThrustSpeed = (float)e.Value;
+                case nameof(_vm.ThrustSpeedValue):
+                    _filterElement.ThrustSpeed = (float) e.Value;
                     break;
-                case nameof(_vm.WeaponLengthValue): _filterElement.WeaponLength = (float)e.Value;
+                case nameof(_vm.WeaponLengthValue):
+                    _filterElement.WeaponLength = (float) e.Value;
                     break;
-                case nameof(_vm.BodyArmorValue): _filterElement.ArmorBodyArmor = (float)e.Value;
+                case nameof(_vm.BodyArmorValue):
+                    _filterElement.ArmorBodyArmor = (float) e.Value;
                     break;
-                case nameof(_vm.MaxDataValue): _filterElement.MaxDataValue = (float)e.Value;
+                case nameof(_vm.MaxDataValue):
+                    _filterElement.MaxDataValue = (float) e.Value;
                     break;
-                case nameof(_vm.WeaponBodyArmorValue): _filterElement.WeaponBodyArmor = (float)e.Value;
+                case nameof(_vm.WeaponBodyArmorValue):
+                    _filterElement.WeaponBodyArmor = (float) e.Value;
                     break;
             }
         }
@@ -195,16 +220,15 @@ namespace EquipBestItem.Models
             _characterSettings.Filters.SetLock(currentSlot);
             LoadFiltersSettings();
         }
-        
+
         public void SetEveryCharacterNewDefaultValue(string filterFieldName, float value)
         {
             const double tolerance = 0.00000001f;
-            foreach (TroopRosterElement rosterElement in InventoryManager.InventoryLogic.RightMemberRoster.GetTroopRoster())
-            {
+            foreach (var rosterElement in InventoryManager.InventoryLogic.RightMemberRoster.GetTroopRoster())
                 if (rosterElement.Character.IsHero)
                 {
                     var filters = SettingsLoader.Instance.GetCharacterSettingsByName(
-                        rosterElement.Character.Name.ToString(), 
+                        rosterElement.Character.Name.ToString(),
                         _inventory.IsInWarSet).Filters;
 
                     switch (filterFieldName)
@@ -324,8 +348,7 @@ namespace EquipBestItem.Models
                                 filters[_currentSlot].Weight = value;
                             break;
                     }
-                }  
-            } 
+                }
         }
 
         public void RefreshValues()

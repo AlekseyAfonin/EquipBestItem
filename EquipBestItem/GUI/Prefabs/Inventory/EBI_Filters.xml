@@ -1,48 +1,137 @@
 <Prefab>
-  <Constants>
-  </Constants>
-  <VisualDefinitions>
-  </VisualDefinitions>
-  <Window>
-    <Widget DoNotAcceptEvents="true" IsHidden="@IsLayerHidden" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
-      <Children>
-        <Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
-          <Children>
-            <ButtonWidget IsHidden="@IsHelmFilterLocked" Id="Helm" IsSelected="@IsHelmFilterSelected" Command.Click="ExecuteShowHideHelmFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26" HorizontalAlignment="Left" MarginLeft="680" MarginTop="241" Brush="Inventory.EquipBetterItem.Filter" />
-            <ButtonWidget IsEnabled="@IsHelmFilterLocked" Id="HelmLocked" Command.Click="ExecuteShowHideHelmFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20" HorizontalAlignment="Left" MarginLeft="687" MarginTop="246" Brush="Inventory.EquipBetterItem.FilterLock" />
+    <Constants>
+    </Constants>
+    <VisualDefinitions>
+    </VisualDefinitions>
+    <Window>
+        <Widget DoNotAcceptEvents="true" IsHidden="@IsLayerHidden" WidthSizePolicy="StretchToParent"
+                HeightSizePolicy="StretchToParent">
+            <Children>
+                <Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+                    <Children>
+                        <ButtonWidget IsHidden="@IsHelmFilterLocked" Id="Helm" IsSelected="@IsHelmFilterSelected"
+                                      Command.Click="ExecuteShowHideHelmFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26"
+                                      HorizontalAlignment="Left" MarginLeft="680" MarginTop="241"
+                                      Brush="Inventory.EquipBetterItem.Filter"/>
+                        <ButtonWidget IsEnabled="@IsHelmFilterLocked" Id="HelmLocked"
+                                      Command.Click="ExecuteShowHideHelmFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20"
+                                      HorizontalAlignment="Left" MarginLeft="687" MarginTop="246"
+                                      Brush="Inventory.EquipBetterItem.FilterLock"/>
 
-            <ButtonWidget IsHidden="@IsCloakFilterLocked" Id="Cloak" IsSelected="@IsCloakFilterSelected" Command.Click="ExecuteShowHideCloakFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26" HorizontalAlignment="Left" MarginLeft="680" MarginTop="326" Brush="Inventory.EquipBetterItem.Filter" />
-            <ButtonWidget IsEnabled="@IsCloakFilterLocked" Id="CloakLocked" Command.Click="ExecuteShowHideCloakFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20" HorizontalAlignment="Left" MarginLeft="687" MarginTop="331" Brush="Inventory.EquipBetterItem.FilterLock" />
+                        <ButtonWidget IsHidden="@IsCloakFilterLocked" Id="Cloak" IsSelected="@IsCloakFilterSelected"
+                                      Command.Click="ExecuteShowHideCloakFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26"
+                                      HorizontalAlignment="Left" MarginLeft="680" MarginTop="326"
+                                      Brush="Inventory.EquipBetterItem.Filter"/>
+                        <ButtonWidget IsEnabled="@IsCloakFilterLocked" Id="CloakLocked"
+                                      Command.Click="ExecuteShowHideCloakFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20"
+                                      HorizontalAlignment="Left" MarginLeft="687" MarginTop="331"
+                                      Brush="Inventory.EquipBetterItem.FilterLock"/>
 
-            <ButtonWidget IsHidden="@IsArmorFilterLocked" Id="Armor" IsSelected="@IsArmorFilterSelected" Command.Click="ExecuteShowHideArmorFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26" HorizontalAlignment="Left" MarginLeft="680" MarginTop="411" Brush="Inventory.EquipBetterItem.Filter" />
-            <ButtonWidget IsEnabled="@IsArmorFilterLocked" Id="ArmorLocked" Command.Click="ExecuteShowHideArmorFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20" HorizontalAlignment="Left" MarginLeft="687" MarginTop="416" Brush="Inventory.EquipBetterItem.FilterLock" />
+                        <ButtonWidget IsHidden="@IsArmorFilterLocked" Id="Armor" IsSelected="@IsArmorFilterSelected"
+                                      Command.Click="ExecuteShowHideArmorFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26"
+                                      HorizontalAlignment="Left" MarginLeft="680" MarginTop="411"
+                                      Brush="Inventory.EquipBetterItem.Filter"/>
+                        <ButtonWidget IsEnabled="@IsArmorFilterLocked" Id="ArmorLocked"
+                                      Command.Click="ExecuteShowHideArmorFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20"
+                                      HorizontalAlignment="Left" MarginLeft="687" MarginTop="416"
+                                      Brush="Inventory.EquipBetterItem.FilterLock"/>
 
-            <ButtonWidget IsHidden="@IsGloveFilterLocked" Id="Glove" IsSelected="@IsGloveFilterSelected" Command.Click="ExecuteShowHideGloveFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26" HorizontalAlignment="Left" MarginLeft="680" MarginTop="496" Brush="Inventory.EquipBetterItem.Filter" />
-            <ButtonWidget IsEnabled="@IsGloveFilterLocked" Id="GloveLocked" Command.Click="ExecuteShowHideGloveFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20" HorizontalAlignment="Left" MarginLeft="687" MarginTop="501" Brush="Inventory.EquipBetterItem.FilterLock" />
+                        <ButtonWidget IsHidden="@IsGloveFilterLocked" Id="Glove" IsSelected="@IsGloveFilterSelected"
+                                      Command.Click="ExecuteShowHideGloveFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26"
+                                      HorizontalAlignment="Left" MarginLeft="680" MarginTop="496"
+                                      Brush="Inventory.EquipBetterItem.Filter"/>
+                        <ButtonWidget IsEnabled="@IsGloveFilterLocked" Id="GloveLocked"
+                                      Command.Click="ExecuteShowHideGloveFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20"
+                                      HorizontalAlignment="Left" MarginLeft="687" MarginTop="501"
+                                      Brush="Inventory.EquipBetterItem.FilterLock"/>
 
-            <ButtonWidget IsHidden="@IsBootFilterLocked" Id="Boot" IsSelected="@IsBootFilterSelected" Command.Click="ExecuteShowHideBootFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26" HorizontalAlignment="Left" MarginLeft="680" MarginTop="581" Brush="Inventory.EquipBetterItem.Filter" />
-            <ButtonWidget IsEnabled="@IsBootFilterLocked" Id="BootLocked" Command.Click="ExecuteShowHideBootFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20" HorizontalAlignment="Left" MarginLeft="687" MarginTop="586" Brush="Inventory.EquipBetterItem.FilterLock" />
+                        <ButtonWidget IsHidden="@IsBootFilterLocked" Id="Boot" IsSelected="@IsBootFilterSelected"
+                                      Command.Click="ExecuteShowHideBootFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26"
+                                      HorizontalAlignment="Left" MarginLeft="680" MarginTop="581"
+                                      Brush="Inventory.EquipBetterItem.Filter"/>
+                        <ButtonWidget IsEnabled="@IsBootFilterLocked" Id="BootLocked"
+                                      Command.Click="ExecuteShowHideBootFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20"
+                                      HorizontalAlignment="Left" MarginLeft="687" MarginTop="586"
+                                      Brush="Inventory.EquipBetterItem.FilterLock"/>
 
-            <ButtonWidget IsHidden="@IsMountFilterLocked" Id="Mount" IsSelected="@IsMountFilterSelected" Command.Click="ExecuteShowHideMountFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26" HorizontalAlignment="Left" MarginLeft="680" MarginTop="700" Brush="Inventory.EquipBetterItem.Filter" />
-            <ButtonWidget IsEnabled="@IsMountFilterLocked" Id="MountLocked" Command.Click="ExecuteShowHideMountFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20" HorizontalAlignment="Left" MarginLeft="687" MarginTop="705" Brush="Inventory.EquipBetterItem.FilterLock" />
+                        <ButtonWidget IsHidden="@IsMountFilterLocked" Id="Mount" IsSelected="@IsMountFilterSelected"
+                                      Command.Click="ExecuteShowHideMountFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26"
+                                      HorizontalAlignment="Left" MarginLeft="680" MarginTop="700"
+                                      Brush="Inventory.EquipBetterItem.Filter"/>
+                        <ButtonWidget IsEnabled="@IsMountFilterLocked" Id="MountLocked"
+                                      Command.Click="ExecuteShowHideMountFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20"
+                                      HorizontalAlignment="Left" MarginLeft="687" MarginTop="705"
+                                      Brush="Inventory.EquipBetterItem.FilterLock"/>
 
-            <ButtonWidget IsHidden="@IsHarnessFilterLocked" Id="Harness" IsSelected="@IsHarnessFilterSelected" Command.Click="ExecuteShowHideHarnessFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26" HorizontalAlignment="Left" MarginLeft="680" MarginTop="785" Brush="Inventory.EquipBetterItem.Filter" />
-            <ButtonWidget IsEnabled="@IsHarnessFilterLocked" Id="HarnessLocked" Command.Click="ExecuteShowHideHarnessFilter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20" HorizontalAlignment="Left" MarginLeft="687" MarginTop="790" Brush="Inventory.EquipBetterItem.FilterLock" />
+                        <ButtonWidget IsHidden="@IsHarnessFilterLocked" Id="Harness"
+                                      IsSelected="@IsHarnessFilterSelected" Command.Click="ExecuteShowHideHarnessFilter"
+                                      WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35"
+                                      SuggestedHeight="26" HorizontalAlignment="Left" MarginLeft="680" MarginTop="785"
+                                      Brush="Inventory.EquipBetterItem.Filter"/>
+                        <ButtonWidget IsEnabled="@IsHarnessFilterLocked" Id="HarnessLocked"
+                                      Command.Click="ExecuteShowHideHarnessFilter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20"
+                                      HorizontalAlignment="Left" MarginLeft="687" MarginTop="790"
+                                      Brush="Inventory.EquipBetterItem.FilterLock"/>
 
-            <ButtonWidget IsHidden="@IsWeapon1FilterLocked" Id="Weapon1" IsSelected="@IsWeapon1FilterSelected" Command.Click="ExecuteShowHideWeapon1Filter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26" HorizontalAlignment="Right" MarginRight="580" MarginTop="326" Brush="Inventory.EquipBetterItem.Filter" />
-            <ButtonWidget IsEnabled="@IsWeapon1FilterLocked" Id="Weapon1Locked" Command.Click="ExecuteShowHideWeapon1Filter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20" HorizontalAlignment="Right" MarginRight="587" MarginTop="331" Brush="Inventory.EquipBetterItem.FilterLock" />
+                        <ButtonWidget IsHidden="@IsWeapon1FilterLocked" Id="Weapon1"
+                                      IsSelected="@IsWeapon1FilterSelected" Command.Click="ExecuteShowHideWeapon1Filter"
+                                      WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35"
+                                      SuggestedHeight="26" HorizontalAlignment="Right" MarginRight="580" MarginTop="326"
+                                      Brush="Inventory.EquipBetterItem.Filter"/>
+                        <ButtonWidget IsEnabled="@IsWeapon1FilterLocked" Id="Weapon1Locked"
+                                      Command.Click="ExecuteShowHideWeapon1Filter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20"
+                                      HorizontalAlignment="Right" MarginRight="587" MarginTop="331"
+                                      Brush="Inventory.EquipBetterItem.FilterLock"/>
 
-            <ButtonWidget IsHidden="@IsWeapon2FilterLocked" Id="Weapon2" IsSelected="@IsWeapon2FilterSelected" Command.Click="ExecuteShowHideWeapon2Filter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26" HorizontalAlignment="Right" MarginRight="580" MarginTop="411" Brush="Inventory.EquipBetterItem.Filter" />
-            <ButtonWidget IsEnabled="@IsWeapon2FilterLocked" Id="Weapon2Locked" Command.Click="ExecuteShowHideWeapon2Filter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20" HorizontalAlignment="Right" MarginRight="587" MarginTop="416" Brush="Inventory.EquipBetterItem.FilterLock" />
+                        <ButtonWidget IsHidden="@IsWeapon2FilterLocked" Id="Weapon2"
+                                      IsSelected="@IsWeapon2FilterSelected" Command.Click="ExecuteShowHideWeapon2Filter"
+                                      WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35"
+                                      SuggestedHeight="26" HorizontalAlignment="Right" MarginRight="580" MarginTop="411"
+                                      Brush="Inventory.EquipBetterItem.Filter"/>
+                        <ButtonWidget IsEnabled="@IsWeapon2FilterLocked" Id="Weapon2Locked"
+                                      Command.Click="ExecuteShowHideWeapon2Filter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20"
+                                      HorizontalAlignment="Right" MarginRight="587" MarginTop="416"
+                                      Brush="Inventory.EquipBetterItem.FilterLock"/>
 
-            <ButtonWidget IsHidden="@IsWeapon3FilterLocked" Id="Weapon3" IsSelected="@IsWeapon3FilterSelected" Command.Click="ExecuteShowHideWeapon3Filter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26" HorizontalAlignment="Right" MarginRight="580" MarginTop="496" Brush="Inventory.EquipBetterItem.Filter" />
-            <ButtonWidget IsEnabled="@IsWeapon3FilterLocked" Id="Weapon3Locked" Command.Click="ExecuteShowHideWeapon3Filter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20" HorizontalAlignment="Right" MarginRight="587" MarginTop="501" Brush="Inventory.EquipBetterItem.FilterLock" />
+                        <ButtonWidget IsHidden="@IsWeapon3FilterLocked" Id="Weapon3"
+                                      IsSelected="@IsWeapon3FilterSelected" Command.Click="ExecuteShowHideWeapon3Filter"
+                                      WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35"
+                                      SuggestedHeight="26" HorizontalAlignment="Right" MarginRight="580" MarginTop="496"
+                                      Brush="Inventory.EquipBetterItem.Filter"/>
+                        <ButtonWidget IsEnabled="@IsWeapon3FilterLocked" Id="Weapon3Locked"
+                                      Command.Click="ExecuteShowHideWeapon3Filter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20"
+                                      HorizontalAlignment="Right" MarginRight="587" MarginTop="501"
+                                      Brush="Inventory.EquipBetterItem.FilterLock"/>
 
-            <ButtonWidget IsHidden="@IsWeapon4FilterLocked" Id="Weapon4" IsSelected="@IsWeapon4FilterSelected" Command.Click="ExecuteShowHideWeapon4Filter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="26" HorizontalAlignment="Right" MarginRight="580" MarginTop="587" Brush="Inventory.EquipBetterItem.Filter" />
-            <ButtonWidget IsEnabled="@IsWeapon4FilterLocked" Id="Weapon4Locked" Command.Click="ExecuteShowHideWeapon4Filter" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20" HorizontalAlignment="Right" MarginRight="587" MarginTop="593" Brush="Inventory.EquipBetterItem.FilterLock" />
-          </Children>
+                        <ButtonWidget IsHidden="@IsWeapon4FilterLocked" Id="Weapon4"
+                                      IsSelected="@IsWeapon4FilterSelected" Command.Click="ExecuteShowHideWeapon4Filter"
+                                      WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35"
+                                      SuggestedHeight="26" HorizontalAlignment="Right" MarginRight="580" MarginTop="587"
+                                      Brush="Inventory.EquipBetterItem.Filter"/>
+                        <ButtonWidget IsEnabled="@IsWeapon4FilterLocked" Id="Weapon4Locked"
+                                      Command.Click="ExecuteShowHideWeapon4Filter" WidthSizePolicy="Fixed"
+                                      HeightSizePolicy="Fixed" SuggestedWidth="21" SuggestedHeight="20"
+                                      HorizontalAlignment="Right" MarginRight="587" MarginTop="593"
+                                      Brush="Inventory.EquipBetterItem.FilterLock"/>
+                    </Children>
+                </Widget>
+            </Children>
         </Widget>
-      </Children>
-    </Widget>
-  </Window>
+    </Window>
 </Prefab>
