@@ -1,22 +1,30 @@
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using EquipBestItem.Layers;
 using EquipBestItem.Settings;
+using EquipBestItem.ViewModels;
 using SandBox.GauntletUI;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Engine.Screens;
-using TaleWorlds.Library;
 
 namespace EquipBestItem
 {
     public class EquipBestItemManager
     {
         public SPInventoryVM Inventory;
-        private InventoryGauntletScreen InventoryScreen;
-        public MBList<ViewModel> ViewModels = new();
+        public InventoryGauntletScreen InventoryScreen;
 
         public static EquipBestItemManager Instance { get; } = new();
 
         private IReadOnlyList<ScreenLayer> ScreenLayers => InventoryScreen?.Layers;
+
+        public event Action HideLayers = delegate { };
+
+        private void OnHideLayers()
+        {
+            HideLayers();
+        }
 
         private void ScreenManager_OnPushScreen(ScreenBase pushedScreen)
         {
@@ -27,6 +35,15 @@ namespace EquipBestItem
 
             AddLayer(new MainLayer(17));
             AddLayer(new FilterLayer(17));
+
+            ((MainVM) FindLayer<MainLayer>()._moviesAndDatasources[0].Item2).PropertyChanged +=
+                IsLayerHidden_PropertyChanged;
+        }
+
+        private void IsLayerHidden_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MainVM.IsLayerHidden))
+                OnHideLayers();
         }
 
         public void SubscribeEvents()

@@ -56,6 +56,10 @@ namespace EquipBestItem.ViewModels
                 }
         }
 
+        public void ExecuteHideLayers()
+        {
+            IsLayerHidden = !IsLayerHidden;
+        }
 
         public void ExecuteEquipBestHelm()
         {
@@ -324,6 +328,22 @@ namespace EquipBestItem.ViewModels
         }
 
         private bool _isEnabledEquipAllButton;
+
+        private bool _isLayerHidden;
+
+        [DataSourceProperty]
+        public bool IsLayerHidden
+        {
+            get => _isLayerHidden;
+            set
+            {
+                if (_isLayerHidden != value)
+                {
+                    _isLayerHidden = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         [DataSourceProperty]
         public bool IsEnabledEquipAllButton

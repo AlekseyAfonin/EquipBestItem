@@ -24,7 +24,6 @@ namespace EquipBestItem.Widgets
         protected override void OnLateUpdate(float dt)
         {
             base.OnLateUpdate(dt);
-            //InformationManager.DisplayMessage(new InformationMessage("IsRightPanelLocked: " + this.IsRightPanelLocked.ToString()));
         }
     }
 }

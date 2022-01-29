@@ -154,6 +154,7 @@ namespace EquipBestItem.Models
             }
 
             _inventory.RefreshValues();
+            _inventory.GetMethod("UpdateCharacterEquipment");
         }
 
         public void EquipCharacter(CharacterObject character)
@@ -597,6 +598,7 @@ namespace EquipBestItem.Models
 
             _inventory.ExecuteRemoveZeroCounts();
             _inventory.RefreshValues();
+            _inventory.GetMethod("UpdateCharacterEquipment");
         }
 
         public void EquipCurrentCharacter()

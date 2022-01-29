@@ -7,6 +7,10 @@ namespace EquipBestItem.Settings
     {
         private Filters _filters;
 
+        public CharacterSettings()
+        {
+        }
+
         public CharacterSettings(string name)
         {
             Name = name;

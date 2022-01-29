@@ -9,18 +9,17 @@ namespace EquipBestItem.Settings
     {
         private static SettingsLoader _instance;
 
-        private readonly PlatformFilePath _characterSettingsFile =
+        //New settings folder "Documents\Mount and Blade II Bannerlord\Configs\ModSettings\EquipBestItem\"
+        private readonly PlatformFilePath _newCharacterSettingsFile =
             new(new PlatformDirectoryPath(EngineFilePaths.ConfigsPath.Type,
                 EngineFilePaths.ConfigsPath.Path + "/ModSettings/EquipBestItem/"), "CharacterSettings.xml");
 
-        //New settings folder "Documents\Mount and Blade II Bannerlord\Configs\"
+        private readonly PlatformFilePath _oldCharacterSettingsFile =
+            new(EngineFilePaths.ConfigsPath, "CharacterSettings.xml");
+
         private readonly PlatformFilePath _settingsFile =
             new(new PlatformDirectoryPath(EngineFilePaths.ConfigsPath.Type,
                 EngineFilePaths.ConfigsPath.Path + "/ModSettings/EquipBestItem/"), "Settings.xml");
-
-        private SettingsLoader()
-        {
-        }
 
         public Settings Settings { get; private set; }
 
@@ -61,8 +60,15 @@ namespace EquipBestItem.Settings
         {
             try
             {
-                if (FileHelper.FileExists(_characterSettingsFile))
-                    CharacterSettings = Helper.Deserialize<List<CharacterSettings>>(_characterSettingsFile);
+                if (FileHelper.FileExists(_newCharacterSettingsFile))
+                {
+                    CharacterSettings = Helper.Deserialize<List<CharacterSettings>>(_newCharacterSettingsFile);
+                }
+                else
+                {
+                    if (FileHelper.FileExists(_oldCharacterSettingsFile))
+                        CharacterSettings = Helper.Deserialize<List<CharacterSettings>>(_oldCharacterSettingsFile);
+                }
             }
             catch (MBException e)
             {
@@ -82,7 +88,7 @@ namespace EquipBestItem.Settings
         {
             try
             {
-                Helper.Serialize(_characterSettingsFile, CharacterSettings);
+                Helper.Serialize(_newCharacterSettingsFile, CharacterSettings);
             }
             catch (MBException e)
             {

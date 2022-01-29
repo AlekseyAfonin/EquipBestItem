@@ -6,10 +6,23 @@
         <Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
             <Children>
 
-                <ButtonWidget Id="EquipCurrentCharacterButton" IsEnabled="@IsEquipCurrentCharacterButtonEnabled"
+                <ButtonWidget Id="HideLayers" DoNotPassEventsToChildren="true" Command.Click="ExecuteHideLayers"
+                              WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="55" SuggestedHeight="55"
+                              HorizontalAlignment="Right" MarginRight="700" MarginTop="85"
+                              Brush="Inventory.EquipBetterItem.SpecialButton">
+                    <Children>
+                        <ImageWidget DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center" SuggestedWidth="30" SuggestedHeight="30"
+                                     MarginTop="-1" Brush="SettlementInspectedVisual"/>
+                    </Children>
+                </ButtonWidget>
+
+                <ButtonWidget Id="EquipCurrentCharacterButton" IsHidden="@IsLayerHidden"
+                              IsEnabled="@IsEquipCurrentCharacterButtonEnabled"
                               DoNotPassEventsToChildren="true" Command.Click="ExecuteEquipCurrentCharacter"
                               WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="55" SuggestedHeight="55"
-                              HorizontalAlignment="Right" MarginRight="670" MarginTop="85"
+                              HorizontalAlignment="Right" MarginRight="650" MarginTop="85"
                               Brush="Inventory.EquipBetterItem.SpecialButton">
                     <Children>
                         <ImageWidget DoNotAcceptEvents="true" IsEnabled="@IsEquipCurrentCharacterButtonEnabled"
@@ -19,7 +32,7 @@
                     </Children>
                 </ButtonWidget>
 
-                <ButtonWidget IsHidden="@IsEnabledEquipAllButton" Id="EquipEveryCharacter"
+                <ButtonWidget IsHidden="@IsLayerHidden" Id="EquipEveryCharacter"
                               Command.Click="ExecuteEquipEveryCharacter" DoNotPassEventsToChildren="true"
                               WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="100" SuggestedHeight="55"
                               HorizontalAlignment="Left" MarginLeft="650" MarginTop="85"
@@ -37,55 +50,68 @@
                     </Children>
                 </ButtonWidget>
 
-                <ButtonWidget Id="EquipBestItemHelmButton" Command.Click="ExecuteEquipBestHelm"
+                <ButtonWidget Id="EquipBestItemHelmButton" IsHidden="@IsLayerHidden"
+                              Command.Click="ExecuteEquipBestHelm"
                               IsEnabled="@IsHelmButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
                               SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585"
                               MarginTop="250" Brush="Inventory.EquipBetterItem.PlusButton"/>
-                <ButtonWidget Id="EquipBestItemCloakButton" Command.Click="ExecuteEquipBestCloak"
+                <ButtonWidget Id="EquipBestItemCloakButton" IsHidden="@IsLayerHidden"
+                              Command.Click="ExecuteEquipBestCloak"
                               IsEnabled="@IsCloakButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
                               SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585"
                               MarginTop="335" Brush="Inventory.EquipBetterItem.PlusButton"/>
-                <ButtonWidget Id="EquipBestItemArmorButton" Command.Click="ExecuteEquipBestArmor"
+                <ButtonWidget Id="EquipBestItemArmorButton" IsHidden="@IsLayerHidden"
+                              Command.Click="ExecuteEquipBestArmor"
                               IsEnabled="@IsArmorButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
                               SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585"
                               MarginTop="420" Brush="Inventory.EquipBetterItem.PlusButton"/>
-                <ButtonWidget Id="EquipBestItemGloveButton" Command.Click="ExecuteEquipBestGlove"
+                <ButtonWidget Id="EquipBestItemGloveButton" IsHidden="@IsLayerHidden"
+                              Command.Click="ExecuteEquipBestGlove"
                               IsEnabled="@IsGloveButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
                               SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585"
                               MarginTop="505" Brush="Inventory.EquipBetterItem.PlusButton"/>
-                <ButtonWidget Id="EquipBestItemBootButton" Command.Click="ExecuteEquipBestBoot"
+                <ButtonWidget Id="EquipBestItemBootButton" IsHidden="@IsLayerHidden"
+                              Command.Click="ExecuteEquipBestBoot"
                               IsEnabled="@IsBootButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
                               SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585"
                               MarginTop="590" Brush="Inventory.EquipBetterItem.PlusButton"/>
-                <ButtonWidget Id="EquipBestItemMountButton" Command.Click="ExecuteEquipBestMount"
+                <ButtonWidget Id="EquipBestItemMountButton" IsHidden="@IsLayerHidden"
+                              Command.Click="ExecuteEquipBestMount"
                               IsEnabled="@IsMountButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
                               SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585"
                               MarginTop="710" Brush="Inventory.EquipBetterItem.PlusButton"/>
-                <ButtonWidget Id="EquipBestItemHarnessButton" Command.Click="ExecuteEquipBestHarness"
+                <ButtonWidget Id="EquipBestItemHarnessButton" IsHidden="@IsLayerHidden"
+                              Command.Click="ExecuteEquipBestHarness"
                               IsEnabled="@IsHarnessButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
                               SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="585"
                               MarginTop="795" Brush="Inventory.EquipBetterItem.PlusButton"/>
-                <ButtonWidget Id="EquipBestItemWeapon1Button" Command.Click="ExecuteEquipBestWeapon1"
+                <ButtonWidget Id="EquipBestItemWeapon1Button" IsHidden="@IsLayerHidden"
+                              Command.Click="ExecuteEquipBestWeapon1"
                               IsEnabled="@IsWeapon1ButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
                               SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Right" MarginRight="670"
                               MarginTop="335" Brush="Inventory.EquipBetterItem.PlusButton"/>
-                <ButtonWidget Id="EquipBestItemWeapon2Button" Command.Click="ExecuteEquipBestWeapon2"
+                <ButtonWidget Id="EquipBestItemWeapon2Button" IsHidden="@IsLayerHidden"
+                              Command.Click="ExecuteEquipBestWeapon2"
                               IsEnabled="@IsWeapon2ButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
                               SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Right" MarginRight="670"
                               MarginTop="420" Brush="Inventory.EquipBetterItem.PlusButton"/>
-                <ButtonWidget Id="EquipBestItemWeapon3Button" Command.Click="ExecuteEquipBestWeapon3"
+                <ButtonWidget Id="EquipBestItemWeapon3Button" IsHidden="@IsLayerHidden"
+                              Command.Click="ExecuteEquipBestWeapon3"
                               IsEnabled="@IsWeapon3ButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
                               SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Right" MarginRight="670"
                               MarginTop="505" Brush="Inventory.EquipBetterItem.PlusButton"/>
-                <ButtonWidget Id="EquipBestItemWeapon4Button" Command.Click="ExecuteEquipBestWeapon4"
+                <ButtonWidget Id="EquipBestItemWeapon4Button" IsHidden="@IsLayerHidden"
+                              Command.Click="ExecuteEquipBestWeapon4"
                               IsEnabled="@IsWeapon4ButtonEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
                               SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Right" MarginRight="670"
                               MarginTop="590" Brush="Inventory.EquipBetterItem.PlusButton"/>
 
-                <LockLeftPanelWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="40"
+                <LockLeftPanelWidget IsHidden="@IsLayerHidden" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
+                                     SuggestedWidth="40"
                                      SuggestedHeight="38" HorizontalAlignment="Left" MarginLeft="590" MarginTop="95"
                                      Brush="Inventory.EquipBetterItem.LockedPanel"/>
-                <LockRightPanelWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="40"
+                <LockRightPanelWidget IsHidden="@IsLayerHidden" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
+                                      SuggestedWidth="40"
                                       SuggestedHeight="38" HorizontalAlignment="Right" MarginRight="590" MarginTop="92"
                                       Brush="Inventory.EquipBetterItem.LockedPanel"/>
 

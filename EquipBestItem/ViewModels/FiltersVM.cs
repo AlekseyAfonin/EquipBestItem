@@ -11,6 +11,12 @@ namespace EquipBestItem.ViewModels
         public FiltersVM()
         {
             _model = new FiltersModel(this);
+            EquipBestItemManager.Instance.HideLayers += HideLayers;
+        }
+
+        private void HideLayers()
+        {
+            IsLayerHidden = !IsLayerHidden;
         }
 
         public sealed override void RefreshValues()
@@ -393,16 +399,16 @@ namespace EquipBestItem.ViewModels
             }
         }
 
-        private bool _isHidden;
+        private bool _isLayerHidden;
 
         [DataSourceProperty]
-        public bool IsHidden
+        public bool IsLayerHidden
         {
-            get => _isHidden;
+            get => _isLayerHidden;
             set
             {
-                if (_isHidden == value) return;
-                _isHidden = value;
+                if (_isLayerHidden == value) return;
+                _isLayerHidden = value;
                 OnPropertyChanged();
             }
         }
