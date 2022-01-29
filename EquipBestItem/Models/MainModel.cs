@@ -357,10 +357,10 @@ namespace EquipBestItem.Models
 
                 if (mod != null)
                 {
-                    headArmor = mod.ModifyArmor(headArmor) >= 0 ? mod.ModifyArmor(headArmor) : 0;
-                    bodyArmor = mod.ModifyArmor(bodyArmor) >= 0 ? mod.ModifyArmor(bodyArmor) : 0;
-                    legArmor = mod.ModifyArmor(legArmor) >= 0 ? mod.ModifyArmor(legArmor) : 0;
-                    armArmor = mod.ModifyArmor(armArmor) >= 0 ? mod.ModifyArmor(armArmor) : 0;
+                    headArmor = mod.ModifyArmor(headArmor) > 0 ? mod.ModifyArmor(headArmor) : 0;
+                    bodyArmor = mod.ModifyArmor(bodyArmor) > 0 ? mod.ModifyArmor(bodyArmor) : 0;
+                    legArmor = mod.ModifyArmor(legArmor) > 0 ? mod.ModifyArmor(legArmor) : 0;
+                    armArmor = mod.ModifyArmor(armArmor) > 0 ? mod.ModifyArmor(armArmor) : 0;
                 }
 
                 value = (
@@ -411,15 +411,15 @@ namespace EquipBestItem.Models
                 var mod = sourceItem.ItemModifier;
                 if (mod != null)
                 {
-                    handling = mod.ModifySpeed(handling) >= 0 ? mod.ModifySpeed(handling) : 0;
-                    bodyArmor = mod.ModifyArmor(bodyArmor) >= 0 ? mod.ModifyArmor(bodyArmor) : 0;
-                    missileSpeed = mod.ModifyMissileSpeed(missileSpeed) >= 0 ? mod.ModifyMissileSpeed(missileSpeed) : 0;
-                    missileDamage = mod.ModifyDamage(missileDamage) >= 0 ? mod.ModifyDamage(missileDamage) : 0;
-                    swingDamage = mod.ModifyDamage(swingDamage) >= 0 ? mod.ModifyDamage(swingDamage) : 0;
-                    swingSpeed = mod.ModifySpeed(swingSpeed) >= 0 ? mod.ModifySpeed(swingSpeed) : 0;
-                    thrustDamage = mod.ModifyDamage(thrustDamage) >= 0 ? mod.ModifyDamage(thrustDamage) : 0;
-                    thrustSpeed = mod.ModifySpeed(thrustSpeed) >= 0 ? mod.ModifySpeed(thrustSpeed) : 0;
-                    maxDataValue = mod.ModifyHitPoints((short) maxDataValue) >= 0 ? mod.ModifyHitPoints((short) maxDataValue) : 0;
+                    handling = mod.ModifySpeed(handling) > 0 ? mod.ModifySpeed(handling) : 0;
+                    bodyArmor = mod.ModifyArmor(bodyArmor) > 0 ? mod.ModifyArmor(bodyArmor) : 0;
+                    missileSpeed = mod.ModifyMissileSpeed(missileSpeed) > 0 ? mod.ModifyMissileSpeed(missileSpeed) : 0;
+                    missileDamage = mod.ModifyDamage(missileDamage) > 0 ? mod.ModifyDamage(missileDamage) : 0;
+                    swingDamage = mod.ModifyDamage(swingDamage) > 0 ? mod.ModifyDamage(swingDamage) : 0;
+                    swingSpeed = mod.ModifySpeed(swingSpeed) > 0 ? mod.ModifySpeed(swingSpeed) : 0;
+                    thrustDamage = mod.ModifyDamage(thrustDamage) > 0 ? mod.ModifyDamage(thrustDamage) : 0;
+                    thrustSpeed = mod.ModifySpeed(thrustSpeed) > 0 ? mod.ModifySpeed(thrustSpeed) : 0;
+                    maxDataValue = mod.ModifyHitPoints((short) maxDataValue) > 0 ? mod.ModifyHitPoints((short) maxDataValue) : 0;
                 }
 
                 //TODO add stack count and missile damage
@@ -459,10 +459,10 @@ namespace EquipBestItem.Models
                 var mod = sourceItem.ItemModifier;
                 if (mod != null)
                 {
-                    hitPoints = mod.ModifyMountHitPoints(hitPoints) >= 0 ? mod.ModifyMountHitPoints(hitPoints) : 0;
-                    chargeDamage = mod.ModifyMountCharge(chargeDamage) >= 0 ? mod.ModifyMountCharge(chargeDamage) : 0;
-                    maneuver = mod.ModifyMountManeuver(maneuver) >= 0 ? mod.ModifyMountManeuver(maneuver) : 0;
-                    speed = mod.ModifyMountSpeed(speed) >= 0 ? mod.ModifyMountSpeed(speed) : 0;
+                    hitPoints = mod.ModifyMountHitPoints(hitPoints) > 0 ? mod.ModifyMountHitPoints(hitPoints) : 0;
+                    chargeDamage = mod.ModifyMountCharge(chargeDamage) > 0 ? mod.ModifyMountCharge(chargeDamage) : 0;
+                    maneuver = mod.ModifyMountManeuver(maneuver) > 0 ? mod.ModifyMountManeuver(maneuver) : 0;
+                    speed = mod.ModifyMountSpeed(speed) > 0 ? mod.ModifyMountSpeed(speed) : 0;
                 }
 
                 value = (
