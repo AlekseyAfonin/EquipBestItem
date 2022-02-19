@@ -6,8 +6,6 @@ namespace EquipBestItem.Layers
 {
     internal class FilterLayer : GauntletLayer
     {
-        private bool _lastSetState;
-
         //TODO refactor
         private bool _leftMouseButtonWasReleased;
         private FiltersVM _vm;
@@ -24,6 +22,7 @@ namespace EquipBestItem.Layers
         protected override void OnLateUpdate(float dt)
         {
             base.OnLateUpdate(dt);
+            _vm.IsLayerHidden = EquipBestItemManager.Instance.IsLayersHidden;
 
             if (TaleWorlds.InputSystem.Input.IsKeyReleased(InputKey.LeftMouseButton) && !_leftMouseButtonWasReleased)
             {
@@ -33,24 +32,6 @@ namespace EquipBestItem.Layers
 
             if (TaleWorlds.InputSystem.Input.IsKeyPressed(InputKey.LeftMouseButton) && _leftMouseButtonWasReleased)
                 _leftMouseButtonWasReleased = false;
-
-            // if (TaleWorlds.InputSystem.Input.IsKeyDown(TaleWorlds.InputSystem.InputKey.LeftAlt) && !IsAltPressed)
-            // {
-            //     IsAltPressed = true;
-            //     if (!_vm.IsHiddenFilterLayer)
-            //     {
-            //         _vm.IsHiddenFilterLayer = true;
-            //     }
-            //     EventManager<InventoryBehavior>.DelegateEvent.
-            //
-            //     _vm.IsLayerHidden = true;
-            // }
-            // if (TaleWorlds.InputSystem.Input.IsKeyReleased(TaleWorlds.InputSystem.InputKey.LeftAlt) && IsAltPressed)
-            // {
-            //     IsAltPressed = false;
-            //     if (_vm.IsHiddenFilterLayer && (!_vm.IsArmorSlotHidden || !_vm.IsMountSlotHidden || !_vm.IsMeleeWeaponSlotHidden || !_vm.IsRangeWeaponSlotHidden)) _vm.IsHiddenFilterLayer = false;
-            //     _vm.IsLayerHidden = false;
-            // }
         }
 
         protected override void OnFinalize()

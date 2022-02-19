@@ -18,7 +18,7 @@ namespace EquipBestItem.Layers
         protected override void OnLateUpdate(float dt)
         {
             base.OnLateUpdate(dt);
-
+            _vm.IsLayerHidden = EquipBestItemManager.Instance.IsLayersHidden;
             if (TaleWorlds.InputSystem.Input.IsKeyReleased(InputKey.LeftMouseButton) && !_leftMouseButtonWasReleased)
             {
                 _vm.RefreshValues();

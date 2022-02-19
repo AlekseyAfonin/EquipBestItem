@@ -19,12 +19,7 @@ namespace EquipBestItem
 
         private IReadOnlyList<ScreenLayer> ScreenLayers => InventoryScreen?.Layers;
 
-        public event Action HideLayers = delegate { };
-
-        private void OnHideLayers()
-        {
-            HideLayers();
-        }
+        public bool IsLayersHidden;
 
         private void ScreenManager_OnPushScreen(ScreenBase pushedScreen)
         {
@@ -32,18 +27,9 @@ namespace EquipBestItem
 
             InventoryScreen = screen;
             Inventory = InventoryScreen.GetField("_dataSource") as SPInventoryVM;
-
+            if (Inventory is null) return;
             AddLayer(new MainLayer(17));
             AddLayer(new FilterLayer(17));
-
-            ((MainVM) FindLayer<MainLayer>()._moviesAndDatasources[0].Item2).PropertyChanged +=
-                IsLayerHidden_PropertyChanged;
-        }
-
-        private void IsLayerHidden_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(MainVM.IsLayerHidden))
-                OnHideLayers();
         }
 
         public void SubscribeEvents()

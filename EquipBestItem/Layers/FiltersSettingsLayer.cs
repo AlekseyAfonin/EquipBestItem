@@ -167,6 +167,12 @@ namespace EquipBestItem.Layers
             }
         }
 
+        protected override void OnLateUpdate(float dt)
+        {
+            base.OnLateUpdate(dt);
+            _vm.RefreshValues();
+        }
+
         protected override void OnFinalize()
         {
             _vm = null;

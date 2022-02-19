@@ -2,7 +2,7 @@
 <Module>
     <Name value="EquipBestItem"/>
     <Id value="EquipBestItem"/>
-    <Version value="v1.5.2"/>
+    <Version value="v1.5.3"/>
     <DefaultModule value="false"/>
     <SingleplayerModule value="true"/>
     <MultiplayerModule value="false"/>

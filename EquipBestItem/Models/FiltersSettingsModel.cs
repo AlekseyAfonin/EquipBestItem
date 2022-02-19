@@ -206,6 +206,7 @@ namespace EquipBestItem.Models
 
         public void OnFinalize()
         {
+            _vm.PropertyChangedWithValue -= VMPropertyChangedWithValue;
             _filterElement = null;
         }
 

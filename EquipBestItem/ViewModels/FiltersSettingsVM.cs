@@ -17,7 +17,7 @@ namespace EquipBestItem.ViewModels
 
 
         private readonly EquipmentIndex _currentSlot;
-        private readonly EquipBestItemManager _manager;
+        private EquipBestItemManager _manager;
 
         private string _headerText;
 
@@ -33,7 +33,6 @@ namespace EquipBestItem.ViewModels
             _manager = EquipBestItemManager.Instance;
             _currentSlot = currentSlot;
             _model = new FiltersSettingsModel(this, _currentSlot);
-            PropertyChanged += FilterSettingsVM_PropertyChanged;
         }
 
         [DataSourceProperty]
@@ -107,11 +106,6 @@ namespace EquipBestItem.ViewModels
 
         [DataSourceProperty] public string WeightText { get; } = GameTexts.FindText("str_weight_text").ToString();
 
-        private void FilterSettingsVM_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            RefreshValues();
-        }
-
         public sealed override void RefreshValues()
         {
             base.RefreshValues();
@@ -148,6 +142,7 @@ namespace EquipBestItem.ViewModels
 
         public override void OnFinalize()
         {
+            _manager = null;
             _model.OnFinalize();
             _model = null;
             base.OnFinalize();

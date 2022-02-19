@@ -58,7 +58,7 @@ namespace EquipBestItem.ViewModels
 
         public void ExecuteHideLayers()
         {
-            IsLayerHidden = !IsLayerHidden;
+            EquipBestItemManager.Instance.IsLayersHidden = !EquipBestItemManager.Instance.IsLayersHidden;
         }
 
         public void ExecuteEquipBestHelm()

@@ -11,7 +11,6 @@ namespace EquipBestItem.ViewModels
         public FiltersVM()
         {
             _model = new FiltersModel(this);
-            EquipBestItemManager.Instance.HideLayers += HideLayers;
         }
 
         private void HideLayers()
