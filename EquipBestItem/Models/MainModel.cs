@@ -479,14 +479,7 @@ namespace EquipBestItem.Models
 
         private static bool IsCamel(SPItemVM item)
         {
-            if (item != null)
-                if (!item.ItemRosterElement.IsEmpty)
-                    if (!item.ItemRosterElement.EquipmentElement.IsEmpty)
-                        if (item.ItemRosterElement.EquipmentElement.Item.HasHorseComponent)
-                            if (item.ItemRosterElement.EquipmentElement.Item.HorseComponent.Monster.MonsterUsage ==
-                                "camel")
-                                return true;
-            return false;
+            return item?.ItemRosterElement.EquipmentElement.Item?.HorseComponent?.Monster.MonsterUsage == "camel";
         }
 
         private static bool IsCamelHarness(SPItemVM item)
