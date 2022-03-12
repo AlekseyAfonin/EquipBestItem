@@ -1,0 +1,18 @@
+<Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+    <Children>
+        <ButtonWidget Id="EquipBestItemHelmButton"
+                      Command.Click="ExecuteEquipBestHelm"
+                      Command.AlternateClick="ExecuteShowFilterSettings"
+                      CommandParameter.AlternateClick="Head"
+                      WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
+                      SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="5"
+                      MarginTop="40" Brush="Inventory.EquipBetterItem.PlusButton"/>
+        <ButtonWidget Id="EquipBestItemCloakButton"
+                      Command.Click="ExecuteEquipBestCloak"
+                      Command.AlternateClick="ExecuteShowFilterSettings"
+                      CommandParameter.AlternateClick="Cape"
+                      WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
+                      SuggestedWidth="35" SuggestedHeight="35" HorizontalAlignment="Left" MarginLeft="5"
+                      MarginTop="125" Brush="Inventory.EquipBetterItem.PlusButton"/>
+    </Children>
+</Widget>
