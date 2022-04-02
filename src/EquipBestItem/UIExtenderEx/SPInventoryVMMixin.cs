@@ -1,25 +1,14 @@
 using Bannerlord.UIExtenderEx.Attributes;
 using Bannerlord.UIExtenderEx.ViewModels;
-
-using HarmonyLib;
-
-using SandBox.ViewModelCollection.Nameplate;
-
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using HarmonyLib.BUTR.Extensions;
-using JetBrains.Annotations;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Library;
-using TaleWorlds.MountAndBlade.ViewModelCollection.GameOptions;
-using TaleWorlds.ObjectSystem;
 using EquipBestItem.ViewModels;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
-using TaleWorlds.GauntletUI;
-using TaleWorlds.InputSystem;
+using TaleWorlds.Core.ViewModelCollection;
+using TaleWorlds.Engine;
 
 namespace EquipBestItem.UIExtenderEx;
 
@@ -30,54 +19,135 @@ namespace EquipBestItem.UIExtenderEx;
 /// This class will be swept into the target view model T, making the fields and methods available in the assembly.
 /// https://butr.github.io/Bannerlord.UIExtenderEx/articles/v2/ViewModelMixin.html
 /// </summary>
-[ViewModelMixin(nameof(SPInventoryVM.RefreshValues))]
+[ViewModelMixin("RefreshValues")]
 internal sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
 {
-    private readonly ModSPInventoryVM _modSPInventory;
-        
-    [DataSourceProperty]
-    public ModSPInventoryVM ModSPInventory
+    [DataSourceProperty] 
+    private ModSPInventoryVM ModSPInventory { get; }
+
+
+    private CharacterObject? _currentCharacter;
+    public CharacterObject? CurrentCharacter
     {
         get
         {
-            return _modSPInventory;
+            return _currentCharacter;
+        }
+        set
+        {
+            _currentCharacter = value;
+            ModSPInventory.CurrentCharacter = value;
         }
     }
     
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="vm">The target viewmodel</param>
     public SPInventoryVMMixin(SPInventoryVM vm) : base(vm)
     {
-        _modSPInventory = new ModSPInventoryVM(vm);
-        vm.PropertyChanged += SPInventoryVM_PropertyChanged;
+        ModSPInventory = new ModSPInventoryVM(vm, this);
+        RegisterEvents();
+        _currentCharacter = GetPrivate<CharacterObject>("_currentCharacter");
     }
 
+    private void RegisterEvents()
+    {
+        if (ViewModel == null) return;
+        
+        ViewModel.PropertyChanged += SPInventoryVM_PropertyChanged;
+        ViewModel.PropertyChangedWithValue += SPInventoryVM_PropertyChangedWithValue;
+        Game.Current.EventManager.RegisterEvent(
+            new Action<InventoryEquipmentTypeChangedEvent>(OnInventoryEquipmentTypeChanged));
+        ViewModel.CharacterList.SetOnChangeAction(OnCurrentCharacterChanged);
+    }
+
+    /// <summary>
+    /// The current character changing
+    /// </summary>
+    /// <param name="obj"></param>
+    private void OnCurrentCharacterChanged(SelectorVM<SelectorItemVM> obj)
+    {
+        ModSPInventory.CurrentCharacter = GetPrivate<CharacterObject>("_currentCharacter");
+        ModSPInventory.Update();
+    }
+    
+    /// <summary>
+    /// Event when changing the type of kit (military, civilian) of the current character
+    /// </summary>
+    /// <param name="obj"></param>
+    private void OnInventoryEquipmentTypeChanged(InventoryEquipmentTypeChangedEvent obj)
+    {
+        ModSPInventory.Update();
+    }
+
+    /// <summary>
+    /// SPInventoryVM the event of property value change
+    /// </summary>
+    /// <param name="sender">SPInventoryVM</param>
+    /// <param name="e">Property name</param>
     private void SPInventoryVM_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        _modSPInventory.OnPropertyChanged(e.PropertyName);
+        ModSPInventory.OnPropertyChanged(e.PropertyName);
+    }
+
+    
+    /// <summary>
+    /// SPInventoryVM the event with value of property value change 
+    /// </summary>
+    /// <param name="sender">SPInventoryVM</param>
+    /// <param name="e">Property name, value</param>
+    private void SPInventoryVM_PropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
+    {
+        ModSPInventory.OnPropertyChangedWithValue(e.Value, e.PropertyName);
+        
+        // I couldn't find events that would trigger when the item collections for the left and right panels changed,
+        // so I'm looking at changing "IsRefreshed", which works when the item filters change as well.
+        if (e.PropertyName == "IsRefreshed" && (bool) e.Value)
+        {
+            ModSPInventory.Update();
+        }
     }
     
     public override void OnFinalize()
     {
         if (ViewModel is not null)
+        {
             ViewModel.PropertyChanged -= SPInventoryVM_PropertyChanged;
-        
+            ViewModel.PropertyChangedWithValue -= SPInventoryVM_PropertyChangedWithValue;
+        }
+        Game.Current.EventManager.UnregisterEvent(new Action<InventoryEquipmentTypeChangedEvent>(OnInventoryEquipmentTypeChanged));
+        ModSPInventory.OnFinalize();
         base.OnFinalize();
     }
     
-    [DataSourceMethod]
-    public void ExecuteEquipBestHelm()
+    public override void OnRefresh()
     {
-        InformationManager.DisplayMessage(new InformationMessage($"ExecuteEquipBestHelm"));
+        base.OnRefresh();
+        ModSPInventory.Update();
     }
     
     [DataSourceMethod]
-    public void ExecuteEquipBestCloak()
+    public void ExecuteEquipBestItem(string equipmentIndexName)
     {
-        InformationManager.DisplayMessage(new InformationMessage($"ExecuteEquipBestCloak"));
+        ModSPInventory.ExecuteEquipBestItem(equipmentIndexName);
     }
     
     [DataSourceMethod]
     public void ExecuteShowFilterSettings(string equipmentIndexName)
     {
         ModSPInventory.ExecuteShowFilterSettings(equipmentIndexName);
-    }    
+    }
+    
+    [DataSourceMethod]
+    public void ExecuteResetTranstactions()
+    {
+        ViewModel?.ExecuteResetTranstactions();
+    }
+    
+    // [DataSourceMethod]
+    // private void EquipEquipment(SPItemVM itemVM)
+    // {
+    //     InformationManager.DisplayMessage(new InformationMessage($"EquipEquipment test {Time.ApplicationTime}"));
+    // }
 }

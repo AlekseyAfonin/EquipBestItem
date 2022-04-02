@@ -1,17 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using TaleWorlds.CampaignSystem;
-using TaleWorlds.Library;
 
 namespace EquipBestItem.Models;
 
-internal interface IRepository
-{
-    IDictionary<string, FilterWeights> GetCharacterFilterWeights();        
-    FilterWeights GetFilterWeightsByCharacterName(string characterName);        
-    void Insert(string key, FilterWeights value);
-    void Delete(string key);        
-    void Update(string key, FilterWeights value);
+public interface IRepository<T> where T : BaseEntity
+{  
+    IEnumerable<T> GetAll();
+    void Insert(T entity);
+    void Delete(T entity);        
+    void Update(T entity);
     void Save();
 }

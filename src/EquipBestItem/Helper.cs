@@ -1,15 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
-using System.Xml;
-using System.Xml.Serialization;
+using Newtonsoft.Json;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
-using StringReader = System.IO.StringReader;
-using StringWriter = System.IO.StringWriter;
 
 namespace EquipBestItem;
 
-public static class Helper
+internal static class Helper
 {
     /// <summary>
     /// 
@@ -17,52 +16,51 @@ public static class Helper
     /// <param name="value"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T ParseEnum<T>(string value)
+    internal static T ParseEnum<T>(string value)
     {
         return (T) Enum.Parse(typeof(T), value, true);
     }
     
-    public static void Serialize<T>(PlatformFilePath platformFilePath, T data)
+    internal static object? GetMethod(this object o, string methodName, params object[] args)
     {
-        var ns = new XmlSerializerNamespaces();
-        ns.Add("", "");
-
+        var mi = o.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
+        if (mi == null) return null;
         try
         {
-            var serializer = new XmlSerializer(typeof(T));
-            var stringWriter = new StringWriter();
-            serializer.Serialize(stringWriter, data);
-
-            FileHelper.SaveFileString(platformFilePath, stringWriter.ToString());
+            return mi.Invoke(o, args);
         }
         catch
         {
-            throw new MBException(platformFilePath.FileName + " serialize error");
+            throw new MBException(methodName + " GetField() exception");
         }
     }
-
-
-    public static T Deserialize<T>(PlatformFilePath platformFilePath)
+    
+    internal static object? GetField(this object o, string fieldName)
     {
-        var fileString = FileHelper.GetFileContentString(platformFilePath);
-        var data = default(T);
-
+        var mi = o.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+        if (mi == null) return null;
+        
         try
         {
-            StringReader stringReader;
-            using (stringReader = new StringReader(fileString))
-            {
-                var xmlReader = XmlReader.Create(stringReader);
-                var serializer = new XmlSerializer(typeof(T));
-
-                if (serializer.CanDeserialize(xmlReader)) data = (T) serializer.Deserialize(xmlReader);
-            }
+            return mi.GetValue(o);
         }
-        catch (Exception e)
+        catch
         {
-            throw new MBException(platformFilePath.FileName + " " + e.Message);
+            throw new MBException(fieldName + " GetField() exception");
         }
-
-        return data;
+    }
+    
+    internal static Dictionary<string, T>? Deserialize<T>()
+    {
+        PlatformFilePath platformFilePath =
+            new(new PlatformDirectoryPath(EngineFilePaths.ConfigsPath.Type,
+                    $"{EngineFilePaths.ConfigsPath.Path}/ModSettings/EquipBestItem/"),
+                $"{typeof(T).Name}.json");
+        
+        var jsonString = FileHelper.GetFileContentString(platformFilePath);
+        if (jsonString is null) return null;
+        var repository = JsonConvert.DeserializeObject<Dictionary<string, T>>(jsonString);
+        
+        return repository;
     }
 }

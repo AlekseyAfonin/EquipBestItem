@@ -6,7 +6,7 @@ using TaleWorlds.ModuleManager;
 namespace EquipBestItem.UIExtenderEx;
 
 [PrefabExtension(movie:"Inventory", "descendant::Widget[@Id='LeftMenu']/Children/InventoryEquippedItemSlot[2]")]
-public sealed class EquipBestItemPrefabExtension1 : PrefabExtensionInsertPatch
+public class EquipBestItemPrefabExtension1 : PrefabExtensionInsertPatch
 {
     public override InsertType Type => InsertType.Append;
 
