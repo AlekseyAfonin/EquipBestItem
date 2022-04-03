@@ -2,7 +2,7 @@ using System;
 using System.Xml.Serialization;
 using TaleWorlds.Core;
 
-namespace EquipBestItem.Models;
+namespace EquipBestItem.Models.Entities;
 
 [Serializable]
 public abstract class Coefficients

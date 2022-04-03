@@ -1,4 +1,4 @@
-namespace EquipBestItem.Models;
+namespace EquipBestItem.Models.Entities;
 
 public class Settings : BaseEntity
 {

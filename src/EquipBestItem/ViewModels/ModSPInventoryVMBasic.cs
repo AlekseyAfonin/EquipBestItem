@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EquipBestItem.Models;
+using EquipBestItem.Models.Entities;
 using EquipBestItem.UIExtenderEx;
+using Messages.FromLobbyServer.ToClient;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
@@ -19,13 +21,9 @@ internal sealed partial class ModSPInventoryVM : ViewModel
 
     private readonly Repository<Settings> _settingsRepository;
     private readonly Repository<CharacterCoefficients> _charactersCoefficientsRepository;
+
+    public CharacterObject CurrentCharacter { get; set; }
     
-    private Equipment BestLeftEquipment { get; } = new Equipment();
-
-    private Equipment BestRightEquipment { get; } = new Equipment();
-
-    public CharacterObject? CurrentCharacter { get; set; }
-
     public ModSPInventoryVM(SPInventoryVM originVM, SPInventoryVMMixin mixinVM)
     {
         _originVM = originVM;
@@ -112,14 +110,14 @@ internal sealed partial class ModSPInventoryVM : ViewModel
     public void ExecuteEquipBestItem(string equipmentIndexName)
     {
         var equipmentIndex = Helper.ParseEnum<EquipmentIndex>(equipmentIndexName);
-        EquipBestItem(equipmentIndex);
+        EquipBestItem(equipmentIndex, CurrentCharacter);
     }
-
-    private void EquipBestItem(EquipmentIndex equipmentIndex)
+    
+    //Unequip current equipment element
+    private void UnequipItem(EquipmentIndex equipmentIndex, CharacterObject character)
     {
-        if (_originVM.GetField("ActiveEquipment") is not Equipment equipment || equipment[equipmentIndex].IsEmpty) return;
+        var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
         
-        //Unequip current equipment element
         var transferCommand = TransferCommand.Transfer(
             1,
             InventoryLogic.InventorySide.Equipment,
@@ -127,43 +125,76 @@ internal sealed partial class ModSPInventoryVM : ViewModel
             new ItemRosterElement(equipment[equipmentIndex], 1),
             equipmentIndex,
             EquipmentIndex.None,
-            CurrentCharacter,
+            character,
             !_originVM.IsInWarSet
         );
         _inventoryLogic.AddTransferCommand(transferCommand);
+    }
+    
+    private void EquipItemFromLeft(EquipmentIndex equipmentIndex, CharacterObject character)
+    {
+        var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
         
-        //Equip
-        if (ItemIndexCalculation(BestLeftEquipment[equipmentIndex], equipmentIndex, CurrentCharacter) >
-            ItemIndexCalculation(BestRightEquipment[equipmentIndex], equipmentIndex, CurrentCharacter))
-        {
-            var equipCommand = TransferCommand.Transfer(
-                1,
-                InventoryLogic.InventorySide.OtherInventory,
-                InventoryLogic.InventorySide.Equipment,
-                new ItemRosterElement(BestLeftEquipment[equipmentIndex], 1),
-                EquipmentIndex.None,
-                equipmentIndex,
-                CurrentCharacter,
-                !_originVM.IsInWarSet
-            );
+        var equipCommand = TransferCommand.Transfer(
+            1,
+            InventoryLogic.InventorySide.OtherInventory,
+            InventoryLogic.InventorySide.Equipment,
+            new ItemRosterElement(equipment[equipmentIndex], 1),
+            EquipmentIndex.None,
+            equipmentIndex,
+            character,
+            !_originVM.IsInWarSet
+        );
 
-            _inventoryLogic.AddTransferCommand(equipCommand);
-        }
+        _inventoryLogic.AddTransferCommand(equipCommand);
+    }
+
+    private void EquipItemFromRight(EquipmentIndex equipmentIndex, CharacterObject character)
+    {
+        var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
+        
+        var equipCommand = TransferCommand.Transfer(
+            1,
+            InventoryLogic.InventorySide.PlayerInventory,
+            InventoryLogic.InventorySide.Equipment,
+            new ItemRosterElement(equipment[equipmentIndex], 1),
+            EquipmentIndex.None,
+            equipmentIndex,
+            character,
+            !_originVM.IsInWarSet
+        );
+
+        _inventoryLogic.AddTransferCommand(equipCommand);
+    }
+    
+    
+    private void EquipBestItem(EquipmentIndex equipmentIndex, CharacterObject character)
+    {
+        var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
+        
+        var coefficients = _originVM.IsInWarSet
+            ? _charactersCoefficientsRepository
+                .GetByKey(CurrentCharacter.Name.ToString())
+                .WarCoefficients[(int) equipmentIndex]
+            : _charactersCoefficientsRepository
+                .GetByKey(CurrentCharacter.Name.ToString())
+                .CivilCoefficients[(int) equipmentIndex];
+
+        var equip = new BestEquipment(equipment);
+        
+        var (bestLeftItemValue, bestLeftEquipment) = 
+            equip.GetBestItemForSlot(equipmentIndex, _originVM.LeftItemListVM, coefficients);
+        var (bestRightItemValue, bestRightEquipment) = 
+            equip.GetBestItemForSlot(equipmentIndex, _originVM.RightItemListVM, coefficients);
+
+        if (bestLeftEquipment is null && bestRightEquipment is null) return;
+        
+        UnequipItem(equipmentIndex, character);
+        
+        if (bestRightItemValue > bestLeftItemValue)
+            EquipItemFromRight(equipmentIndex, character);
         else
-        {
-            var equipCommand = TransferCommand.Transfer(
-                1,
-                InventoryLogic.InventorySide.PlayerInventory,
-                InventoryLogic.InventorySide.Equipment,
-                new ItemRosterElement(BestRightEquipment[equipmentIndex], 1),
-                EquipmentIndex.None,
-                equipmentIndex,
-                CurrentCharacter,
-                !_originVM.IsInWarSet
-            );
-
-            _inventoryLogic.AddTransferCommand(equipCommand);
-        }
+            EquipItemFromLeft(equipmentIndex, character);
 
         _originVM.ExecuteRemoveZeroCounts();
         _originVM.RefreshValues();
@@ -195,9 +226,8 @@ internal sealed partial class ModSPInventoryVM : ViewModel
     
     public CharacterObject? GetCharacterByName(string name)
     {
-        return (
-                from rosterElement in _inventoryLogic.RightMemberRoster.GetTroopRoster() 
-                where rosterElement.Character.IsHero && rosterElement.Character.Name.ToString() == name 
-                select rosterElement.Character).FirstOrDefault();
+        return (from rosterElement in _inventoryLogic.RightMemberRoster.GetTroopRoster()
+            where rosterElement.Character.IsHero && rosterElement.Character.Name.ToString() == name
+            select rosterElement.Character).FirstOrDefault();
     }
 }

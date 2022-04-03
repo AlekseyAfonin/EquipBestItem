@@ -27,18 +27,8 @@ internal sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
 
 
     private CharacterObject? _currentCharacter;
-    public CharacterObject? CurrentCharacter
-    {
-        get
-        {
-            return _currentCharacter;
-        }
-        set
-        {
-            _currentCharacter = value;
-            ModSPInventory.CurrentCharacter = value;
-        }
-    }
+    public CharacterObject CurrentCharacter => GetPrivate<CharacterObject>("_currentCharacter") 
+                                               ?? throw new InvalidOperationException();
     
     /// <summary>
     /// 
