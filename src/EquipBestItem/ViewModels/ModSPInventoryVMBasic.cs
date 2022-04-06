@@ -23,20 +23,19 @@ internal sealed partial class ModSPInventoryVM : ViewModel
     private readonly Repository<CharacterCoefficients> _charactersCoefficientsRepository;
 
     public CharacterObject CurrentCharacter { get; set; }
+    private readonly SPItemVM?[] _bestItems = new SPItemVM[12];
+    public bool[] IsButtonEnabled = new bool[12]; //TODO
     
     public ModSPInventoryVM(SPInventoryVM originVM, SPInventoryVMMixin mixinVM)
     {
         _originVM = originVM;
         _mixinVM = mixinVM;
         _inventoryLogic = InventoryManager.InventoryLogic;
+        CurrentCharacter = _inventoryLogic.InitialEquipmentCharacter;
         _settingsRepository = new Repository<Settings>(SettingsLoadOrDefault());
         _charactersCoefficientsRepository = new Repository<CharacterCoefficients>(CharacterCoefficientsLoadOrDefault());
     }
     
-    /// <summary>
-    /// Deserialize settings or create new with default values
-    /// </summary>
-    /// <returns>Dictionary with settings by settings name</returns>
     private Dictionary<string, Settings> SettingsLoadOrDefault()
     {
         return Helper.Deserialize<Settings>() ?? new Dictionary<string, Settings>()
@@ -46,10 +45,6 @@ internal sealed partial class ModSPInventoryVM : ViewModel
         };
     }
     
-    /// <summary>
-    /// Deserialize coefficients or create new with default values
-    /// </summary>
-    /// <returns>Dictionary with coefficients</returns>
     private Dictionary<string, CharacterCoefficients> CharacterCoefficientsLoadOrDefault()
     {
         return Helper.Deserialize<CharacterCoefficients>() ?? new Dictionary<string, CharacterCoefficients>()
@@ -113,10 +108,11 @@ internal sealed partial class ModSPInventoryVM : ViewModel
         EquipBestItem(equipmentIndex, CurrentCharacter);
     }
     
-    //Unequip current equipment element
     private void UnequipItem(EquipmentIndex equipmentIndex, CharacterObject character)
     {
         var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
+        
+        if (equipment[equipmentIndex].IsEmpty) return;  //TODO
         
         var transferCommand = TransferCommand.Transfer(
             1,
@@ -131,70 +127,30 @@ internal sealed partial class ModSPInventoryVM : ViewModel
         _inventoryLogic.AddTransferCommand(transferCommand);
     }
     
-    private void EquipItemFromLeft(EquipmentIndex equipmentIndex, CharacterObject character)
+    private void EquipItem(EquipmentIndex toEquipmentIndex, CharacterObject character)
     {
-        var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
+        var item = _bestItems[(int)toEquipmentIndex];
         
+        if (item is null) return;
+
         var equipCommand = TransferCommand.Transfer(
             1,
-            InventoryLogic.InventorySide.OtherInventory,
+            item.InventorySide,
             InventoryLogic.InventorySide.Equipment,
-            new ItemRosterElement(equipment[equipmentIndex], 1),
+            item.ItemRosterElement, //TODO
             EquipmentIndex.None,
-            equipmentIndex,
+            toEquipmentIndex,
             character,
             !_originVM.IsInWarSet
         );
 
         _inventoryLogic.AddTransferCommand(equipCommand);
     }
-
-    private void EquipItemFromRight(EquipmentIndex equipmentIndex, CharacterObject character)
-    {
-        var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
-        
-        var equipCommand = TransferCommand.Transfer(
-            1,
-            InventoryLogic.InventorySide.PlayerInventory,
-            InventoryLogic.InventorySide.Equipment,
-            new ItemRosterElement(equipment[equipmentIndex], 1),
-            EquipmentIndex.None,
-            equipmentIndex,
-            character,
-            !_originVM.IsInWarSet
-        );
-
-        _inventoryLogic.AddTransferCommand(equipCommand);
-    }
-    
     
     private void EquipBestItem(EquipmentIndex equipmentIndex, CharacterObject character)
     {
-        var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
-        
-        var coefficients = _originVM.IsInWarSet
-            ? _charactersCoefficientsRepository
-                .GetByKey(CurrentCharacter.Name.ToString())
-                .WarCoefficients[(int) equipmentIndex]
-            : _charactersCoefficientsRepository
-                .GetByKey(CurrentCharacter.Name.ToString())
-                .CivilCoefficients[(int) equipmentIndex];
-
-        var equip = new BestEquipment(equipment);
-        
-        var (bestLeftItemValue, bestLeftEquipment) = 
-            equip.GetBestItemForSlot(equipmentIndex, _originVM.LeftItemListVM, coefficients);
-        var (bestRightItemValue, bestRightEquipment) = 
-            equip.GetBestItemForSlot(equipmentIndex, _originVM.RightItemListVM, coefficients);
-
-        if (bestLeftEquipment is null && bestRightEquipment is null) return;
-        
         UnequipItem(equipmentIndex, character);
-        
-        if (bestRightItemValue > bestLeftItemValue)
-            EquipItemFromRight(equipmentIndex, character);
-        else
-            EquipItemFromLeft(equipmentIndex, character);
+        EquipItem(equipmentIndex, character);
 
         _originVM.ExecuteRemoveZeroCounts();
         _originVM.RefreshValues();
@@ -209,12 +165,26 @@ internal sealed partial class ModSPInventoryVM : ViewModel
 
     public void Update()
     {
-        InformationManager.DisplayMessage(new InformationMessage($"Updated {Time.ApplicationTime}"));
-    }
+        for (var i = (int)EquipmentIndex.WeaponItemBeginSlot; i <= (int)EquipmentIndex.NumEquipmentSetSlots; i++)
+        {
+            
+            var isBool = true; //TODO
+            var equipment = _originVM.IsInWarSet
+                ? CurrentCharacter.FirstBattleEquipment
+                : CurrentCharacter.FirstCivilianEquipment;
 
-    private float ItemIndexCalculation(EquipmentElement item, EquipmentIndex index, BasicCharacterObject? character)
-    {
-        return 0f;
+            var coefficients = _originVM.IsInWarSet
+                ? _charactersCoefficientsRepository.GetByKey(CurrentCharacter.Name.ToString())
+                    .WarCoefficients[i]
+                : _charactersCoefficientsRepository.GetByKey(CurrentCharacter.Name.ToString())
+                    .CivilCoefficients[i];
+            
+            _bestItems[i] = BestItem.GetBestItem(coefficients, equipment[i],
+                isBool ? _originVM.RightItemListVM : null, 
+                isBool ? _originVM.LeftItemListVM : null);
+            
+            if (_bestItems[i] is not null) IsButtonEnabled[i] = true;
+        }
     }
 
     public override void OnFinalize()
@@ -222,12 +192,5 @@ internal sealed partial class ModSPInventoryVM : ViewModel
         _charactersCoefficientsRepository.Save();
         _settingsRepository.Save();
         base.OnFinalize();
-    }
-    
-    public CharacterObject? GetCharacterByName(string name)
-    {
-        return (from rosterElement in _inventoryLogic.RightMemberRoster.GetTroopRoster()
-            where rosterElement.Character.IsHero && rosterElement.Character.Name.ToString() == name
-            select rosterElement.Character).FirstOrDefault();
     }
 }
