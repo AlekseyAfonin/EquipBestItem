@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Reflection;
 using EquipBestItem.Models.Entities;
 using EquipBestItem.Models.Enums;
 using TaleWorlds.Core;
@@ -9,6 +11,20 @@ namespace EquipBestItem.Extensions;
 
 public static class Extensions
 {
+    internal static void GetMethod(this object o, string methodName, params object[] args)
+    {
+        var mi = o.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
+        if (mi == null) return;
+        try
+        {
+            mi.Invoke(o, args);
+        }
+        catch
+        {
+            throw new MBException($"{methodName} method retrieval error");
+        }
+    }
+
     private static int ApplyModifier(this int value, ItemModifier modifier, ItemParams itemParams) =>
         itemParams switch
         {
@@ -48,71 +64,47 @@ public static class Extensions
 
     private static float GetPropModValue<T>(this T item, ItemModifier? itemModifier, ItemParams itemParams)
     {
-        var propertyValue = item?.GetType().GetProperty(itemParams.ToString())?.GetValue(item) 
-                            ?? new ArgumentNullException(itemParams.ToString());
+        var propertyValue = item?.GetType().GetProperty(itemParams.ToString())?.GetValue(item);
         
         return itemModifier is null
             ? Convert.ToSingle(propertyValue)
             : propertyValue switch
             {
-                int v => v.ApplyModifier(itemModifier, itemParams),
-                float v => v,
+                int v => v.ApplyModifier(itemModifier, itemParams),                 // All params except float weight
+                float v => v,                                                       // Weight haven't modifier
                 _ => throw new ArgumentOutOfRangeException()
             };
     }
     
-    public static float GetItemValue(this EquipmentElement item, Coefficients coefficients)
+    public static float GetItemValue(this EquipmentElement equipmentElement, Coefficients coefficients)
     {
-        ItemObject itemObject = item.Item;
+        var itemObject = equipmentElement.Item;
+
+        if (itemObject.HasArmorComponent) return GetComponentValue(itemObject.ArmorComponent, ItemTypes.Armor);
+        if (itemObject.HasHorseComponent) return GetComponentValue(itemObject.HorseComponent, ItemTypes.Horse);
+        if (!itemObject.HasWeaponComponent) return 0;
         
-        if (itemObject.HasArmorComponent)
+        var pw = itemObject.WeaponComponent.PrimaryWeapon;
+        
+        if (pw.IsRangedWeapon) return GetComponentValue(pw, pw.IsConsumable ? ItemTypes.Comsumable : ItemTypes.RangedWeapon);
+        if (pw.IsMeleeWeapon) return GetComponentValue(pw, ItemTypes.MeleeWeapon);
+        if (pw.IsShield) return GetComponentValue(pw, ItemTypes.Shield);
+        
+        return 0;
+
+        float GetComponentValue<T>(T itemComponent, ItemParams itemParams)
         {
-            return _GetComponentValue(itemObject.ArmorComponent, ItemTypes.Armor);
-        }
-
-        if (itemObject.HasWeaponComponent)
-        {
-            var primaryWeapon = itemObject.WeaponComponent.PrimaryWeapon;
-
-            if (primaryWeapon.IsRangedWeapon)
-            {
-                return _GetComponentValue(primaryWeapon, 
-                    primaryWeapon.IsConsumable 
-                        ? ItemTypes.Comsumable 
-                        : ItemTypes.RangedWeapon);
-            }
-
-            if (primaryWeapon.IsMeleeWeapon)
-            {
-                return _GetComponentValue(primaryWeapon, ItemTypes.MeleeWeapon);
-            }
-            
-            if (primaryWeapon.IsShield)
-            {
-                return _GetComponentValue(primaryWeapon, ItemTypes.Shield);
-            }  
-        }
-
-        if (itemObject.HasHorseComponent)
-        {
-            return _GetComponentValue(itemObject.HorseComponent, ItemTypes.Horse);
-        }
-
-        return 0f;
-
-        float _GetComponentValue<T>(T itemComponent, ItemParams itemParams)
-        {
-            float sumCoef = 0;
+            float sumCoefficients = 0;
             float value = 0;
 
             foreach (var param in itemParams.GetFlags())
             {
-                var coef = coefficients.GetPropValue(param.ToString());
-                sumCoef += coef;
-                value += itemComponent.GetPropModValue(item.ItemModifier, param) * coef;
+                var coefficient = coefficients.GetPropValue(param.ToString());
+                sumCoefficients += coefficient;
+                value += itemComponent.GetPropModValue(equipmentElement.ItemModifier, param) * coefficient;
             }
 
-            return value / sumCoef;
+            return value / sumCoefficients;
         }
     }
 }

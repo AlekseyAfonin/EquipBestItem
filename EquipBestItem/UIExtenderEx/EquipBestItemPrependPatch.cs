@@ -5,7 +5,11 @@ using TaleWorlds.ModuleManager;
 
 namespace EquipBestItem.UIExtenderEx;
 
-[PrefabExtension(movie:"Inventory", "descendant::Widget[@Id='LeftMenu']/Children/InventoryEquippedItemSlot[2]")]
+
+/// <summary>
+/// https://butr.github.io/Bannerlord.UIExtenderEx/articles/v2/PrefabExtensionInsertPatch.html
+/// </summary>
+[PrefabExtension(movie:"Inventory", "descendant::Widget[@Id='LeftMenu']/Children/InventoryEquippedItemSlot[4]")]
 public class EquipBestItemPrefabExtension1 : PrefabExtensionInsertPatch
 {
     public override InsertType Type => InsertType.Append;
