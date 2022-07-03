@@ -87,7 +87,7 @@ internal class BestItemManager
             
                 var itemValue = item.ItemRosterElement.EquipmentElement.GetItemValue(coefficients);
 
-                if (bestItemValue > itemValue) continue;
+                if (bestItemValue >= itemValue) continue;
 
                 bestItem = item;
                 bestItemValue = itemValue;
