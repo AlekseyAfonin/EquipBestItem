@@ -36,7 +36,6 @@ public static class Extensions
             ItemParams.HitPoints => Math.Max(0, modifier.ModifyMountHitPoints(value)),
             ItemParams.Maneuver => Math.Max(0, modifier.ModifyMountManeuver(value)),
             ItemParams.Speed => Math.Max(0, modifier.ModifyMountSpeed(value)),
-            ItemParams.MaxDataValue => Math.Max((short)0, modifier.ModifyHitPoints((short)value)),
             ItemParams.ThrustSpeed => Math.Max(0, modifier.ModifySpeed(value)),
             ItemParams.SwingSpeed => Math.Max(0, modifier.ModifySpeed(value)),
             ItemParams.MissileSpeed => Math.Max(0, modifier.ModifyMissileSpeed(value)),
@@ -48,6 +47,13 @@ public static class Extensions
             ItemParams.Handling => value,
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
         };
+    
+    private static short ApplyModifier(this short value, ItemModifier modifier, ItemParams itemParams) =>
+        itemParams switch
+            {
+                ItemParams.MaxDataValue => Math.Max((short)0, modifier.ModifyHitPoints(value)),
+                _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
+            };
     
     private static IEnumerable<ItemParams> GetFlags(this ItemParams itemType)
     {
@@ -70,8 +76,9 @@ public static class Extensions
             ? Convert.ToSingle(propertyValue)
             : propertyValue switch
             {
-                int v => v.ApplyModifier(itemModifier, itemParams),                 // All params except float weight
-                float v => v,                                                       // Weight haven't modifier
+                int v => v.ApplyModifier(itemModifier, itemParams),                 
+                short v => v.ApplyModifier(itemModifier, itemParams),
+                float v => v,                                                       
                 _ => throw new ArgumentOutOfRangeException()
             };
     }
