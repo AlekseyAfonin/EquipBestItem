@@ -23,5 +23,5 @@ public enum ItemParams : uint
     SwingDamage = 32768U,
     Accuracy = 65536U,
     Handling = 131072U,
-    //Weight = 262144U
+    Weight = 262144U
 }

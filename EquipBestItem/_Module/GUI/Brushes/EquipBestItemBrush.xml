@@ -1,23 +1,23 @@
 <Brushes>
     <Brush Name="Inventory.EquipBetterItem.PlusButton">
         <Layers>
-            <BrushLayer Name="Default" Sprite="General\TroopTierIcons\icon_tier_2_big"/>
+            <BrushLayer Name="Default" Sprite="1"/>
         </Layers>
         <Styles>
             <Style Name="Default">
-                <BrushLayer Name="Default" Sprite="General\TroopTierIcons\icon_tier_2_big" ColorFactor="0.7"
+                <BrushLayer Name="Default" Sprite="1" ColorFactor="0.7"
                             IsHidden="false"/>
             </Style>
             <Style Name="Hovered">
-                <BrushLayer Name="Default" Sprite="General\TroopTierIcons\icon_tier_2_big" ColorFactor="1.5"
+                <BrushLayer Name="Default" Sprite="1" ColorFactor="1.5"
                             IsHidden="false"/>
             </Style>
             <Style Name="Pressed">
-                <BrushLayer Name="Default" Sprite="General\TroopTierIcons\icon_tier_2_big" ColorFactor="2"
+                <BrushLayer Name="Default" Sprite="1" ColorFactor="2"
                             IsHidden="false"/>
             </Style>
             <Style Name="Disabled">
-                <BrushLayer Name="Default" Sprite="General\TroopTierIcons\icon_tier_2_big" IsHidden="true"/>
+                <BrushLayer Name="Default" Sprite="1" IsHidden="true"/>
             </Style>
         </Styles>
         <SoundProperties>

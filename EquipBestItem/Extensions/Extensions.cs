@@ -77,8 +77,7 @@ public static class Extensions
             : propertyValue switch
             {
                 int v => v.ApplyModifier(itemModifier, itemParams),                 
-                short v => v.ApplyModifier(itemModifier, itemParams),
-                float v => v,                                                       
+                short v => v.ApplyModifier(itemModifier, itemParams),                                      
                 _ => throw new ArgumentOutOfRangeException()
             };
     }
@@ -93,7 +92,7 @@ public static class Extensions
         
         var pw = itemObject.WeaponComponent.PrimaryWeapon;
         
-        if (pw.IsRangedWeapon) return GetComponentValue(pw, pw.IsConsumable ? ItemTypes.Comsumable : ItemTypes.RangedWeapon);
+        if (pw.IsRangedWeapon) return GetComponentValue(pw, pw.IsConsumable ? ItemTypes.Consumable : ItemTypes.RangedWeapon);
         if (pw.IsMeleeWeapon) return GetComponentValue(pw, ItemTypes.MeleeWeapon);
         if (pw.IsShield) return GetComponentValue(pw, ItemTypes.Shield);
         
@@ -108,9 +107,13 @@ public static class Extensions
             {
                 var coefficient = coefficients.GetPropValue(param.ToString());
                 sumCoefficients += coefficient;
-                value += itemComponent.GetPropModValue(equipmentElement.ItemModifier, param) * coefficient;
+                
+                // The weight is not in the properties of the component, so we take it from the parent object
+                value += param == ItemParams.Weight 
+                    ? itemObject.Weight * coefficient 
+                    : itemComponent.GetPropModValue(equipmentElement.ItemModifier, param) * coefficient;
             }
-
+            
             return value / sumCoefficients;
         }
     }
