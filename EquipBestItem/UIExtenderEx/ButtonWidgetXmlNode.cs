@@ -14,8 +14,10 @@ public class ButtonWidgetXmlNode
         string horizontalAlignment = "Left",
         string widthSizePolicy = "Fixed",
         string heightSizePolicy = "Fixed",
-        int suggestedWidth = 35,
-        int suggestedHeight = 35,
+        int marginTop = 7,
+        int marginLeft = 7,
+        int suggestedWidth = 14,
+        int suggestedHeight = 14,
         string brush = "Inventory.EquipBetterItem.PlusButton")
     {
         Node = new XElement("Children", 
@@ -28,6 +30,8 @@ public class ButtonWidgetXmlNode
                 new XAttribute("CommandParameter.AlternateClick", $"{slotName}"),
                 new XAttribute("WidthSizePolicy", $"{widthSizePolicy}"),
                 new XAttribute("HeightSizePolicy", $"{heightSizePolicy}"),
+                new XAttribute("MarginTop", $"{marginTop.ToString()}"),
+                new XAttribute("MarginLeft", $"{marginLeft.ToString()}"),
                 new XAttribute("SuggestedWidth", $"{suggestedWidth.ToString()}"),
                 new XAttribute("SuggestedHeight", $"{suggestedHeight.ToString()}"),
                 new XAttribute("HorizontalAlignment", $"{horizontalAlignment}"),

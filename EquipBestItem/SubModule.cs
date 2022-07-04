@@ -28,7 +28,7 @@ namespace EquipBestItem
                 var resourceContext = UIResourceManager.ResourceContext;
                 var resourceDepot = UIResourceManager.UIResourceDepot;
 
-                _category = spriteData.SpriteCategories["ui_buttons"]; // select which category to load, put your category name here
+                _category = spriteData.SpriteCategories["ui_equipbestitem"]; // select which category to load, put your category name here
                 _category.Load(resourceContext, resourceDepot); // load the selected category
                 //_harmony = new Harmony("EquipBestItem");
                 //_assembly = Assembly.GetExecutingAssembly();

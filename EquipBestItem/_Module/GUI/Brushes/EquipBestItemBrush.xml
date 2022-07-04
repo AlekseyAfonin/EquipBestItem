@@ -1,23 +1,23 @@
 <Brushes>
     <Brush Name="Inventory.EquipBetterItem.PlusButton">
         <Layers>
-            <BrushLayer Name="Default" Sprite="1"/>
+            <BrushLayer Name="Default" Sprite="equipbestitem_button_equip"/>
         </Layers>
         <Styles>
             <Style Name="Default">
-                <BrushLayer Name="Default" Sprite="1" ColorFactor="0.7"
+                <BrushLayer Name="Default" Sprite="equipbestitem_button_equip" ColorFactor="0.7"
                             IsHidden="false"/>
             </Style>
             <Style Name="Hovered">
-                <BrushLayer Name="Default" Sprite="1" ColorFactor="1.5"
+                <BrushLayer Name="Default" Sprite="equipbestitem_button_equip" ColorFactor="1.5"
                             IsHidden="false"/>
             </Style>
             <Style Name="Pressed">
-                <BrushLayer Name="Default" Sprite="1" ColorFactor="2"
+                <BrushLayer Name="Default" Sprite="equipbestitem_button_equip" ColorFactor="2"
                             IsHidden="false"/>
             </Style>
             <Style Name="Disabled">
-                <BrushLayer Name="Default" Sprite="1" IsHidden="true"/>
+                <BrushLayer Name="Default" Sprite="equipbestitem_button_equip" IsHidden="true"/>
             </Style>
         </Styles>
         <SoundProperties>

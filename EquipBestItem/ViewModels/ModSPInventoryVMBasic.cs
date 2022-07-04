@@ -48,8 +48,8 @@ internal partial class ModSPInventoryVM : ViewModel
     internal void Update()
     {
         InformationManager.DisplayMessage(new InformationMessage($"Update"));
-        var leftInvenotry = (bool)_settingsReposotiry.Read(Settings.IsRightPanelLocked).Value ? null : _originVM.RightItemListVM;
-        var rightInventory = (bool)_settingsReposotiry.Read(Settings.IsLeftPanelLocked).Value ? null : _originVM.LeftItemListVM;
+        var rightItemList = (bool)_settingsReposotiry.Read(Settings.IsRightPanelLocked).Value ? null : _originVM.RightItemListVM;
+        var leftItemList = (bool)_settingsReposotiry.Read(Settings.IsLeftPanelLocked).Value ? null : _originVM.LeftItemListVM;
 
         for (var equipIndex = EquipmentIndex.WeaponItemBeginSlot; equipIndex < EquipmentIndex.NumEquipmentSetSlots; equipIndex++)
         {
@@ -59,7 +59,7 @@ internal partial class ModSPInventoryVM : ViewModel
             var coefficients = _originVM.IsInWarSet
                 ? _coefficientsRepository.Read(_currentCharacter.Name.ToString()).WarCoefficients[(int)equipIndex]
                 : _coefficientsRepository.Read(_currentCharacter.Name.ToString()).CivilCoefficients[(int)equipIndex];
-            _bestItems[(int)equipIndex] = _bestItemManager.GetBestItem(coefficients, equipment[equipIndex], equipIndex, leftInvenotry!, rightInventory!);
+            _bestItems[(int)equipIndex] = BestItemManager.GetBestItem(coefficients, equipment[equipIndex], equipIndex, rightItemList, leftItemList);
             SlotButtonUpdate(equipIndex, _bestItems[(int)equipIndex] is not null);
         }
     }

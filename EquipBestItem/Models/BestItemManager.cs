@@ -70,7 +70,7 @@ internal class BestItemManager
         _inventoryLogic.AddTransferCommand(equipCommand);
     }
 
-    internal SPItemVM? GetBestItem(Coefficients coefficients, EquipmentElement currentItem, EquipmentIndex equipmentIndex,
+    internal static SPItemVM? GetBestItem(Coefficients coefficients, EquipmentElement currentItem, EquipmentIndex equipmentIndex,
         params MBBindingList<SPItemVM>?[] lists)
     {
         var bestItemValue = currentItem.IsEmpty ? 0 : currentItem.GetItemValue(coefficients);
