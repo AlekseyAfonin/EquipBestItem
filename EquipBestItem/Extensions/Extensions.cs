@@ -6,6 +6,7 @@ using System.Reflection;
 using EquipBestItem.Models.Entities;
 using EquipBestItem.Models.Enums;
 using TaleWorlds.Core;
+using TaleWorlds.ScreenSystem;
 
 namespace EquipBestItem.Extensions;
 
@@ -116,5 +117,15 @@ public static class Extensions
             
             return value / sumCoefficients;
         }
+    }
+    
+    public static T? FindLayer<T>(this IEnumerable<ScreenLayer>? screenLayers) where T : ScreenLayer
+    {
+        if (screenLayers == null) return default;
+        
+        foreach (var layer in screenLayers)
+            if (layer is T targetLayer)
+                return targetLayer;
+        return default;
     }
 }

@@ -1,15 +1,10 @@
 using EquipBestItem.Extensions;
 using EquipBestItem.Models.Entities;
-using EquipBestItem.Models.Enums;
-using Messages.FromLobbyServer.ToClient;
-using SharpRepository.XmlRepository;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
-using EquipBestItem.ViewModels;
-using EquipBestItem.UIExtenderEx;
 
 namespace EquipBestItem.Models;
 

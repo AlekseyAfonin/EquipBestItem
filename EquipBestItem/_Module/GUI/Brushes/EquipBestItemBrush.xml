@@ -17,7 +17,7 @@
                             IsHidden="false"/>
             </Style>
             <Style Name="Disabled">
-                <BrushLayer Name="Default" Sprite="equipbestitem_button_equip" IsHidden="true"/>
+                <BrushLayer Name="Default" Sprite="equipbestitem_button_equip" ColorFactor="0.1" IsHidden="true"/>
             </Style>
         </Styles>
         <SoundProperties>

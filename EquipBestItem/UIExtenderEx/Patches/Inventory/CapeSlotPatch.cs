@@ -3,21 +3,22 @@ using System.Xml.Linq;
 using Bannerlord.UIExtenderEx.Attributes;
 using Bannerlord.UIExtenderEx.Prefabs2;
 using EquipBestItem.Models.Enums;
+using EquipBestItem.Widgets;
 
 namespace EquipBestItem.UIExtenderEx;
 
 /// <summary>
 /// https://butr.github.io/Bannerlord.UIExtenderEx/articles/v2/PrefabExtensionInsertPatch.html
 /// </summary>
-[PrefabExtension(movie:"Inventory", "descendant::InventoryEquippedItemSlot[@Parameter.BackgroundBrush='InventoryMountArmorSlot']")]
-public class HorseHarnessSlotPatch : PrefabExtensionInsertPatch
+[PrefabExtension(movie:"Inventory", "descendant::InventoryEquippedItemSlot[@Parameter.BackgroundBrush='InventoryCloakSlot']")]
+public class CapeSlotPatch : PrefabExtensionInsertPatch
 {
     public override InsertType Type => InsertType.Child;
     private readonly XmlDocument _xmlDocument;
     
-    public HorseHarnessSlotPatch()
+    public CapeSlotPatch()
     {
-        var button = new ButtonWidgetXmlNode(CustomEquipmentIndex.HorseHarness.ToString());
+        var button = new InventoryEquipButtonWidget(CustomEquipmentIndex.Cape);
         var child = new XDocument(button.Node);
         _xmlDocument = new XmlDocument();
         _xmlDocument.LoadXml(child.ToString());

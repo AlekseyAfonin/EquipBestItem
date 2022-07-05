@@ -1,0 +1,87 @@
+<Prefab>
+    <Constants>
+        <Constant Name="EBI.MainWindow.MarginTop" Value="0"/>
+        <Constant Name="EBI.Slider.Width" Value="160"/>
+        <Constant Name="EBI.Slider.Height" Value="55"/>
+        <Constant Name="EBI.Slider.MarginLeft" Value="20"/>
+        <Constant Name="EBI.Slider.Value.MarginLeft" Value="10"/>
+        <Constant Name="EBI.CheckBox.MarginLeft" Value="10"/>
+    </Constants>
+    <Window>
+        <Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+            <Children>
+                <!-- Border -->
+                <BrushWidget DoNotAcceptEvents="false" Id="Panel" WidthSizePolicy="Fixed"
+                             HeightSizePolicy="CoverChildren" SuggestedWidth="470" HorizontalAlignment="Center"
+                             VerticalAlignment="Top" MarginTop="200" Brush="Frame1Brush">
+                    <Children>
+                        <!-- Main List -->
+                        <ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren"
+                                   HorizontalAlignment="Left" VerticalAlignment="Top"
+                                   LayoutImp.LayoutMethod="VerticalBottomToTop">
+                            <Children>
+                                <!-- Header -->
+                                <ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren"
+                                           HorizontalAlignment="Center" VerticalAlignment="Top"
+                                           LayoutImp.LayoutMethod="VerticalBottomToTop" MarginTop="0"
+                                           Sprite="BlankWhiteSquare_9" Color="#8B5C2200">
+                                    <Children>
+                                        <RichTextWidget DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren"
+                                                        HeightSizePolicy="CoverChildren" HorizontalAlignment="Center"
+                                                        VerticalAlignment="Bottom" MarginTop="0" Text="@HeaderText"/>
+                                    </Children>
+                                </ListPanel>
+                                <ListPanel Id="EmptyRow" WidthSizePolicy="StretchToParent"
+                                           HeightSizePolicy="CoverChildren" HorizontalAlignment="Center"
+                                           VerticalAlignment="Top" LayoutImp.LayoutMethod="HorizontalLeftToRight"
+                                           MarginTop="!EBI.MainWindow.MarginTop" Sprite="BlankWhiteSquare_9"
+                                           Color="#8B5C2200">
+                                    <Children>
+                                        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed"
+                                                SuggestedHeight="64" VerticalAlignment="Center"
+                                                LayoutImp.LayoutMethod="HorizontalLeftToRight"/>
+                                    </Children>
+                                </ListPanel>
+                            </Children>
+                        </ListPanel>
+                        
+                        <!-- Buttons Row Begin-->
+                        <ListPanel Id="ButtonsRow" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren"
+                                   HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                                   LayoutImp.LayoutMethod="HorizontalLeftToRight" MarginTop="!EBI.MainWindow.MarginTop"
+                                   Sprite="BlankWhiteSquare_9" Color="#8B5C2200">
+                            <Children>
+                                <!--Default Button-->
+                                <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed"
+                                              HeightSizePolicy="Fixed" SuggestedWidth="235" SuggestedHeight="64"
+                                              HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginBottom="0"
+                                              Brush="Popup.Button.Base" Command.Click="ExecuteDefault"
+                                              UpdateChildrenStates="true">
+                                    <Children>
+                                        <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"
+                                                    Brush="Popup.Button.Text" Text="Default"/>
+                                    </Children>
+                                </ButtonWidget>
+                                <!--Lock Button-->
+                                <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed"
+                                              HeightSizePolicy="Fixed" SuggestedWidth="235" SuggestedHeight="64"
+                                              HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginBottom="0"
+                                              Brush="Popup.Button.Base" Command.Click="ExecuteLock"
+                                              UpdateChildrenStates="true">
+                                    <Children>
+                                        <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"
+                                                    Brush="Popup.Button.Text" Text="Lock"/>
+                                    </Children>
+                                </ButtonWidget>
+                            </Children>
+                        </ListPanel>
+                        <!-- List Row End-->
+                    </Children>
+                </BrushWidget>
+                <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="84" SuggestedHeight="84"
+                              HorizontalAlignment="Center" VerticalAlignment="Top" PositionXOffset="245"
+                              PositionYOffset="155" Command.Click="ExecuteClose" Brush="Popup.CloseButton"/>
+            </Children>
+        </Widget>
+    </Window>
+</Prefab>
