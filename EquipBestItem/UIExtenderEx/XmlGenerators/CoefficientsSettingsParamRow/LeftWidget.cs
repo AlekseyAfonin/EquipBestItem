@@ -1,10 +1,11 @@
 using System.Xml.Linq;
+using EquipBestItem.Models.Enums;
 
 namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
-public class LeftWidget : WidgetNode
+internal class LeftWidget : WidgetNode
 {
-    public LeftWidget(string paramName)
+    internal LeftWidget(TestParams itemParam)
     {
         Node =
             new XElement("Widget",
@@ -14,6 +15,6 @@ public class LeftWidget : WidgetNode
                 new XAttribute("SuggestedHeight", $"!EBI.Slider.Height"),
                 new XAttribute("VerticalAlignment", $"Center"),
                 new XAttribute("MarginLeft", $"!EBI.Slider.MarginLeft"),
-                new XElement("Children", new LeftChildListPanel(paramName)));
+                new XElement("Children", new LeftChildListPanel(itemParam).Node));
     }
 }

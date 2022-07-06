@@ -1,29 +1,30 @@
 using System.Xml.Linq;
+using EquipBestItem.Models.Enums;
 
 namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
-public class RightSliderWidget : WidgetNode
+internal class RightSliderWidget : WidgetNode
 {
-    public RightSliderWidget(string paramName)
+    internal RightSliderWidget(TestParams itemParam)
     {
         Node =
             new XElement("SliderWidget",
                 new XAttribute("WidthSizePolicy", "Fixed"),
                 new XAttribute("HeightSizePolicy", "Fixed"),
-                new XAttribute("SuggestedWidth", 138),
-                new XAttribute("SuggestedHeight", 42),
+                new XAttribute("SuggestedWidth", "138"),
+                new XAttribute("SuggestedHeight", "42"),
                 new XAttribute("VerticalAlignment", "Center"),
-                new XAttribute("DoNotUpdateHandleSize", true),
+                new XAttribute("DoNotUpdateHandleSize", "true"),
                 new XAttribute("Filler", "Filler"),
                 new XAttribute("Handle", "SliderHandle"),
                 new XAttribute("IsDiscrete", "true"),
-                new XAttribute("MaxValueFloat", 100.0),
-                new XAttribute("MinValueFloat", 0.0),
-                new XAttribute("ValueFloat", $"@{paramName}ArmorValue"),
+                new XAttribute("MaxValueFloat", "100.0"),
+                new XAttribute("MinValueFloat", "0.0"),
+                new XAttribute("ValueFloat", $"@{itemParam}Value"),
                 new XElement("Children",
-                    new RightSliderWidgetFirstWidget(),
-                    new RightSliderWidgetSecondWidget(),
-                    new RightSliderWidgetThirdWidget(),
-                    new RightSliderWidgetImageWidget()));
+                    new RightSliderWidgetFirstWidget().Node,
+                    new RightSliderWidgetSecondWidget().Node,
+                    new RightSliderWidgetThirdWidget().Node,
+                    new RightSliderWidgetImageWidget().Node));
     }
 }

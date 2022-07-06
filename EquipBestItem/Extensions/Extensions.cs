@@ -10,80 +10,9 @@ using TaleWorlds.ScreenSystem;
 
 namespace EquipBestItem.Extensions;
 
-public static class Extensions
+internal static class Extensions
 {
-    internal static void GetMethod(this object o, string methodName, params object[] args)
-    {
-        var mi = o.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
-        if (mi == null) return;
-        try
-        {
-            mi.Invoke(o, args);
-        }
-        catch
-        {
-            throw new MBException($"{methodName} method retrieval error");
-        }
-    }
-
-    private static int ApplyModifier(this int value, ItemModifier modifier, ItemParams itemParams) =>
-        itemParams switch
-        {
-            ItemParams.HeadArmor => Math.Max(0, modifier.ModifyArmor(value)),
-            ItemParams.BodyArmor => Math.Max(0, modifier.ModifyArmor(value)),
-            ItemParams.ArmArmor => Math.Max(0, modifier.ModifyArmor(value)),
-            ItemParams.LegArmor => Math.Max(0, modifier.ModifyArmor(value)),
-            ItemParams.ChargeDamage => Math.Max(0, modifier.ModifyMountCharge(value)),
-            ItemParams.HitPoints => Math.Max(0, modifier.ModifyMountHitPoints(value)),
-            ItemParams.Maneuver => Math.Max(0, modifier.ModifyMountManeuver(value)),
-            ItemParams.Speed => Math.Max(0, modifier.ModifyMountSpeed(value)),
-            ItemParams.ThrustSpeed => Math.Max(0, modifier.ModifySpeed(value)),
-            ItemParams.SwingSpeed => Math.Max(0, modifier.ModifySpeed(value)),
-            ItemParams.MissileSpeed => Math.Max(0, modifier.ModifyMissileSpeed(value)),
-            ItemParams.MissileDamage => Math.Max(0, modifier.ModifyDamage(value)),            
-            ItemParams.ThrustDamage => Math.Max(0, modifier.ModifyDamage(value)),
-            ItemParams.SwingDamage => Math.Max(0, modifier.ModifyDamage(value)),
-            ItemParams.WeaponLength => value,
-            ItemParams.Accuracy => value,
-            ItemParams.Handling => value,
-            _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
-        };
-    
-    private static short ApplyModifier(this short value, ItemModifier modifier, ItemParams itemParams) =>
-        itemParams switch
-            {
-                ItemParams.MaxDataValue => Math.Max((short)0, modifier.ModifyHitPoints(value)),
-                _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
-            };
-    
-    private static IEnumerable<ItemParams> GetFlags(this ItemParams itemType)
-    {
-        return Enum.GetValues(typeof(ItemParams))
-            .Cast<ItemParams>()
-            .Where(p => itemType.HasFlag(p));
-    }
-
-    private static float GetPropValue(this Coefficients item, string propName)
-    {
-        var propertyValue = item.GetType().GetProperty(propName)?.GetValue(item);
-        return Convert.ToSingle(propertyValue);
-    }
-
-    private static float GetPropModValue<T>(this T item, ItemModifier? itemModifier, ItemParams itemParams)
-    {
-        var propertyValue = item?.GetType().GetProperty(itemParams.ToString())?.GetValue(item);
-        
-        return itemModifier is null
-            ? Convert.ToSingle(propertyValue)
-            : propertyValue switch
-            {
-                int v => v.ApplyModifier(itemModifier, itemParams),                 
-                short v => v.ApplyModifier(itemModifier, itemParams),                                      
-                _ => throw new ArgumentOutOfRangeException()
-            };
-    }
-    
-    public static float GetItemValue(this EquipmentElement equipmentElement, Coefficients coefficients)
+    internal static float GetItemValue(this EquipmentElement equipmentElement, Coefficients coefficients)
     {
         var itemObject = equipmentElement.Item;
 
@@ -106,7 +35,7 @@ public static class Extensions
 
             foreach (var param in itemParams.GetFlags())
             {
-                var coefficient = coefficients.GetPropValue(param.ToString());
+                var coefficient = GetPropValue(coefficients, param.ToString());
                 sumCoefficients += coefficient;
                 
                 // The weight is not in the properties of the component, so we take it from the parent object
@@ -117,9 +46,15 @@ public static class Extensions
             
             return value / sumCoefficients;
         }
+        
+        float GetPropValue(Coefficients item, string propName)
+        {
+            var propertyValue = item.GetType().GetProperty(propName)?.GetValue(item);
+            return Convert.ToSingle(propertyValue);
+        }
     }
     
-    public static T? FindLayer<T>(this IEnumerable<ScreenLayer>? screenLayers) where T : ScreenLayer
+    internal static T? FindLayer<T>(this IEnumerable<ScreenLayer>? screenLayers) where T : ScreenLayer
     {
         if (screenLayers == null) return default;
         
@@ -127,5 +62,69 @@ public static class Extensions
             if (layer is T targetLayer)
                 return targetLayer;
         return default;
+    }
+    
+    internal static void GetMethod(this object o, string methodName, params object[] args)
+    {
+        var mi = o.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
+        if (mi == null) return;
+        try
+        {
+            mi.Invoke(o, args);
+        }
+        catch
+        {
+            throw new MBException($"{methodName} method retrieval error");
+        }
+    }
+    
+    internal static IEnumerable<ItemParams> GetFlags(this ItemParams itemType)
+    {
+        return Enum.GetValues(typeof(ItemParams))
+            .Cast<ItemParams>()
+            .Where(p => itemType.HasFlag(p));
+    }
+
+    private static float GetPropModValue<T>(this T item, ItemModifier? itemModifier, ItemParams itemParams)
+    {
+        var propertyValue = item?.GetType().GetProperty(itemParams.ToString())?.GetValue(item);
+        
+        return itemModifier is null
+            ? Convert.ToSingle(propertyValue)
+            : propertyValue switch
+            {
+                int v => ApplyIntModifier(v),                 
+                short v => ApplyShortModifier(v),                                      
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        
+        int ApplyIntModifier(int value) =>
+            itemParams switch
+            {
+                ItemParams.HeadArmor => Math.Max(0, itemModifier.ModifyArmor(value)),
+                ItemParams.BodyArmor => Math.Max(0, itemModifier.ModifyArmor(value)),
+                ItemParams.ArmArmor => Math.Max(0, itemModifier.ModifyArmor(value)),
+                ItemParams.LegArmor => Math.Max(0, itemModifier.ModifyArmor(value)),
+                ItemParams.ChargeDamage => Math.Max(0, itemModifier.ModifyMountCharge(value)),
+                ItemParams.HitPoints => Math.Max(0, itemModifier.ModifyMountHitPoints(value)),
+                ItemParams.Maneuver => Math.Max(0, itemModifier.ModifyMountManeuver(value)),
+                ItemParams.Speed => Math.Max(0, itemModifier.ModifyMountSpeed(value)),
+                ItemParams.ThrustSpeed => Math.Max(0, itemModifier.ModifySpeed(value)),
+                ItemParams.SwingSpeed => Math.Max(0, itemModifier.ModifySpeed(value)),
+                ItemParams.MissileSpeed => Math.Max(0, itemModifier.ModifyMissileSpeed(value)),
+                ItemParams.MissileDamage => Math.Max(0, itemModifier.ModifyDamage(value)),            
+                ItemParams.ThrustDamage => Math.Max(0, itemModifier.ModifyDamage(value)),
+                ItemParams.SwingDamage => Math.Max(0, itemModifier.ModifyDamage(value)),
+                ItemParams.WeaponLength => value,
+                ItemParams.Accuracy => value,
+                ItemParams.Handling => value,
+                _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
+            };
+        
+        short ApplyShortModifier(short value) => itemParams switch
+            {
+                ItemParams.MaxDataValue => Math.Max((short)0, itemModifier.ModifyHitPoints(value)),
+                _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
+            };
     }
 }

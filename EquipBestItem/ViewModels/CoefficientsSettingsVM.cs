@@ -1,40 +1,59 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using EquipBestItem.Extensions;
 using EquipBestItem.Layers;
 using EquipBestItem.Models;
+using EquipBestItem.Models.Enums;
+using JetBrains.Annotations;
 using SandBox.GauntletUI;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 using TaleWorlds.ScreenSystem;
 
 namespace EquipBestItem.ViewModels;
 
-internal class CoefficientsSettingsVM : ViewModel
+internal partial class CoefficientsSettingsVM : ViewModel
 {
     private readonly CharacterCoefficientsRepository _repository;
-    private readonly EquipmentIndex _equipmentIndex;
+    private readonly CustomEquipmentIndex _equipmentIndex;
     
     internal CoefficientsSettingsVM(EquipmentIndex equipmentIndex, CharacterCoefficientsRepository repository)
     {
-        _equipmentIndex = equipmentIndex;
+        _equipmentIndex = (CustomEquipmentIndex)equipmentIndex;
         _repository = repository;
-        _headerText = equipmentIndex.ToString();
-    }
+        _headerText = _equipmentIndex.ToString();
 
-    private string _headerText;
-    
-    [DataSourceProperty]
-    public string HeaderText
-    {
-        get => _headerText;
-        set
+        foreach (var param in GetEnabledParams(_equipmentIndex).GetFlags())
         {
-            if (_headerText == value) return;
-            _headerText = value;
-            OnPropertyChanged();
+            GetType().GetProperty($"{param.ToString()}IsHidden", typeof(bool))?.SetValue(this, false);
         }
     }
 
+    private static ItemParams GetEnabledParams(CustomEquipmentIndex equipmentIndex) => equipmentIndex switch
+    {
+        CustomEquipmentIndex.Weapon0 => ItemTypes.Weapon,
+        CustomEquipmentIndex.Weapon1 => ItemTypes.Weapon,
+        CustomEquipmentIndex.Weapon2 => ItemTypes.Weapon,
+        CustomEquipmentIndex.Weapon3 => ItemTypes.Weapon,
+        CustomEquipmentIndex.Weapon4 => ItemTypes.Weapon,
+        CustomEquipmentIndex.Head => ItemTypes.Head,
+        CustomEquipmentIndex.Body => ItemTypes.Armor,
+        CustomEquipmentIndex.Leg => ItemTypes.Legs,
+        CustomEquipmentIndex.Gloves => ItemTypes.Arms,
+        CustomEquipmentIndex.Cape => ItemTypes.Capes,
+        CustomEquipmentIndex.Horse => ItemTypes.Horse,
+        CustomEquipmentIndex.HorseHarness => ItemTypes.HorseHarness,
+        _ => throw new ArgumentOutOfRangeException(nameof(equipmentIndex), equipmentIndex, null)
+    };
+
+    public override void OnFinalize()
+    {
+        InformationManager.DisplayMessage(new InformationMessage($"OnFinalize"));
+        base.OnFinalize();
+    }
+    
     public sealed override void RefreshValues()
     {
         base.RefreshValues();
@@ -53,17 +72,37 @@ internal class CoefficientsSettingsVM : ViewModel
     public void ExecuteClose()
     {
         InformationManager.DisplayMessage(new InformationMessage($"ExecuteClose"));
-        
         var inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
-
         var coefficientsSettingsLayer = inventoryScreen?.Layers.FindLayer<CoefficientsSettingsLayer>();
-        
         inventoryScreen?.RemoveLayer(coefficientsSettingsLayer);
     }
 
-    public override void OnFinalize()
+    public void ExecuteValueDefault(string paramName)
     {
-        InformationManager.DisplayMessage(new InformationMessage($"OnFinalize"));
-        base.OnFinalize();
+        InformationManager.DisplayMessage(new InformationMessage($"DefaultButton Click: {paramName}"));
+    }
+    
+    private void UpdateArmorProperties()
+    {
+        OnPropertyChanged(nameof(HeadArmorValueText));
+        OnPropertyChanged(nameof(BodyArmorValueText));
+        OnPropertyChanged(nameof(LegArmorValueText));
+        OnPropertyChanged(nameof(ArmArmorValueText));
+        OnPropertyChanged(nameof(WeightValueText));
+    }
+
+    private string GetArmorValuePercentText(float propertyValue)
+    {
+        var sum = Math.Abs(HeadArmorValue) +
+                  Math.Abs(BodyArmorValue) +
+                  Math.Abs(LegArmorValue) +
+                  Math.Abs(ArmArmorValue) +
+                  Math.Abs(WeightValue);
+        
+        if (sum == 0) return "0%";
+        
+        var resultPercent = Math.Round(propertyValue / sum * 100).ToString(CultureInfo.InvariantCulture);
+        
+        return $"{resultPercent}%";
     }
 }

@@ -2,6 +2,7 @@ using Bannerlord.UIExtenderEx.Attributes;
 using Bannerlord.UIExtenderEx.ViewModels;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Library;
 using EquipBestItem.ViewModels;
@@ -10,6 +11,7 @@ using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Engine;
+using TaleWorlds.SaveSystem.Definition;
 
 namespace EquipBestItem.UIExtenderEx;
 
@@ -21,22 +23,21 @@ namespace EquipBestItem.UIExtenderEx;
 /// https://butr.github.io/Bannerlord.UIExtenderEx/articles/v2/ViewModelMixin.html
 /// </summary>
 [ViewModelMixin("RefreshValues")]
-internal sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
+public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
 {
-    [DataSourceProperty] 
-    private ModSPInventoryVM ModSPInventory { get; }
-
     private CharacterObject? _currentCharacter;
 
-    public CharacterObject CurrentCharacter =>
-        GetPrivate<CharacterObject>("_currentCharacter") ?? throw new InvalidOperationException();
-    
     public SPInventoryVMMixin(SPInventoryVM vm) : base(vm)
     {
         ModSPInventory = new ModSPInventoryVM(vm, this);
         RegisterEvents();
         _currentCharacter = InventoryManager.InventoryLogic.InitialEquipmentCharacter;
     }
+    
+    [DataSourceProperty] 
+    private ModSPInventoryVM ModSPInventory { get; }
+    
+    //public CharacterObject CurrentCharacter => GetPrivate<CharacterObject>("_currentCharacter") ?? throw new InvalidOperationException();
 
     private void RegisterEvents()
     {
@@ -44,15 +45,25 @@ internal sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         
         ViewModel.PropertyChanged += SPInventoryVM_PropertyChanged;
         ViewModel.PropertyChangedWithValue += SPInventoryVM_PropertyChangedWithValue;
+        
         Game.Current.EventManager.RegisterEvent(
             new Action<InventoryEquipmentTypeChangedEvent>(OnInventoryEquipmentTypeChanged));
-        ViewModel.CharacterList.SetOnChangeAction(OnCurrentCharacterChanged);
+        //ViewModel.CharacterList.(OnCurrentCharacterChanged);
     }
 
-    private void OnCurrentCharacterChanged(SelectorVM<InventoryCharacterSelectorItemVM> obj)
+    private void OnCurrentCharacterChanged()
     {
-        ModSPInventory.UpdateCurrentCharacter(GetPrivate<CharacterObject>("_currentCharacter") ?? throw new ArgumentNullException());
+        ModSPInventory.UpdateCurrentCharacter(GetCharacterByName(ViewModel?.CurrentCharacterName));
         ModSPInventory.Update();
+        
+        CharacterObject GetCharacterByName(string? name)
+        {
+            var result = from rosterElement in InventoryManager.InventoryLogic.RightMemberRoster.GetTroopRoster() 
+                where rosterElement.Character.IsHero && rosterElement.Character.Name.ToString() == name
+                select rosterElement.Character;
+        
+            return result.FirstOrDefault() ?? throw new InvalidOperationException("Character can't be null");
+        }
     }
     
     /// <summary>
@@ -88,6 +99,11 @@ internal sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         if (e.PropertyName == "IsRefreshed" && (bool) e.Value)
         {
             ModSPInventory.Update();
+        }
+
+        if (e.PropertyName == "CurrentCharacterName")
+        {
+            OnCurrentCharacterChanged();
         }
     }
     

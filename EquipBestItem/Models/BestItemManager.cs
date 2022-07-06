@@ -31,6 +31,33 @@ internal class BestItemManager
         _originVM.GetMethod("UpdateCharacterEquipment");
     }
 
+    internal static SPItemVM? GetBestItem(Coefficients coefficients, EquipmentElement currentItem, EquipmentIndex equipmentIndex,
+        params MBBindingList<SPItemVM>?[] lists)
+    {
+        var bestItemValue = currentItem.IsEmpty ? 0 : currentItem.GetItemValue(coefficients);
+
+        SPItemVM? bestItem = null;
+
+        foreach (var list in lists)
+        {
+            if (list is null) continue;
+            
+            foreach (var item in list)
+            {
+                if (!item.IsEquipableItem || item.IsLocked || !item.CanCharacterUseItem || item.ItemType != equipmentIndex) continue;
+            
+                var itemValue = item.ItemRosterElement.EquipmentElement.GetItemValue(coefficients);
+
+                if (bestItemValue >= itemValue) continue;
+
+                bestItem = item;
+                bestItemValue = itemValue;
+            }
+        }
+        
+        return bestItem;
+    }
+
     private void UnequipItem(EquipmentIndex equipmentIndex, CharacterObject character)
     {
         var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
@@ -63,32 +90,5 @@ internal class BestItemManager
             !_originVM.IsInWarSet);
         
         _inventoryLogic.AddTransferCommand(equipCommand);
-    }
-
-    internal static SPItemVM? GetBestItem(Coefficients coefficients, EquipmentElement currentItem, EquipmentIndex equipmentIndex,
-        params MBBindingList<SPItemVM>?[] lists)
-    {
-        var bestItemValue = currentItem.IsEmpty ? 0 : currentItem.GetItemValue(coefficients);
-
-        SPItemVM? bestItem = null;
-
-        foreach (var list in lists)
-        {
-            if (list is null) continue;
-            
-            foreach (var item in list)
-            {
-                if (!item.IsEquipableItem || item.IsLocked || !item.CanCharacterUseItem || item.ItemType != equipmentIndex) continue;
-            
-                var itemValue = item.ItemRosterElement.EquipmentElement.GetItemValue(coefficients);
-
-                if (bestItemValue >= itemValue) continue;
-
-                bestItem = item;
-                bestItemValue = itemValue;
-            }
-        }
-        
-        return bestItem;
     }
 }

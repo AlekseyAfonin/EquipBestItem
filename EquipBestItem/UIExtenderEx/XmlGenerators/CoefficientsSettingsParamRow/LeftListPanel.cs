@@ -1,14 +1,15 @@
 using System.Xml.Linq;
+using EquipBestItem.Models.Enums;
 
 namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
-public class LeftListPanel : WidgetNode
+internal class LeftListPanel : WidgetNode
 {
-    public LeftListPanel(string paramName)
+    internal LeftListPanel(TestParams itemParam)
     {
         Node =
             new XElement("ListPanel",
-                new XAttribute("Id", $"LeftListPanel{paramName}"),
+                new XAttribute("Id", $"LeftListPanel{itemParam}"),
                 new XAttribute("DoNotAcceptEvents", true),
                 new XAttribute("WidthSizePolicy", $"Fixed"),
                 new XAttribute("SuggestedWidth", 200),
@@ -20,6 +21,6 @@ public class LeftListPanel : WidgetNode
                 new XAttribute("LayoutImp.LayoutMethod", $"HorizontalLeftToRight"),
                 new XAttribute("Sprite", $"BlankWhiteSquare_9"),
                 new XAttribute("Color", $"#8B5C2200"),
-                new XElement("Children", new LeftWidget(paramName)));
+                new XElement("Children", new LeftWidget(itemParam).Node));
     }
 }

@@ -1,10 +1,11 @@
 using System.Xml.Linq;
+using EquipBestItem.Models.Enums;
 
 namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
-public class LeftRichTextWidget : WidgetNode
+internal class LeftRichTextWidget : WidgetNode
 {
-    public LeftRichTextWidget(string paramName)
+    internal LeftRichTextWidget(TestParams itemParam)
     {
         Node =
             new XElement("RichTextWidget",
@@ -14,6 +15,6 @@ public class LeftRichTextWidget : WidgetNode
                 new XAttribute("VerticalAlignment", $"Center"),
                 new XAttribute("Brush", "SPOptions.OptionName.Text"),
                 new XAttribute("IsEnabled", false),
-                new XAttribute("Text", $"@{paramName}Text"));
+                new XAttribute("Text", $"@{itemParam}Text"));
     }
 }

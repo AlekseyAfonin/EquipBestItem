@@ -1,14 +1,15 @@
 using System.Xml.Linq;
+using EquipBestItem.Models.Enums;
 
 namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
-public class RightListPanel : WidgetNode
+internal class RightListPanel : WidgetNode
 {
-    public RightListPanel(string paramName)
+    internal RightListPanel(TestParams itemParam)
     {
         Node =
             new XElement("ListPanel",
-                new XAttribute("Id", $"RightListPanel{paramName}"),
+                new XAttribute("Id", $"RightListPanel{itemParam}"),
                 new XAttribute("DoNotAcceptEvents", "true"),
                 new XAttribute("WidthSizePolicy", "StretchToParent"),
                 new XAttribute("HeightSizePolicy", "CoverChildren"),
@@ -19,6 +20,6 @@ public class RightListPanel : WidgetNode
                 new XAttribute("Sprite", "BlankWhiteSquare_9"),
                 new XAttribute("Color", "#3B5C2200"),
                 new XElement("Children",
-                    new RightWidget(paramName)));
+                    new RightWidget(itemParam).Node));
     }
 }

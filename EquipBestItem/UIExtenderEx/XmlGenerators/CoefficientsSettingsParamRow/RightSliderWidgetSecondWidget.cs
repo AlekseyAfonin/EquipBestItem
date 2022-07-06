@@ -2,12 +2,13 @@ using System.Xml.Linq;
 
 namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
-public class RightSliderWidgetSecondWidget : WidgetNode
+internal class RightSliderWidgetSecondWidget : WidgetNode
 {
-    public RightSliderWidgetSecondWidget()
+    internal RightSliderWidgetSecondWidget()
     {
         Node =
             new XElement("Widget",
+                new XAttribute("Id", "Filler"),
                 new XAttribute("WidthSizePolicy", "Fixed"),
                 new XAttribute("HeightSizePolicy", "Fixed"),
                 new XAttribute("SuggestedWidth", "345"),
@@ -16,6 +17,6 @@ public class RightSliderWidgetSecondWidget : WidgetNode
                 new XAttribute("Sprite", @"SPGeneral\SPOptions\standart_slider_fill"),
                 new XAttribute("ClipContents", "true"),
                 new XElement("Children",
-                    new RightSliderWidgetSecondWidgetChildWidget()));
+                    new RightSliderWidgetSecondWidgetChildWidget().Node));
     }
 }

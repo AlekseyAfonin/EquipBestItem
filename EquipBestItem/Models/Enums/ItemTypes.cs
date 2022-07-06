@@ -8,6 +8,18 @@ internal static class ItemTypes
                                     ItemParams.HeadArmor |
                                     ItemParams.LegArmor;
 
+    public const ItemParams Weapon = ItemParams.MaxDataValue |
+                                     ItemParams.MissileDamage |
+                                     ItemParams.MissileSpeed |
+                                     ItemParams.Accuracy |
+                                     ItemParams.Handling |
+                                     ItemParams.Weight |
+                                     ItemParams.SwingDamage |
+                                     ItemParams.SwingSpeed |
+                                     ItemParams.ThrustDamage |
+                                     ItemParams.ThrustSpeed |
+                                     ItemParams.WeaponLength;
+    
     public const ItemParams MeleeWeapon = ItemParams.Handling |
                                           ItemParams.Weight |
                                           ItemParams.SwingDamage |
@@ -40,4 +52,23 @@ internal static class ItemTypes
                                     ItemParams.Speed |
                                     ItemParams.ChargeDamage |
                                     ItemParams.HitPoints;
+
+    public const ItemParams Head = ItemParams.Weight |
+                                    ItemParams.HeadArmor;
+
+    public const ItemParams Capes = ItemParams.Weight |
+                                    ItemParams.ArmArmor |
+                                    ItemParams.BodyArmor;
+
+    public const ItemParams Legs = ItemParams.Weight |
+                                   ItemParams.LegArmor;
+
+    public const ItemParams Arms = ItemParams.Weight |
+                                   ItemParams.ArmArmor;
+
+    public const ItemParams HorseHarness = ItemParams.Weight |
+                                           ItemParams.BodyArmor;
+
+
+
 }

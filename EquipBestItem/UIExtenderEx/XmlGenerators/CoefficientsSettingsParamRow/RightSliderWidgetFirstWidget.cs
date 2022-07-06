@@ -2,9 +2,9 @@ using System.Xml.Linq;
 
 namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
-public class RightSliderWidgetFirstWidget : WidgetNode
+internal class RightSliderWidgetFirstWidget : WidgetNode
 {
-    public RightSliderWidgetFirstWidget()
+    internal RightSliderWidgetFirstWidget()
     {
         Node = 
             new XElement("Widget",

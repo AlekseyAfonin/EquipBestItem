@@ -37,10 +37,5 @@
   <ItemGroup>
     <PackageReference Update="Bannerlord.ReferenceAssemblies.EarlyAccess" Version="1.7.2.316284" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="UIExtenderEx\Patches\CoefficintsSettings" />
-    <Folder Include="_Module\GUI\Prefabs\Inventory" />
-  </ItemGroup>
   
 </Project>

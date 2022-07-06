@@ -3,22 +3,20 @@ using System.Xml.Linq;
 using Bannerlord.UIExtenderEx.Attributes;
 using Bannerlord.UIExtenderEx.Prefabs2;
 using EquipBestItem.Models.Enums;
-using EquipBestItem.Widgets;
 
-namespace EquipBestItem.UIExtenderEx;
+namespace EquipBestItem.UIExtenderEx.Patches;
 
 /// <summary>
 /// https://butr.github.io/Bannerlord.UIExtenderEx/articles/v2/PrefabExtensionInsertPatch.html
 /// </summary>
-[PrefabExtension(movie:"Inventory", "descendant::InventoryEquippedItemSlot[@Parameter.BackgroundBrush='InventoryMountSlot']")]
-public class HorseSlotPatch : PrefabExtensionInsertPatch
+[PrefabExtension(movie:"Inventory", "descendant::InventoryEquippedItemSlot[@Parameter.BackgroundBrush='InventoryHelmetSlot']")]
+public class InventoryHeadSlotPatch : PrefabExtensionInsertPatch
 {
-    public override InsertType Type => InsertType.Child;
     private readonly XmlDocument _xmlDocument;
     
-    public HorseSlotPatch()
+    public InventoryHeadSlotPatch()
     {
-        var button = new InventoryEquipButtonWidget(CustomEquipmentIndex.Horse);
+        var button = new InventoryEquipButtonWidget(CustomEquipmentIndex.Head);
         var child = new XDocument(button.Node);
         _xmlDocument = new XmlDocument();
         _xmlDocument.LoadXml(child.ToString());
@@ -26,4 +24,5 @@ public class HorseSlotPatch : PrefabExtensionInsertPatch
 
     [PrefabExtensionXmlNode]
     public XmlNode GetPrefabExtension() => _xmlDocument;
+    public override InsertType Type => InsertType.Child;
 }

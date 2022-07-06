@@ -16,7 +16,7 @@
                              VerticalAlignment="Top" MarginTop="200" Brush="Frame1Brush">
                     <Children>
                         <!-- Main List -->
-                        <ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren"
+                        <ListPanel Id="MainList" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren"
                                    HorizontalAlignment="Left" VerticalAlignment="Top"
                                    LayoutImp.LayoutMethod="VerticalBottomToTop">
                             <Children>
@@ -44,7 +44,6 @@
                                 </ListPanel>
                             </Children>
                         </ListPanel>
-                        
                         <!-- Buttons Row Begin-->
                         <ListPanel Id="ButtonsRow" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren"
                                    HorizontalAlignment="Center" VerticalAlignment="Bottom"

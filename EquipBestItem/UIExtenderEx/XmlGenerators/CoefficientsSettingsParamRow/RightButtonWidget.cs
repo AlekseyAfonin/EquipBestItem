@@ -1,10 +1,11 @@
 using System.Xml.Linq;
+using EquipBestItem.Models.Enums;
 
 namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
-public class RightButtonWidget : WidgetNode
+internal class RightButtonWidget : WidgetNode
 {
-    public RightButtonWidget(string paramName)
+    internal RightButtonWidget(TestParams itemParam)
     {
         Node = 
             new XElement("ButtonWidget",
@@ -19,10 +20,10 @@ public class RightButtonWidget : WidgetNode
                 new XAttribute("HorizontalAlignment", "Right"),
                 new XAttribute("ButtonType", "Toggle"),
                 new XAttribute("Command.Click", "ExecuteValueDefault"),
-                new XAttribute("CommandParameter.Click", $"{paramName}"),
-                new XAttribute("IsSelected", $"@Is{paramName}ValueIsDefault"),
+                new XAttribute("CommandParameter.Click", $"{itemParam}"),
+                new XAttribute("IsSelected", $"@{itemParam}ValueIsDefault"),
                 new XAttribute("ToggleIndicator", "ToggleIndicator"),
                 new XAttribute("UpdateChildrenStates", "true"),
-                new XElement("Children", new RightButtonWidgetImageWidget()));
+                new XElement("Children", new RightButtonWidgetImageWidget().Node));
     }
 }
