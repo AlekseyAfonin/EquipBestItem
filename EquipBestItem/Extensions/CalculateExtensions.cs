@@ -10,7 +10,7 @@ using TaleWorlds.ScreenSystem;
 
 namespace EquipBestItem.Extensions;
 
-internal static class Extensions
+internal static class CalculateExtensions
 {
     internal static float GetItemValue(this EquipmentElement equipmentElement, Coefficients coefficients)
     {
@@ -36,6 +36,9 @@ internal static class Extensions
             foreach (var param in itemParams.GetFlags())
             {
                 var coefficient = GetPropValue(coefficients, param.ToString());
+
+                if (coefficient == 0) continue;
+                
                 sumCoefficients += coefficient;
                 
                 // The weight is not in the properties of the component, so we take it from the parent object
@@ -44,7 +47,7 @@ internal static class Extensions
                     : itemComponent.GetPropModValue(equipmentElement.ItemModifier, param) * coefficient;
             }
             
-            return value / sumCoefficients;
+            return sumCoefficients > 0 ? value / sumCoefficients : 0;
         }
         
         float GetPropValue(Coefficients item, string propName)
@@ -54,37 +57,6 @@ internal static class Extensions
         }
     }
     
-    internal static T? FindLayer<T>(this IEnumerable<ScreenLayer>? screenLayers) where T : ScreenLayer
-    {
-        if (screenLayers == null) return default;
-        
-        foreach (var layer in screenLayers)
-            if (layer is T targetLayer)
-                return targetLayer;
-        return default;
-    }
-    
-    internal static void GetMethod(this object o, string methodName, params object[] args)
-    {
-        var mi = o.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
-        if (mi == null) return;
-        try
-        {
-            mi.Invoke(o, args);
-        }
-        catch
-        {
-            throw new MBException($"{methodName} method retrieval error");
-        }
-    }
-    
-    internal static IEnumerable<ItemParams> GetFlags(this ItemParams itemType)
-    {
-        return Enum.GetValues(typeof(ItemParams))
-            .Cast<ItemParams>()
-            .Where(p => itemType.HasFlag(p));
-    }
-
     private static float GetPropModValue<T>(this T item, ItemModifier? itemModifier, ItemParams itemParams)
     {
         var propertyValue = item?.GetType().GetProperty(itemParams.ToString())?.GetValue(item);

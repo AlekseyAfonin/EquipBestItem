@@ -13,12 +13,74 @@ internal partial class CoefficientsSettingsVM
     [DataSourceProperty] public string ArmArmorText { get; } = new TextObject("{=cf61cce254c7dca65be9bebac7fb9bf5}Arm Armor: ").ToString();
     [DataSourceProperty] public string WeightText { get; } = GameTexts.FindText("str_weight_text").ToString();
 
-    [DataSourceProperty] public string HeadArmorValueText => GetArmorValuePercentText(HeadArmorValue);
-    [DataSourceProperty] public string BodyArmorValueText => GetArmorValuePercentText(BodyArmorValue); //TODO HorseFix
-    [DataSourceProperty] public string LegArmorValueText => GetArmorValuePercentText(LegArmorValue);
-    [DataSourceProperty] public string ArmArmorValueText => GetArmorValuePercentText(ArmArmorValue);
-    [DataSourceProperty] public string WeightValueText => GetArmorValuePercentText(WeightValue);
+    [DataSourceProperty] public string HeadArmorPercentText => GetValuePercentText(HeadArmorValue);
+    [DataSourceProperty] public string BodyArmorPercentText => GetValuePercentText(BodyArmorValue); //TODO HorseFix
+    [DataSourceProperty] public string LegArmorPercentText => GetValuePercentText(LegArmorValue);
+    [DataSourceProperty] public string ArmArmorPercentText => GetValuePercentText(ArmArmorValue);
+    [DataSourceProperty] public string WeightPercentText => GetValuePercentText(WeightValue);
+
     
+    
+    [DataSourceProperty]
+    public float HeadArmor
+    {
+        get => _headArmor;
+        set
+        {
+            if (Math.Abs(_headArmor - value) < Tolerance) return;
+            _headArmor = value;
+            OnPropertyChangedWithValue(value);
+        }
+    }
+    
+    [DataSourceProperty]
+    public float BodyArmor
+    {
+        get => _bodyArmor;
+        set
+        {
+            if (Math.Abs(_bodyArmor - value) < Tolerance) return;
+            _bodyArmor = value;
+            OnPropertyChangedWithValue(value);
+        }
+    }
+    
+    [DataSourceProperty]
+    public float LegArmor
+    {
+        get => _legArmor;
+        set
+        {
+            if (Math.Abs(_legArmor - value) < Tolerance) return;
+            _legArmor = value;
+            OnPropertyChangedWithValue(value);
+        }
+    }
+    
+    [DataSourceProperty]
+    public float ArmArmor
+    {
+        get => _armArmor;
+        set
+        {
+            if (Math.Abs(_armArmor - value) < Tolerance) return;
+            _armArmor = value;
+            OnPropertyChangedWithValue(value);
+        }
+    }
+    
+    [DataSourceProperty]
+    public float Weight
+    {
+        get => _weight;
+        set
+        {
+            if (Math.Abs(_weight - value) < Tolerance) return;
+            _weight = value;
+            OnPropertyChangedWithValue(value);
+        }
+    }
+        
     [DataSourceProperty]
     public string HeaderText
     {
@@ -37,11 +99,13 @@ internal partial class CoefficientsSettingsVM
         get => _headArmorValue;
         set
         {
-            if (!(Math.Abs(_headArmorValue - value) > Tolerance)) return;
+            if (Math.Abs(_headArmorValue - value) < Tolerance) return;
             _headArmorValue = value;
-            OnPropertyChangedWithValue(value);
-            UpdateArmorProperties();
-            OnPropertyChanged(nameof(HeadArmorValueText));
+            OnPropertyChanged();
+            //UpdateArmorValueProperties();
+            //OnPropertyChanged(nameof(HeadArmorValuePercentText));
+            
+            Helper.ShowMessage($"Cur {_headArmorValue}");
         }
     }
     
@@ -51,11 +115,11 @@ internal partial class CoefficientsSettingsVM
         get => _bodyArmorValue;
         set
         {
-            if (!(Math.Abs(_bodyArmorValue - value) > Tolerance)) return;
+            if (Math.Abs(_bodyArmorValue - value) < Tolerance) return;
             _bodyArmorValue = value;
-            OnPropertyChangedWithValue(value);
-            UpdateArmorProperties();
-            OnPropertyChanged(nameof(BodyArmorValueText));
+            OnPropertyChanged();
+            //UpdateArmorValueProperties();
+            //OnPropertyChanged(nameof(BodyArmorValuePercentText));
         }
     }
     
@@ -65,11 +129,11 @@ internal partial class CoefficientsSettingsVM
         get => _legArmorValue;
         set
         {
-            if (!(Math.Abs(_legArmorValue - value) > Tolerance)) return;
+            if (Math.Abs(_legArmorValue - value) < Tolerance) return;
             _legArmorValue = value;
-            OnPropertyChangedWithValue(value);
-            UpdateArmorProperties();
-            OnPropertyChanged(nameof(LegArmorValueText));
+            OnPropertyChanged();
+            //UpdateArmorValueProperties();
+            //OnPropertyChanged(nameof(LegArmorValuePercentText));
         }
     }
     
@@ -79,11 +143,11 @@ internal partial class CoefficientsSettingsVM
         get => _armArmorValue;
         set
         {
-            if (!(Math.Abs(_armArmorValue - value) > Tolerance)) return;
+            if (Math.Abs(_armArmorValue - value) < Tolerance) return;
             _armArmorValue = value;
-            OnPropertyChangedWithValue(value);
-            UpdateArmorProperties();
-            OnPropertyChanged(nameof(ArmArmorValueText));
+            OnPropertyChanged();
+            //UpdateArmorValueProperties();
+            //OnPropertyChanged(nameof(ArmArmorValuePercentText));
         }
     }
     
@@ -93,70 +157,70 @@ internal partial class CoefficientsSettingsVM
         get => _weightValue;
         set
         {
-            if (!(Math.Abs(_weightValue - value) > Tolerance)) return;
+            if (Math.Abs(_weightValue - value) < Tolerance) return;
             _weightValue = value;
-            OnPropertyChangedWithValue(value);
-            UpdateArmorProperties();
-            OnPropertyChanged(nameof(WeightValueText));
+            OnPropertyChanged();
+            //UpdateArmorProperties();
+            //OnPropertyChanged(nameof(WeightPercentText));
         }
     }
     
     [DataSourceProperty]
-    public bool HeadArmorValueIsDefault
+    public bool HeadArmorIsDefault
     {
-        get => _headArmorValueIsDefault;
+        get => _headArmorIsDefault;
         set
         {
-            if (_headArmorValueIsDefault == value) return;
-            _headArmorValueIsDefault = value;
+            if (_headArmorIsDefault == value) return;
+            _headArmorIsDefault = value;
             OnPropertyChanged();
         }
     }
     
     [DataSourceProperty]
-    public bool BodyArmorValueIsDefault
+    public bool BodyArmorIsDefault
     {
-        get => _bodyArmorValueIsDefault;
+        get => _bodyArmorIsDefault;
         set
         {
-            if (_bodyArmorValueIsDefault == value) return;
-            _bodyArmorValueIsDefault = value;
+            if (_bodyArmorIsDefault == value) return;
+            _bodyArmorIsDefault = value;
             OnPropertyChanged();
         }
     }
     
     [DataSourceProperty]
-    public bool LegArmorValueIsDefault
+    public bool LegArmorIsDefault
     {
-        get => _legArmorValueIsDefault;
+        get => _legArmorIsDefault;
         set
         {
-            if (_legArmorValueIsDefault == value) return;
-            _legArmorValueIsDefault = value;
+            if (_legArmorIsDefault == value) return;
+            _legArmorIsDefault = value;
             OnPropertyChanged();
         }
     }
     
     [DataSourceProperty]
-    public bool ArmArmorValueIsDefault
+    public bool ArmArmorIsDefault
     {
-        get => _armArmorValueIsDefault;
+        get => _armArmorIsDefault;
         set
         {
-            if (_armArmorValueIsDefault == value) return;
-            _armArmorValueIsDefault = value;
+            if (_armArmorIsDefault == value) return;
+            _armArmorIsDefault = value;
             OnPropertyChanged();
         }
     }
     
     [DataSourceProperty]
-    public bool WeightValueIsDefault
+    public bool WeightIsDefault
     {
-        get => _weightValueIsDefault;
+        get => _weightIsDefault;
         set
         {
-            if (_weightValueIsDefault == value) return;
-            _weightValueIsDefault = value;
+            if (_weightIsDefault == value) return;
+            _weightIsDefault = value;
             OnPropertyChanged();
         }
     }

@@ -16,6 +16,6 @@ internal class RightRichTextWidget : WidgetNode
                 new XAttribute("VerticalAlignment", "Center"),
                 new XAttribute("Brush", "SPOptions.OptionName.Text"),
                 new XAttribute("IsEnabled", "false"),
-                new XAttribute("Text", $"@{itemParam}ValueText"));
+                new XAttribute("Text", $"@{itemParam}PercentText"));
     }
 }

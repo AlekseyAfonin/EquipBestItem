@@ -3,15 +3,14 @@ using Bannerlord.UIExtenderEx.ViewModels;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Library;
 using EquipBestItem.ViewModels;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.Core;
-using TaleWorlds.Core.ViewModelCollection;
-using TaleWorlds.Engine;
-using TaleWorlds.SaveSystem.Definition;
 
 namespace EquipBestItem.UIExtenderEx;
 
@@ -50,11 +49,12 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
             new Action<InventoryEquipmentTypeChangedEvent>(OnInventoryEquipmentTypeChanged));
         //ViewModel.CharacterList.(OnCurrentCharacterChanged);
     }
-
-    private void OnCurrentCharacterChanged()
+    
+    private async void OnCurrentCharacterChanged()
     {
         ModSPInventory.UpdateCurrentCharacter(GetCharacterByName(ViewModel?.CurrentCharacterName));
-        ModSPInventory.Update();
+        
+        await ModSPInventory.RestartUpdateAsync();
         
         CharacterObject GetCharacterByName(string? name)
         {
@@ -70,9 +70,9 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
     /// Event when changing the type of kit (military, civilian) of the current character
     /// </summary>
     /// <param name="obj"></param>
-    private void OnInventoryEquipmentTypeChanged(InventoryEquipmentTypeChangedEvent obj)
+    private async void OnInventoryEquipmentTypeChanged(InventoryEquipmentTypeChangedEvent obj)
     {
-        ModSPInventory.Update();
+        await ModSPInventory.RestartUpdateAsync();
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
     /// </summary>
     /// <param name="sender">SPInventoryVM</param>
     /// <param name="e">Property name, value</param>
-    private void SPInventoryVM_PropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
+    private async void SPInventoryVM_PropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
     {
         ModSPInventory.OnPropertyChangedWithValue(e.Value, e.PropertyName);
         
@@ -98,7 +98,7 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         // so I'm looking at changing "IsRefreshed", which works when the item filters change as well.
         if (e.PropertyName == "IsRefreshed" && (bool) e.Value)
         {
-            ModSPInventory.Update();
+            await ModSPInventory.RestartUpdateAsync();
         }
 
         if (e.PropertyName == "CurrentCharacterName")
@@ -119,10 +119,10 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         base.OnFinalize();
     }
     
-    public override void OnRefresh()
+    public override async void OnRefresh()
     {
         base.OnRefresh();
-        ModSPInventory.Update();
+        await ModSPInventory.RestartUpdateAsync();
     }
 
     private bool _isHeadButtonEnabled;

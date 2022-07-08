@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using EquipBestItem.Extensions;
 using EquipBestItem.Models.Entities;
 using TaleWorlds.CampaignSystem;
@@ -31,31 +34,42 @@ internal class BestItemManager
         _originVM.GetMethod("UpdateCharacterEquipment");
     }
 
-    internal static SPItemVM? GetBestItem(Coefficients coefficients, EquipmentElement currentItem, EquipmentIndex equipmentIndex,
-        params MBBindingList<SPItemVM>?[] lists)
+    internal Task<SPItemVM?> GetBestItemAsync(CancellationToken token, Coefficients coefficients, EquipmentElement currentItem, EquipmentIndex equipmentIndex,
+       params MBBindingList<SPItemVM>?[] lists)
     {
         var bestItemValue = currentItem.IsEmpty ? 0 : currentItem.GetItemValue(coefficients);
-
+        
         SPItemVM? bestItem = null;
-
+        
         foreach (var list in lists)
         {
             if (list is null) continue;
             
             foreach (var item in list)
             {
+                token.ThrowIfCancellationRequested();
+                
                 if (!item.IsEquipableItem || item.IsLocked || !item.CanCharacterUseItem || item.ItemType != equipmentIndex) continue;
             
                 var itemValue = item.ItemRosterElement.EquipmentElement.GetItemValue(coefficients);
-
-                if (bestItemValue >= itemValue) continue;
-
+                
+                if (bestItemValue >= itemValue || itemValue is float.NaN) continue;
+        
                 bestItem = item;
                 bestItemValue = itemValue;
             }
         }
         
-        return bestItem;
+        return Task.FromResult(bestItem);
+        
+        // for (var i = 0; i < 20; i++)
+        // {
+        //     token.ThrowIfCancellationRequested();
+        //     await Task.Delay(100);
+        //     Helper.ShowMessage($"{num}: {i}");
+        // }
+
+        // return null;
     }
 
     private void UnequipItem(EquipmentIndex equipmentIndex, CharacterObject character)

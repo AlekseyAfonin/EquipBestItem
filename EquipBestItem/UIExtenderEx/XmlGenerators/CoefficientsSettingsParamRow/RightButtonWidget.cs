@@ -21,7 +21,7 @@ internal class RightButtonWidget : WidgetNode
                 new XAttribute("ButtonType", "Toggle"),
                 new XAttribute("Command.Click", "ExecuteValueDefault"),
                 new XAttribute("CommandParameter.Click", $"{itemParam}"),
-                new XAttribute("IsSelected", $"@{itemParam}ValueIsDefault"),
+                new XAttribute("IsSelected", $"@{itemParam}IsDefault"),
                 new XAttribute("ToggleIndicator", "ToggleIndicator"),
                 new XAttribute("UpdateChildrenStates", "true"),
                 new XElement("Children", new RightButtonWidgetImageWidget().Node));

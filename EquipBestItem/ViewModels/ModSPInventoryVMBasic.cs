@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using EquipBestItem.Extensions;
 using EquipBestItem.Layers;
 using EquipBestItem.Models;
@@ -22,11 +25,9 @@ internal partial class ModSPInventoryVM : ViewModel
     private readonly SPInventoryVM _originVM;
     private readonly SPInventoryVMMixin _mixinVM;
     private readonly BestItemManager _bestItemManager;
-
     private readonly SettingsRepository _settingsRepository;
     private readonly CharacterCoefficientsRepository _coefficientsRepository;
-    
-    private CharacterObject CurrentCharacter { get; set; } = InventoryManager.InventoryLogic.InitialEquipmentCharacter;
+    private SPItemVM?[] _bestItems = new SPItemVM[12];
     
     public ModSPInventoryVM(SPInventoryVM originVM, SPInventoryVMMixin mixinVM)
     {
@@ -46,29 +47,151 @@ internal partial class ModSPInventoryVM : ViewModel
         UpdateCharacters();
     }
 
-    private readonly SPItemVM?[] _bestItems = new SPItemVM[12];
+    private CharacterObject CurrentCharacter { get; set; } = InventoryManager.InventoryLogic.InitialEquipmentCharacter;
     
-    internal void Update()
+    public override void RefreshValues()
     {
-        InformationManager.DisplayMessage(new InformationMessage($"Update"));
-        var rightItemList = (bool)_settingsRepository.Read(Settings.IsRightPanelLocked).Value ? null : _originVM.RightItemListVM;
-        var leftItemList = (bool)_settingsRepository.Read(Settings.IsLeftPanelLocked).Value ? null : _originVM.LeftItemListVM;
+        base.RefreshValues();
+        InformationManager.DisplayMessage(new InformationMessage($"ModSP Refresh test"));
+    }
+    
+    public override void OnFinalize()
+    {
+        base.OnFinalize();
+    }
+    
+    public void UpdateCurrentCharacter(CharacterObject currentCharacter)
+    {
+        CurrentCharacter = currentCharacter;
+    }
+    
+    // Equip buttons left click
+    public void ExecuteEquipBestItem(string equipmentIndexName)
+    {
+        var equipmentIndex = Helper.ParseEnum<EquipmentIndex>(equipmentIndexName);
+        _bestItemManager.EquipBestItem(equipmentIndex, CurrentCharacter, ref _bestItems[(int)equipmentIndex]);
+    }
+    
+    /// <summary>
+    /// Equip buttons right click with parameter
+    /// </summary>
+    /// <param name="equipmentIndexName">Slot name</param>
+    public void ExecuteShowFilterSettings(string equipmentIndexName)
+    {
+        InformationManager.DisplayMessage(new InformationMessage($"ShowSettings {equipmentIndexName}"));
 
-        for (var equipIndex = EquipmentIndex.WeaponItemBeginSlot; equipIndex < EquipmentIndex.NumEquipmentSetSlots; equipIndex++)
-        {
-            var equipment = _originVM.IsInWarSet
-                ? CurrentCharacter.FirstBattleEquipment
-                : CurrentCharacter.FirstCivilianEquipment;
-            var coefficients = _originVM.IsInWarSet
-                ? _coefficientsRepository.Read(CurrentCharacter.Name.ToString()).WarCoefficients[(int)equipIndex]
-                : _coefficientsRepository.Read(CurrentCharacter.Name.ToString()).CivilCoefficients[(int)equipIndex];
-            _bestItems[(int)equipIndex] = BestItemManager.GetBestItem(coefficients, equipment[equipIndex], equipIndex, rightItemList, leftItemList);
-            SlotButtonUpdate(equipIndex, _bestItems[(int)equipIndex] is not null);
-        }
+        var equipmentIndex = Helper.ParseEnum<EquipmentIndex>(equipmentIndexName);
+
+        ShowHideFilterSettingsLayer(equipmentIndex);
+    }
+
+    private int num1 = 0;
+    
+    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+    private (CancellationTokenSource cts, Task task)? _state;
+
+    internal async Task RestartUpdateAsync()
+    {
+        Task? task = null;
         
+        await _semaphore.WaitAsync();
+
+        try
+        {
+            if (this._state.HasValue)
+            {
+                this._state.Value.cts.Cancel();
+                this._state.Value.cts.Dispose();
+
+                try
+                {
+                    await this._state.Value.task;
+                }
+                catch (OperationCanceledException)
+                {
+                    InformationManager.DisplayMessage(new InformationMessage($"_state exc"));
+                }
+
+                this._state = null;
+            }
+
+            var cts = new CancellationTokenSource();
+            task = UpdateAsync(cts.Token);
+
+            this._state = (cts, task);
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
+
+        try
+        {
+            await task;
+        }
+        catch (OperationCanceledException)
+        {
+            //InformationManager.DisplayMessage(new InformationMessage($"RestartUpdateAsync"));
+        }
+    }
+
+    /// <summary>
+    /// Updating the viewmodel when you do something
+    /// </summary>
+    internal async Task UpdateAsync(CancellationToken token)
+    {
+        num1++;
+        int numberOfStarts = num1;
+
+        // Disable buttons if best item searching was canceled
+        // for (var equipIndex = EquipmentIndex.WeaponItemBeginSlot;
+        //      equipIndex < EquipmentIndex.NumEquipmentSetSlots;
+        //      equipIndex++)
+        // {
+        //     SlotButtonUpdate(equipIndex, false);
+        // }
+        
+        try
+        {
+            var rightItemList = (bool) _settingsRepository.Read(Settings.IsRightPanelLocked).Value
+                ? null
+                : _originVM.RightItemListVM;
+            var leftItemList = (bool) _settingsRepository.Read(Settings.IsLeftPanelLocked).Value
+                ? null
+                : _originVM.LeftItemListVM;
+            
+            for (var equipIndex = EquipmentIndex.WeaponItemBeginSlot;
+                 equipIndex < EquipmentIndex.NumEquipmentSetSlots;
+                 equipIndex++)
+            {
+                token.ThrowIfCancellationRequested();
+
+                var equipment = _originVM.IsInWarSet
+                    ? CurrentCharacter.FirstBattleEquipment
+                    : CurrentCharacter.FirstCivilianEquipment;
+                var coefficients = _originVM.IsInWarSet
+                    ? _coefficientsRepository.Read(CurrentCharacter.Name.ToString())
+                        .WarCoefficients[(int) equipIndex]
+                    : _coefficientsRepository.Read(CurrentCharacter.Name.ToString())
+                        .CivilCoefficients[(int) equipIndex];
+                _bestItems[(int) equipIndex] = await _bestItemManager.GetBestItemAsync(token, coefficients, equipment[equipIndex], equipIndex, rightItemList, leftItemList);
+                
+                SlotButtonUpdate(equipIndex, _bestItems[(int) equipIndex] is not null);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            //InformationManager.DisplayMessage(new InformationMessage($"UpdateAsync exception num starts: {numberOfStarts}"));
+            throw;
+        }
+
+
+
+
+
         void SlotButtonUpdate(EquipmentIndex index, bool value)
         {
-            InformationManager.DisplayMessage(new InformationMessage($"SlotButtonUpdate: {index.ToString()}"));
+            //InformationManager.DisplayMessage(new InformationMessage($"SlotButtonUpdate: {index.ToString()}"));
             switch (index)
             {
                 case EquipmentIndex.Head:
@@ -131,23 +254,11 @@ internal partial class ModSPInventoryVM : ViewModel
                 CivilCoefficients = defaultCoefficients.CivilCoefficients,
                 WarCoefficients = defaultCoefficients.WarCoefficients
             };
-            
             _coefficientsRepository.Create(characterCoefficients);
         }
     }
 
-    // Equip buttons left click
-    public void ExecuteEquipBestItem(string equipmentIndexName)
-    {
-        var equipmentIndex = Helper.ParseEnum<EquipmentIndex>(equipmentIndexName);
-        
-        // Needed to be able to open the settings even if the item is not found
-        if (_bestItems[(int)equipmentIndex] is null) return;
-        
-        _bestItemManager.EquipBestItem(equipmentIndex, CurrentCharacter, ref _bestItems[(int)equipmentIndex]);
-    }
-
-    public void ShowHideFilterSettingsLayer(EquipmentIndex equipmentIndex)
+    private void ShowHideFilterSettingsLayer(EquipmentIndex equipmentIndex)
     {
         var inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
 
@@ -155,7 +266,7 @@ internal partial class ModSPInventoryVM : ViewModel
 
         if (coefficientsSettingsLayer == null)
         {
-            coefficientsSettingsLayer = new CoefficientsSettingsLayer(17, equipmentIndex, _coefficientsRepository);
+            coefficientsSettingsLayer = new CoefficientsSettingsLayer(17, equipmentIndex, _coefficientsRepository, _originVM);
             inventoryScreen?.AddLayer(coefficientsSettingsLayer);
             coefficientsSettingsLayer.InputRestrictions.SetInputRestrictions();
 
@@ -170,37 +281,15 @@ internal partial class ModSPInventoryVM : ViewModel
         {
             inventoryScreen?.RemoveLayer(coefficientsSettingsLayer);
 
-            coefficientsSettingsLayer = new CoefficientsSettingsLayer(17, equipmentIndex, _coefficientsRepository);
+            coefficientsSettingsLayer = new CoefficientsSettingsLayer(17, equipmentIndex, _coefficientsRepository, _originVM);
             inventoryScreen?.AddLayer(coefficientsSettingsLayer);
             coefficientsSettingsLayer.InputRestrictions.SetInputRestrictions();
         }
     }
     
-    // Equip buttons right click
-    public void ExecuteShowFilterSettings(string equipmentIndexName)
-    {
-        InformationManager.DisplayMessage(new InformationMessage($"ShowSettings {equipmentIndexName}"));
-
-        var equipmentIndex = Helper.ParseEnum<EquipmentIndex>(equipmentIndexName);
-
-        ShowHideFilterSettingsLayer(equipmentIndex);
-    }
     
-    public void UpdateCurrentCharacter(CharacterObject currentCharacter)
-    {
-        CurrentCharacter = currentCharacter;
-    }
 
-    public override void RefreshValues()
-    {
-        base.RefreshValues();
-        InformationManager.DisplayMessage(new InformationMessage($"ModSP Refresh test"));
-    }
 
-    public override void OnFinalize()
-    {
-        base.OnFinalize();
-    }
     
     
 }

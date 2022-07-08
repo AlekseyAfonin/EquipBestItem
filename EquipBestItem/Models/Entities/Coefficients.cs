@@ -27,6 +27,6 @@ public class Coefficients
     public float Accuracy { get; set; }
     public float Handling { get; set; }
     //public WeaponClass? WeaponClass { get; set; }
-    
-    //public float Weight { get; set; } = 0f;
+
+    public float Weight { get; set; } = 0f;
 }
