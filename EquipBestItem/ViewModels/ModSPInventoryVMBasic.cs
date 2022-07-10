@@ -49,6 +49,7 @@ internal partial class ModSPInventoryVM : ViewModel
 
     private CharacterObject CurrentCharacter { get; set; } = InventoryManager.InventoryLogic.InitialEquipmentCharacter;
     
+    
     public override void RefreshValues()
     {
         base.RefreshValues();
@@ -82,43 +83,41 @@ internal partial class ModSPInventoryVM : ViewModel
 
         var equipmentIndex = Helper.ParseEnum<EquipmentIndex>(equipmentIndexName);
 
-        ShowHideFilterSettingsLayer(equipmentIndex);
+        OpenCloseCoefficientsSettingsLayer(equipmentIndex);
     }
 
-    private int num1 = 0;
-    
-    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+    private readonly SemaphoreSlim _semaphore = new(1);
     private (CancellationTokenSource cts, Task task)? _state;
 
     internal async Task RestartUpdateAsync()
     {
-        Task? task = null;
+        Task? task;
         
         await _semaphore.WaitAsync();
 
         try
         {
-            if (this._state.HasValue)
+            if (_state.HasValue)
             {
-                this._state.Value.cts.Cancel();
-                this._state.Value.cts.Dispose();
+                _state.Value.cts.Cancel();
+                _state.Value.cts.Dispose();
 
                 try
                 {
-                    await this._state.Value.task;
+                    await _state.Value.task;
                 }
                 catch (OperationCanceledException)
                 {
                     InformationManager.DisplayMessage(new InformationMessage($"_state exc"));
                 }
 
-                this._state = null;
+                _state = null;
             }
 
             var cts = new CancellationTokenSource();
             task = UpdateAsync(cts.Token);
 
-            this._state = (cts, task);
+            _state = (cts, task);
         }
         finally
         {
@@ -140,17 +139,6 @@ internal partial class ModSPInventoryVM : ViewModel
     /// </summary>
     internal async Task UpdateAsync(CancellationToken token)
     {
-        num1++;
-        int numberOfStarts = num1;
-
-        // Disable buttons if best item searching was canceled
-        // for (var equipIndex = EquipmentIndex.WeaponItemBeginSlot;
-        //      equipIndex < EquipmentIndex.NumEquipmentSetSlots;
-        //      equipIndex++)
-        // {
-        //     SlotButtonUpdate(equipIndex, false);
-        // }
-        
         try
         {
             var rightItemList = (bool) _settingsRepository.Read(Settings.IsRightPanelLocked).Value
@@ -258,38 +246,38 @@ internal partial class ModSPInventoryVM : ViewModel
         }
     }
 
-    private void ShowHideFilterSettingsLayer(EquipmentIndex equipmentIndex)
+    private void OpenCloseCoefficientsSettingsLayer(EquipmentIndex equipmentIndex)
     {
         var inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
 
         var coefficientsSettingsLayer = inventoryScreen?.Layers.FindLayer<CoefficientsSettingsLayer>();
 
-        if (coefficientsSettingsLayer == null)
+        if (coefficientsSettingsLayer is null)
         {
-            coefficientsSettingsLayer = new CoefficientsSettingsLayer(17, equipmentIndex, _coefficientsRepository, _originVM);
-            inventoryScreen?.AddLayer(coefficientsSettingsLayer);
-            coefficientsSettingsLayer.InputRestrictions.SetInputRestrictions();
-
+            OpenCoefficientSettings();
             return;
         }
 
         if (coefficientsSettingsLayer.EquipmentIndex == equipmentIndex)
         {
-            inventoryScreen?.RemoveLayer(coefficientsSettingsLayer);
+            CloseCoefficientSettings();
         }
         else
         {
-            inventoryScreen?.RemoveLayer(coefficientsSettingsLayer);
+            CloseCoefficientSettings();
+            OpenCoefficientSettings();
+        }
 
+        void OpenCoefficientSettings()
+        {
             coefficientsSettingsLayer = new CoefficientsSettingsLayer(17, equipmentIndex, _coefficientsRepository, _originVM);
             inventoryScreen?.AddLayer(coefficientsSettingsLayer);
             coefficientsSettingsLayer.InputRestrictions.SetInputRestrictions();
         }
+
+        void CloseCoefficientSettings()
+        {
+            inventoryScreen?.RemoveLayer(coefficientsSettingsLayer);
+        }
     }
-    
-    
-
-
-    
-    
 }

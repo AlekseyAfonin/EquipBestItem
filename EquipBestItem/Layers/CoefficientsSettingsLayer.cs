@@ -10,13 +10,21 @@ namespace EquipBestItem.Layers;
 internal class CoefficientsSettingsLayer : GauntletLayer
 {
     public readonly EquipmentIndex EquipmentIndex;
+    private readonly CoefficientsSettingsVM _vm;
     
     internal CoefficientsSettingsLayer(int localOrder, EquipmentIndex equipmentIndex,
         CharacterCoefficientsRepository repository, SPInventoryVM originVM, string categoryId = "GauntletLayer", bool shouldClear = false) : 
         base(localOrder, categoryId, shouldClear)
     {
-        var vm = new CoefficientsSettingsVM(equipmentIndex, repository, originVM);
+        _vm = new CoefficientsSettingsVM(equipmentIndex, repository, originVM);
         EquipmentIndex = equipmentIndex;
-        LoadMovie("CoefficientsSettings", vm);
+        LoadMovie("CoefficientsSettings", _vm);
+    }
+
+    protected override void OnFinalize()
+    {
+        Helper.ShowMessage("CoefficientsSettingsLayer OnFinalize");
+        _vm.OnFinalize();
+        base.OnFinalize();
     }
 }

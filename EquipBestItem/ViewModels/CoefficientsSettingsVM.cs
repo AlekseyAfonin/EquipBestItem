@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using EquipBestItem.Extensions;
 using EquipBestItem.Layers;
 using EquipBestItem.Models;
@@ -20,6 +21,8 @@ namespace EquipBestItem.ViewModels;
 internal partial class CoefficientsSettingsVM : ViewModel
 {
     private readonly CharacterCoefficientsRepository _repository;
+    private readonly CharacterCoefficients _currentCharacterCoefficients;
+    private readonly CharacterCoefficients _defaultCharacterCoefficients;
     private readonly CustomEquipmentIndex _equipmentIndex;
     private readonly SPInventoryVM _originVM;
 
@@ -31,79 +34,34 @@ internal partial class CoefficientsSettingsVM : ViewModel
         _originVM = originVM;
         _headerText = _equipmentIndex.ToString();
 
-        foreach (var param in GetEnabledParams(_equipmentIndex).GetFlags())
+        _currentCharacterCoefficients = _repository.Read(_originVM.CurrentCharacterName);
+        _defaultCharacterCoefficients = _repository.Read(CharacterCoefficients.Default);
+
+        foreach (var param in VisibleParams.GetFlags())
         {
-            this.GetType()
-                .GetProperty($"{param}IsHidden", typeof(bool))?
-                .SetValue(this, false);
+            SetPropertyValue($"{param}IsHidden", false);
         }
         
-        var coefficients = _originVM.IsInWarSet
-            ? _repository.Read(_originVM.CurrentCharacterName).WarCoefficients[(int)_equipmentIndex]
-            : _repository.Read(_originVM.CurrentCharacterName).CivilCoefficients[(int)_equipmentIndex];
-        
-        foreach (var param in GetEnabledParams(_equipmentIndex).GetFlags())
+        foreach (var param in VisibleParams.GetFlags())
         {
-            var value = coefficients.GetType()
-                .GetProperty($"{param}", typeof(float))?
-                .GetValue(coefficients);
-            
-            this.GetType()
-                .GetProperty($"{param}Value", typeof(float))?
-                .SetValue(this, value);
-            
-            this.GetType()
-                .GetProperty($"{param}", typeof(float))?
-                .SetValue(this, value);
+            var value = GetPropertyValue($"{param}");
+            SetPropertyValue($"{param}Value", value);
+            SetPropertyValue($"{param}", value);
         }
         
         PropertyChangedWithValue += OnPropertyChangedWithValue;
         PropertyChanged += OnPropertyChanged;
     }
 
-    private void UpdatePercentText()
-    {
-        foreach (var param in GetEnabledParams(_equipmentIndex).GetFlags())
-        {
-            OnPropertyChanged($"{param}PercentText");
-        }
-    }
+    private Coefficients Coefficients => _originVM.IsInWarSet
+        ? _currentCharacterCoefficients.WarCoefficients[(int)_equipmentIndex]
+        : _currentCharacterCoefficients.CivilCoefficients[(int)_equipmentIndex];
 
-    private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-        foreach (var param in GetEnabledParams(_equipmentIndex).GetFlags())
-        {
-            if (e.PropertyName != $"{param}Value") continue;
+    private Coefficients DefaultCoefficients => _originVM.IsInWarSet 
+        ? _defaultCharacterCoefficients.WarCoefficients[(int)_equipmentIndex] 
+        : _defaultCharacterCoefficients.CivilCoefficients[(int)_equipmentIndex];
 
-            UpdatePercentText();
-        }
-    }
-
-    private void OnPropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
-    {
-
-        Enum.TryParse(e.PropertyName, out ItemParams itemParam);
-
-        if (!GetEnabledParams(_equipmentIndex).HasFlag(itemParam)) return;
-
-        var characterCoefficients = _repository.Read(_originVM.CurrentCharacterName);
-
-        var coefficients = _originVM.IsInWarSet
-            ? characterCoefficients.WarCoefficients
-            : characterCoefficients.CivilCoefficients;
-
-        var slotCoefficients = coefficients[(int) _equipmentIndex];
-
-        slotCoefficients.GetType()
-            .GetProperty($"{e.PropertyName}", typeof(float))?
-            .SetValue(slotCoefficients, e.Value);
-
-        _repository.Update(characterCoefficients);
-
-        _originVM.RefreshValues();
-    }
-
-    private ItemParams GetEnabledParams(CustomEquipmentIndex equipmentIndex) => equipmentIndex switch
+    private ItemParams VisibleParams => _equipmentIndex switch
     {
         CustomEquipmentIndex.Weapon0 => ItemTypes.Weapon,
         CustomEquipmentIndex.Weapon1 => ItemTypes.Weapon,
@@ -117,14 +75,42 @@ internal partial class CoefficientsSettingsVM : ViewModel
         CustomEquipmentIndex.Cape => ItemTypes.Capes,
         CustomEquipmentIndex.Horse => ItemTypes.Horse,
         CustomEquipmentIndex.HorseHarness => ItemTypes.HorseHarness,
-        _ => throw new ArgumentOutOfRangeException(nameof(equipmentIndex), equipmentIndex, null)
+        _ => throw new ArgumentOutOfRangeException(nameof(_equipmentIndex), _equipmentIndex, null)
     };
+    
+    private void UpdatePercentText()
+    {
+        foreach (var param in VisibleParams.GetFlags())
+        {
+            var paramValue = (float) GetPropertyValue($"{param}Value");
+            var paramValuePercent = GetValuePercentText(paramValue);
+            SetPropertyValue($"{param}PercentText", paramValuePercent);
+        }
+    }
+
+    private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+    }
+
+    private void OnPropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
+    {
+
+        Enum.TryParse(e.PropertyName, out ItemParams itemParam);
+
+        if (!VisibleParams.HasFlag(itemParam)) return;
+        
+        Coefficients.GetType()
+            .GetProperty($"{e.PropertyName}", typeof(float))?
+            .SetValue(Coefficients, e.Value);
+        
+        _originVM.RefreshValues();
+    }
 
     public override void OnFinalize()
     {
-        InformationManager.DisplayMessage(new InformationMessage($"OnFinalize"));
         PropertyChangedWithValue -= OnPropertyChangedWithValue;
         PropertyChanged -= OnPropertyChanged;
+        _repository.Update(_currentCharacterCoefficients);
         base.OnFinalize();
     }
     
@@ -135,21 +121,32 @@ internal partial class CoefficientsSettingsVM : ViewModel
     
     public void ExecuteDefault()
     {
-        InformationManager.DisplayMessage(new InformationMessage($"ExecuteDefault"));
+        foreach (var param in VisibleParams.GetFlags())
+        {
+            var value = GetPropertyValue($"{param}");
+            SetPropertyValue($"{param}", value);
+            SetPropertyValue($"{param}Value", value);
+        }
     }
 
     public void ExecuteLock()
     {
-        InformationManager.DisplayMessage(new InformationMessage($"ExecuteLock"));
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        foreach (var param in VisibleParams.GetFlags())
+        {
+            SetPropertyValue($"{param}Value", 0);
+            SetPropertyValue($"{param}", 0);
+        }
+        watch.Stop();
+        var elapsedMs = watch.ElapsedMilliseconds;
+        Helper.ShowMessage($"ExecuteLock: {elapsedMs}");
     }
 
     public void ExecuteClose()
     {
-        InformationManager.DisplayMessage(new InformationMessage($"ExecuteClose"));
         var inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
         var coefficientsSettingsLayer = inventoryScreen?.Layers.FindLayer<CoefficientsSettingsLayer>();
         inventoryScreen?.RemoveLayer(coefficientsSettingsLayer);
-        OnFinalize();
     }
 
     public void ExecuteValueDefault(string paramName)
@@ -159,13 +156,8 @@ internal partial class CoefficientsSettingsVM : ViewModel
 
     private string GetValuePercentText(float propertyValue)
     {
-        var sum = 0f;
-        
-        foreach (var param in GetEnabledParams(_equipmentIndex).GetFlags())
-        {
-            sum += Convert.ToSingle(GetType().GetProperty($"{param}Value", typeof(float))?.GetValue(this));
-        }
-        
+        var sum = VisibleParams.GetFlags().Sum(param => (float) GetPropertyValue($"{param}Value"));
+
         if (sum == 0) return "0%";
         
         var resultPercent = Math.Round(propertyValue / sum * 100).ToString(CultureInfo.InvariantCulture);
