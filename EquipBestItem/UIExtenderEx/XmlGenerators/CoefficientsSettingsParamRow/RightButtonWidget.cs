@@ -19,7 +19,7 @@ internal class RightButtonWidget : WidgetNode
                 new XAttribute("VerticalAlignment", "Center"),
                 new XAttribute("HorizontalAlignment", "Right"),
                 new XAttribute("ButtonType", "Toggle"),
-                new XAttribute("Command.Click", "ExecuteValueDefault"),
+                new XAttribute("Command.Click", "ExecuteCheckboxSetDefault"),
                 new XAttribute("CommandParameter.Click", $"{itemParam}"),
                 new XAttribute("IsSelected", $"@{itemParam}IsDefault"),
                 new XAttribute("ToggleIndicator", "ToggleIndicator"),

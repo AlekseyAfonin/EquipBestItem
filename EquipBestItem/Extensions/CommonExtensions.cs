@@ -41,4 +41,19 @@ public static class CommonExtensions
             .Cast<ItemParams>()
             .Where(p => itemType.HasFlag(p));
     }
+    
+    public static object GetPropValue<T>(this T @this, string propertyName)
+    {
+        var type = @this?.GetType();
+        var property = type?.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
+        return property?.GetValue(@this, null) ?? throw new InvalidOperationException("Get property value exception");
+    }
+    
+    public static void SetPropValue<T>(this T @this, string propertyName, object value)
+    {
+        var type = @this?.GetType();
+        var property = type?.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+        property?.SetValue(@this, value);
+    }
 }

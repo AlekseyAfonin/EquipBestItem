@@ -4,8 +4,8 @@ namespace EquipBestItem.ViewModels;
 
 internal partial class CoefficientsSettingsVM
 {
-    private const float Tolerance = 1E-05f;
-    private string _headerText;
+    private const float Tolerance = 0.00001f;
+    
 
     private float _weight;                                      // Slider released value
     private float _weightValue;                                 // Slider value which used in percent text

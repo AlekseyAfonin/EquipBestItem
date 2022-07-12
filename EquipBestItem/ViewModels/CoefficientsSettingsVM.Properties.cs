@@ -1,4 +1,5 @@
 using System;
+using EquipBestItem.Models.Enums;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -96,6 +97,7 @@ internal partial class CoefficientsSettingsVM
         {
             if (Math.Abs(_headArmor - value) < Tolerance) return;
             _headArmor = value;
+            _model.CoefficientsUpdate(value);
             OnPropertyChangedWithValue(value);
         }
     }
@@ -108,6 +110,7 @@ internal partial class CoefficientsSettingsVM
         {
             if (Math.Abs(_bodyArmor - value) < Tolerance) return;
             _bodyArmor = value;
+            _model.CoefficientsUpdate(value);
             OnPropertyChangedWithValue(value);
         }
     }
@@ -120,6 +123,7 @@ internal partial class CoefficientsSettingsVM
         {
             if (Math.Abs(_legArmor - value) < Tolerance) return;
             _legArmor = value;
+            _model.CoefficientsUpdate(value);
             OnPropertyChangedWithValue(value);
         }
     }
@@ -132,6 +136,7 @@ internal partial class CoefficientsSettingsVM
         {
             if (Math.Abs(_armArmor - value) < Tolerance) return;
             _armArmor = value;
+            _model.CoefficientsUpdate(value);
             OnPropertyChangedWithValue(value);
         }
     }
@@ -144,6 +149,7 @@ internal partial class CoefficientsSettingsVM
         {
             if (Math.Abs(_weight - value) < Tolerance) return;
             _weight = value;
+            _model.CoefficientsUpdate(value);
             OnPropertyChangedWithValue(value);
         }
     }
@@ -169,7 +175,9 @@ internal partial class CoefficientsSettingsVM
             if (Math.Abs(_headArmorValue - value) < Tolerance) return;
             _headArmorValue = value;
             OnPropertyChanged();
-            UpdatePercentText();
+            _model.UpdateCheckboxState(ItemParams.HeadArmor, value);
+            _model.UpdateVisibleParamsPercentText(value);
+            
         }
     }
     
@@ -182,7 +190,8 @@ internal partial class CoefficientsSettingsVM
             if (Math.Abs(_bodyArmorValue - value) < Tolerance) return;
             _bodyArmorValue = value;
             OnPropertyChanged();
-            UpdatePercentText();
+            _model.UpdateCheckboxState(ItemParams.BodyArmor, value);
+            _model.UpdateVisibleParamsPercentText(value);
         }
     }
     
@@ -195,7 +204,8 @@ internal partial class CoefficientsSettingsVM
             if (Math.Abs(_legArmorValue - value) < Tolerance) return;
             _legArmorValue = value;
             OnPropertyChanged();
-            UpdatePercentText();
+            _model.UpdateCheckboxState(ItemParams.LegArmor, value);
+            _model.UpdateVisibleParamsPercentText(value);
         }
     }
     
@@ -208,7 +218,8 @@ internal partial class CoefficientsSettingsVM
             if (Math.Abs(_armArmorValue - value) < Tolerance) return;
             _armArmorValue = value;
             OnPropertyChanged();
-            UpdatePercentText();
+            _model.UpdateCheckboxState(ItemParams.ArmArmor, value);
+            _model.UpdateVisibleParamsPercentText(value);
         }
     }
     
@@ -221,7 +232,8 @@ internal partial class CoefficientsSettingsVM
             if (Math.Abs(_weightValue - value) < Tolerance) return;
             _weightValue = value;
             OnPropertyChanged();
-            UpdatePercentText();
+            _model.UpdateCheckboxState(ItemParams.Weight, value);
+            _model.UpdateVisibleParamsPercentText(value);
         }
     }
     

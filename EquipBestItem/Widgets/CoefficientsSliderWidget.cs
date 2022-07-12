@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using TaleWorlds.Core;
 using TaleWorlds.GauntletUI;
 
@@ -14,7 +15,7 @@ public class CoefficientsSliderWidget: SliderWidget
         get => this._valueFloatReleased;
         set
         {
-            if (Math.Abs(this._valueFloatReleased - value) < 1E-05f) return;
+            if (Math.Abs(this._valueFloatReleased - value) < 0.00001f) return;
             
             this._valueFloatReleased = value;
             base.OnPropertyChanged(this._valueFloatReleased, "ValueFloatReleased");
@@ -24,7 +25,7 @@ public class CoefficientsSliderWidget: SliderWidget
     public CoefficientsSliderWidget(UIContext context) : base(context)
     {
     }
-
+    
     protected override void OnMouseReleased()
     {
         base.OnMouseReleased();
