@@ -5,7 +5,7 @@ namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
 internal class RightButtonWidget : WidgetNode
 {
-    internal RightButtonWidget(TestParams itemParam)
+    internal RightButtonWidget(ItemParams itemParam)
     {
         Node = 
             new XElement("ButtonWidget",

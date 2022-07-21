@@ -5,7 +5,7 @@ namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
 internal class RightRichTextWidget : WidgetNode
 {
-    internal RightRichTextWidget(TestParams itemParam)
+    internal RightRichTextWidget(ItemParams itemParam)
     {
         Node = 
             new XElement("RichTextWidget",

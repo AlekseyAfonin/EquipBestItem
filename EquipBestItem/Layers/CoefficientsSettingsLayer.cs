@@ -1,4 +1,5 @@
 using EquipBestItem.Models;
+using EquipBestItem.UIExtenderEx;
 using EquipBestItem.ViewModels;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
@@ -13,10 +14,10 @@ internal class CoefficientsSettingsLayer : GauntletLayer
     private readonly CoefficientsSettingsVM _vm;
     
     internal CoefficientsSettingsLayer(int localOrder, EquipmentIndex equipmentIndex,
-        CharacterCoefficientsRepository repository, SPInventoryVM originVM, string categoryId = "GauntletLayer", bool shouldClear = false) : 
+        CharacterCoefficientsRepository repository, ModSPInventoryVM modVM, string categoryId = "GauntletLayer", bool shouldClear = false) : 
         base(localOrder, categoryId, shouldClear)
     {
-        _vm = new CoefficientsSettingsVM(equipmentIndex, repository, originVM);
+        _vm = new CoefficientsSettingsVM(equipmentIndex, repository, modVM);
         EquipmentIndex = equipmentIndex;
         LoadMovie("CoefficientsSettings", _vm);
     }

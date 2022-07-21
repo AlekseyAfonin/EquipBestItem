@@ -25,18 +25,19 @@ namespace EquipBestItem.UIExtenderEx;
 public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
 {
     private CharacterObject? _currentCharacter;
+    
 
     public SPInventoryVMMixin(SPInventoryVM vm) : base(vm)
     {
         ModSPInventory = new ModSPInventoryVM(vm, this);
         RegisterEvents();
         _currentCharacter = InventoryManager.InventoryLogic.InitialEquipmentCharacter;
+        IsLeftPanelLocked = ModSPInventory.IsLeftPanelLocked;
+        IsRightPanelLocked = ModSPInventory.IsRightPanelLocked;
     }
     
     [DataSourceProperty] 
     private ModSPInventoryVM ModSPInventory { get; }
-    
-    //public CharacterObject CurrentCharacter => GetPrivate<CharacterObject>("_currentCharacter") ?? throw new InvalidOperationException();
 
     private void RegisterEvents()
     {
@@ -47,32 +48,15 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         
         Game.Current.EventManager.RegisterEvent(
             new Action<InventoryEquipmentTypeChangedEvent>(OnInventoryEquipmentTypeChanged));
-        //ViewModel.CharacterList.(OnCurrentCharacterChanged);
-    }
-    
-    private async void OnCurrentCharacterChanged()
-    {
-        ModSPInventory.UpdateCurrentCharacter(GetCharacterByName(ViewModel?.CurrentCharacterName));
-        
-        await ModSPInventory.RestartUpdateAsync();
-        
-        CharacterObject GetCharacterByName(string? name)
-        {
-            var result = from rosterElement in InventoryManager.InventoryLogic.RightMemberRoster.GetTroopRoster() 
-                where rosterElement.Character.IsHero && rosterElement.Character.Name.ToString() == name
-                select rosterElement.Character;
-        
-            return result.FirstOrDefault() ?? throw new InvalidOperationException("Character can't be null");
-        }
     }
     
     /// <summary>
     /// Event when changing the type of kit (military, civilian) of the current character
     /// </summary>
     /// <param name="obj"></param>
-    private async void OnInventoryEquipmentTypeChanged(InventoryEquipmentTypeChangedEvent obj)
+    private void OnInventoryEquipmentTypeChanged(InventoryEquipmentTypeChangedEvent obj)
     {
-        await ModSPInventory.RestartUpdateAsync();
+        Task.Run(async () => await ModSPInventory.UpdateBestItemsAsync());
     }
 
     /// <summary>
@@ -90,20 +74,28 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
     /// </summary>
     /// <param name="sender">SPInventoryVM</param>
     /// <param name="e">Property name, value</param>
-    private async void SPInventoryVM_PropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
+    private void SPInventoryVM_PropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
     {
         ModSPInventory.OnPropertyChangedWithValue(e.Value, e.PropertyName);
-        
-        // I couldn't find events that would trigger when the item collections for the left and right panels changed,
-        // so I'm looking at changing "IsRefreshed", which works when the item filters change as well.
-        if (e.PropertyName == "IsRefreshed" && (bool) e.Value)
-        {
-            await ModSPInventory.RestartUpdateAsync();
-        }
 
-        if (e.PropertyName == "CurrentCharacterName")
+        switch (e.PropertyName)
         {
-            OnCurrentCharacterChanged();
+            case "IsRefreshed" when (bool) e.Value:
+                Task.Run(async () => await ModSPInventory.UpdateBestItemsAsync());
+                break;
+            case "CurrentCharacterName":
+                ModSPInventory.UpdateCurrentCharacter(GetCharacterByName(ViewModel?.CurrentCharacterName));
+                Task.Run(async () => await ModSPInventory.UpdateBestItemsAsync());
+                break;
+        }
+        
+        CharacterObject GetCharacterByName(string? name)
+        {
+            var result = from rosterElement in InventoryManager.InventoryLogic.RightMemberRoster.GetTroopRoster() 
+                where rosterElement.Character.IsHero && rosterElement.Character.Name.ToString() == name
+                select rosterElement.Character;
+        
+            return result.FirstOrDefault() ?? throw new InvalidOperationException("Character is null");
         }
     }
     
@@ -119,198 +111,324 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         base.OnFinalize();
     }
     
-    public override async void OnRefresh()
+    public override void OnRefresh()
     {
         base.OnRefresh();
-        await ModSPInventory.RestartUpdateAsync();
+        Task.Run(async () => await ModSPInventory.UpdateBestItemsAsync());
     }
 
-    private bool _isHeadButtonEnabled;
+    private bool _isHeadButtonDisabled;
 
     [DataSourceProperty]
-    public bool IsHeadButtonEnabled
+    public bool IsHeadButtonDisabled
     {
-        get => _isHeadButtonEnabled;
+        get => _isHeadButtonDisabled;
         set
         {
-            if (_isHeadButtonEnabled != value)
-            {
-                _isHeadButtonEnabled = value;
-                ViewModel!.OnPropertyChanged();
-                ModSPInventory.OnPropertyChanged();
-            }
+            if (_isHeadButtonDisabled == value) return;
+            
+            _isHeadButtonDisabled = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
         }
     }
 
-    private bool _isCapeButtonEnabled;
+    private bool _isCapeButtonDisabled;
 
     [DataSourceProperty]
-    public bool IsCapeButtonEnabled
+    public bool IsCapeButtonDisabled
     {
-        get => _isCapeButtonEnabled;
+        get => _isCapeButtonDisabled;
         set
         {
-            if (_isCapeButtonEnabled != value)
-            {
-                _isCapeButtonEnabled = value;
-                ViewModel!.OnPropertyChanged();
-                ModSPInventory.OnPropertyChanged();
-            }
+            if (_isCapeButtonDisabled == value) return;
+            
+            _isCapeButtonDisabled = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
         }
     }
 
-    private bool _isBodyButtonEnabled;
+    private bool _isBodyButtonDisabled;
 
     [DataSourceProperty]
-    public bool IsBodyButtonEnabled
+    public bool IsBodyButtonDisabled
     {
-        get => _isBodyButtonEnabled;
+        get => _isBodyButtonDisabled;
         set
         {
-            if (_isBodyButtonEnabled != value)
-            {
-                _isBodyButtonEnabled = value;
-                ViewModel!.OnPropertyChanged();
-                ModSPInventory.OnPropertyChanged();
-            }
+            if (_isBodyButtonDisabled == value) return;
+            
+            _isBodyButtonDisabled = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
         }
     }
 
-    private bool _isLegButtonEnabled;
+    private bool _isLegButtonDisabled;
 
     [DataSourceProperty]
-    public bool IsLegButtonEnabled
+    public bool IsLegButtonDisabled
     {
-        get => _isLegButtonEnabled;
+        get => _isLegButtonDisabled;
         set
         {
-            if (_isLegButtonEnabled != value)
-            {
-                _isLegButtonEnabled = value;
-                ViewModel!.OnPropertyChanged();
-                ModSPInventory.OnPropertyChanged();
-            }
+            if (_isLegButtonDisabled == value) return;
+            
+            _isLegButtonDisabled = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
         }
     }
 
-    private bool _isGlovesButtonEnabled;
+    private bool _isGlovesButtonDisabled;
 
     [DataSourceProperty]
-    public bool IsGlovesButtonEnabled
+    public bool IsGlovesButtonDisabled
     {
-        get => _isGlovesButtonEnabled;
+        get => _isGlovesButtonDisabled;
         set
         {
-            if (_isGlovesButtonEnabled != value)
-            {
-                _isGlovesButtonEnabled = value;
-                ViewModel!.OnPropertyChanged();
-                ModSPInventory.OnPropertyChanged();
-            }
+            if (_isGlovesButtonDisabled == value) return;
+            
+            _isGlovesButtonDisabled = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
         }
     }
 
-    private bool _isHorseButtonEnabled;
+    private bool _isHorseButtonDisabled;
 
     [DataSourceProperty]
-    public bool IsHorseButtonEnabled
+    public bool IsHorseButtonDisabled
     {
-        get => _isHorseButtonEnabled;
+        get => _isHorseButtonDisabled;
         set
         {
-            if (_isHorseButtonEnabled != value)
-            {
-                _isHorseButtonEnabled = value;
-                ViewModel!.OnPropertyChanged();
-                ModSPInventory.OnPropertyChanged();
-            }
+            if (_isHorseButtonDisabled == value) return;
+            
+            _isHorseButtonDisabled = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
         }
     }
 
-    private bool _isHorseHarnessButtonEnabled;
+    private bool _isHorseHarnessButtonDisabled;
 
     [DataSourceProperty]
-    public bool IsHorseHarnessButtonEnabled
+    public bool IsHorseHarnessButtonDisabled
     {
-        get => _isHorseHarnessButtonEnabled;
+        get => _isHorseHarnessButtonDisabled;
         set
         {
-            if (_isHorseHarnessButtonEnabled != value)
-            {
-                _isHorseHarnessButtonEnabled = value;
-                ViewModel!.OnPropertyChanged();
-                ModSPInventory.OnPropertyChanged();
-            }
+            if (_isHorseHarnessButtonDisabled == value) return;
+            
+            _isHorseHarnessButtonDisabled = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
         }
     }
 
-    private bool _isWeapon0ButtonEnabled;
+    private bool _isWeapon0ButtonDisabled;
 
     [DataSourceProperty]
-    public bool IsWeapon0ButtonEnabled
+    public bool IsWeapon0ButtonDisabled
     {
-        get => _isWeapon0ButtonEnabled;
+        get => _isWeapon0ButtonDisabled;
         set
         {
-            if (_isWeapon0ButtonEnabled != value)
-            {
-                _isWeapon0ButtonEnabled = value;
-                ViewModel!.OnPropertyChanged();
-                ModSPInventory.OnPropertyChanged();
-            }
+            if (_isWeapon0ButtonDisabled == value) return;
+            
+            _isWeapon0ButtonDisabled = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
         }
     }
 
-    private bool _isWeapon1ButtonEnabled;
+    private bool _isWeapon1ButtonDisabled;
 
     [DataSourceProperty]
-    public bool IsWeapon1ButtonEnabled
+    public bool IsWeapon1ButtonDisabled
     {
-        get => _isWeapon1ButtonEnabled;
+        get => _isWeapon1ButtonDisabled;
         set
         {
-            if (_isWeapon1ButtonEnabled != value)
-            {
-                _isWeapon1ButtonEnabled = value;
-                ViewModel!.OnPropertyChanged();
-                ModSPInventory.OnPropertyChanged();
-            }
+            if (_isWeapon1ButtonDisabled == value) return;
+            
+            _isWeapon1ButtonDisabled = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
         }
     }
 
-    private bool _isWeapon2ButtonEnabled;
+    private bool _isWeapon2ButtonDisabled;
 
     [DataSourceProperty]
-    public bool IsWeapon2ButtonEnabled
+    public bool IsWeapon2ButtonDisabled
     {
-        get => _isWeapon2ButtonEnabled;
+        get => _isWeapon2ButtonDisabled;
         set
         {
-            if (_isWeapon2ButtonEnabled != value)
-            {
-                _isWeapon2ButtonEnabled = value;
-                ViewModel!.OnPropertyChanged();
-                ModSPInventory.OnPropertyChanged();
-            }
+            if (_isWeapon2ButtonDisabled == value) return;
+            
+            _isWeapon2ButtonDisabled = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
         }
     }
 
-    private bool _isWeapon3ButtonEnabled;
+    private bool _isWeapon3ButtonDisabled;
 
     [DataSourceProperty]
-    public bool IsWeapon3ButtonEnabled
+    public bool IsWeapon3ButtonDisabled
     {
-        get => _isWeapon3ButtonEnabled;
+        get => _isWeapon3ButtonDisabled;
         set
         {
-            if (_isWeapon3ButtonEnabled != value)
-            {
-                _isWeapon3ButtonEnabled = value;
-                ViewModel!.OnPropertyChanged();
-                ModSPInventory.OnPropertyChanged();
-            }
+            if (_isWeapon3ButtonDisabled == value) return;
+            
+            _isWeapon3ButtonDisabled = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
         }
     }
+
+    private bool _isLeftMenuVisible;
+    
+    [DataSourceProperty]
+    public bool IsLeftMenuVisible
+    {
+        get => _isLeftMenuVisible;
+        set
+        {
+            if (_isLeftMenuVisible == value) return;
+            
+            _isLeftMenuVisible = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
+        }
+    }
+    
+    private bool _isRightMenuVisible;
+    
+    [DataSourceProperty]
+    public bool IsRightMenuVisible
+    {
+        get => _isRightMenuVisible;
+        set
+        {
+            if (_isRightMenuVisible == value) return;
+            
+            _isRightMenuVisible = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
+        }
+    }
+
+    private bool _isLeftPanelLocked = true;
+
+    [DataSourceProperty]
+    public bool IsLeftPanelLocked
+    {
+        get => _isLeftPanelLocked;
+        set
+        {
+            if (_isLeftPanelLocked == value) return;
+            
+            _isLeftPanelLocked = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
+            ViewModel!.OnPropertyChanged("LeftClosedLockIsHidden");
+            ViewModel!.OnPropertyChanged("LeftOpenedLockIsHidden");
+        }
+    }
+    [DataSourceProperty]
+    public bool LeftClosedLockIsHidden => IsLeftPanelLocked;
+
+    [DataSourceProperty]
+    public bool LeftOpenedLockIsHidden => !IsLeftPanelLocked;
+
+    private bool _isRightPanelLocked = true;
+
+    [DataSourceProperty]
+    public bool IsRightPanelLocked
+    {
+        get => _isRightPanelLocked;
+        set
+        {
+            if (_isRightPanelLocked == value) return;
+            
+            _isRightPanelLocked = value;
+            ViewModel!.OnPropertyChanged();
+            ModSPInventory.OnPropertyChanged();
+            ViewModel!.OnPropertyChanged("RightClosedLockIsHidden");
+            ViewModel!.OnPropertyChanged("RightOpenedLockIsHidden");
+        }
+    }
+    [DataSourceProperty]
+    public bool RightClosedLockIsHidden => IsRightPanelLocked;
+
+    [DataSourceProperty]
+    public bool RightOpenedLockIsHidden => !IsRightPanelLocked;
+    
+    [DataSourceProperty] public SPItemVM? HeadBestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Head];
+    [DataSourceProperty] public SPItemVM? BodyBestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Body];
+    [DataSourceProperty] public SPItemVM? CapeBestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Cape];
+    [DataSourceProperty] public SPItemVM? GlovesBestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Gloves];
+    [DataSourceProperty] public SPItemVM? HorseBestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Horse];
+    [DataSourceProperty] public SPItemVM? LegBestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Leg];
+    [DataSourceProperty] public SPItemVM? Weapon0BestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Weapon0];
+    [DataSourceProperty] public SPItemVM? Weapon1BestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Weapon1];
+    [DataSourceProperty] public SPItemVM? Weapon2BestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Weapon2];
+    [DataSourceProperty] public SPItemVM? Weapon3BestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Weapon3];
+    [DataSourceProperty] public SPItemVM? HorseHarnessBestItem => ModSPInventory.BestItems[(int) EquipmentIndex.HorseHarness];
+    
+
+    [DataSourceMethod]
+    public void ExecuteSwitchLeftMenu()
+    {
+        IsLeftMenuVisible = !IsLeftMenuVisible;
+        Helper.ShowMessage($"ExecuteSwitchLeftMenu");
+    }
+    
+    [DataSourceMethod]
+    public void ExecuteSwitchRightMenu()
+    {
+        IsRightMenuVisible = !IsRightMenuVisible;
+        Helper.ShowMessage($"ExecuteSwitchRightMenu");
+    }
+    
+    [DataSourceMethod]
+    public void ExecuteLeftPanelLock()
+    {
+        IsLeftPanelLocked = !IsLeftPanelLocked;
+        ModSPInventory.SwitchLeftPanelLock();
+
+        Helper.ShowMessage($"ExecuteLeftPanelLock");
+    }
+    
+    [DataSourceMethod]
+    public void ExecuteRightPanelLock()
+    {
+        IsRightPanelLocked = !IsRightPanelLocked;
+        ModSPInventory.SwitchRightPanelLock();
+        Helper.ShowMessage($"ExecuteRightPanelLock");
+    }
+    
+    [DataSourceMethod]
+    public void ExecuteEquipCurrentCharacter()
+    {
+        Helper.ShowMessage($"ExecuteEquipCurrentCharacter");
+        ModSPInventory.EquipCurrentCharacter();
+    }
+    
+    [DataSourceMethod]
+    public void ExecuteEquipAllCharacters()
+    {
+        Helper.ShowMessage($"ExecuteEquipAllCharacters");
+        ModSPInventory.EquipAllCharacters();
+    }
+    
 
     [DataSourceMethod]
     public void ExecuteEquipBestItem(string equipmentIndexName)

@@ -16,8 +16,24 @@ internal static class Helper
         return (T) Enum.Parse(typeof(T), value, true);
     }
 
-    internal static void ShowMessage(string text)
+    internal static void ShowMessage(string text, Color? color = null)
     {
         InformationManager.DisplayMessage(new InformationMessage($"{text}"));
+    }
+    
+    internal static object GetField(this object? o, string fieldName)
+    {
+        var mi = o.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+        if (mi != null)
+            try
+            {
+                return mi.GetValue(o);
+            }
+            catch
+            {
+                throw new MBException(fieldName + " GetField() exception");
+            }
+
+        return null;
     }
 }

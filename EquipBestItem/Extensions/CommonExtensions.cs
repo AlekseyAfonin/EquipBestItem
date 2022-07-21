@@ -35,11 +35,29 @@ public static class CommonExtensions
         }
     }
     
-    internal static IEnumerable<ItemParams> GetFlags(this ItemParams itemType)
+    // internal static IEnumerable<ItemParams> GetFlags(this ItemParams itemType)
+    // {
+    //     return Enum.GetValues(typeof(ItemParams))
+    //         .Cast<ItemParams>()
+    //         .Where(p => itemType.HasFlag(p));
+    // }
+    
+    internal static IEnumerable<T> GetUniqueFlags<T>(this T flags) where T : Enum
     {
-        return Enum.GetValues(typeof(ItemParams))
-            .Cast<ItemParams>()
-            .Where(p => itemType.HasFlag(p));
+        ulong flag = 1;
+        foreach (var value in Enum.GetValues(flags.GetType()).Cast<T>())
+        {
+            ulong bits = Convert.ToUInt64(value);
+            while (flag < bits)
+            {
+                flag <<= 1;
+            }
+
+            if (flag == bits && flags.HasFlag(value as Enum))
+            {
+                yield return value;
+            }
+        }
     }
     
     public static object GetPropValue<T>(this T @this, string propertyName)

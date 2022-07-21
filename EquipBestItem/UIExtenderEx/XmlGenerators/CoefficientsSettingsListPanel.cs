@@ -7,7 +7,7 @@ namespace EquipBestItem.UIExtenderEx;
 
 internal class CoefficientsSettingsListPanel : WidgetNode
 {
-    internal CoefficientsSettingsListPanel(TestParams itemParam)
+    internal CoefficientsSettingsListPanel(ItemParams itemParam)
     {
         Node =
             new XElement("ListPanel",

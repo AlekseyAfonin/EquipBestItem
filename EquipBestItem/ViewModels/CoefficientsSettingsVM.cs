@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using EquipBestItem.Extensions;
 using EquipBestItem.Layers;
 using EquipBestItem.Models;
 using EquipBestItem.Models.Entities;
 using EquipBestItem.Models.Enums;
+using EquipBestItem.UIExtenderEx;
 using SandBox.GauntletUI;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
@@ -23,11 +25,11 @@ internal partial class CoefficientsSettingsVM : ViewModel
     private string _headerText;
 
     internal CoefficientsSettingsVM(EquipmentIndex equipIndex, CharacterCoefficientsRepository repository,
-        SPInventoryVM originVM)
+        ModSPInventoryVM modVM)
     {
         var equipmentIndex = (CustomEquipmentIndex) equipIndex;
         _headerText = equipmentIndex.ToString();
-        _model = new CoefficientsSettings(this, equipmentIndex, repository, originVM);
+        _model = new CoefficientsSettings(this, equipmentIndex, repository, modVM);
         _model.LoadValues();
     }
     
@@ -39,12 +41,12 @@ internal partial class CoefficientsSettingsVM : ViewModel
 
     public void ExecuteDefault()
     {
-        _model.DefaultClick();
+        Task.Run(() => _model.DefaultClick());
     }
 
     public void ExecuteLock()
     {
-        _model.LockClick();
+        Task.Run(() => _model.LockClick());
     }
 
     public void ExecuteClose()

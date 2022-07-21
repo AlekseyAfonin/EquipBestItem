@@ -1,8 +1,11 @@
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EquipBestItem.Extensions;
 using EquipBestItem.Models.Entities;
+using Helpers;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
@@ -29,56 +32,84 @@ internal class BestItemManager
         UnequipItem(equipmentIndex, character);
         EquipItem(equipmentIndex, character, item);
         item = null;
-        _originVM.ExecuteRemoveZeroCounts();
-        _originVM.RefreshValues();
-        _originVM.GetMethod("UpdateCharacterEquipment");
     }
 
-    internal Task<SPItemVM?> GetBestItemAsync(CancellationToken token, Coefficients coefficients, EquipmentElement currentItem, EquipmentIndex equipmentIndex,
-       params MBBindingList<SPItemVM>?[] lists)
+    internal SPItemVM? GetBestItem(CharacterObject character, EquipmentIndex index, Coefficients[] coefficients,
+        params MBBindingList<SPItemVM>?[] itemsLists)
     {
-        var bestItemValue = currentItem.IsEmpty ? 0 : currentItem.GetItemValue(coefficients);
-        
+        // Stopwatch stopwatch = new Stopwatch();
+        //
+        // stopwatch.Start();
+        //////////////
         SPItemVM? bestItem = null;
         
-        foreach (var list in lists)
+        try
         {
-            if (list is null) continue;
-            
-            foreach (var item in list)
+            var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
+            var bestItemValue = equipment[index].IsEmpty ? 0 : equipment[index].GetItemValue(coefficients[(int) index]);
+
+            var validItems = itemsLists
+                .Where(items => items is not null)
+                .SelectMany(items => items)
+                .Where(IsValidItem);
+
+            foreach (var item in validItems)
             {
-                token.ThrowIfCancellationRequested();
-                
-                if (!item.IsEquipableItem || item.IsLocked || !item.CanCharacterUseItem || item.ItemType != equipmentIndex) continue;
-            
-                var itemValue = item.ItemRosterElement.EquipmentElement.GetItemValue(coefficients);
-                
-                if (bestItemValue >= itemValue || itemValue is float.NaN) continue;
-        
+                var itemValue = item.ItemRosterElement.EquipmentElement.GetItemValue(coefficients[(int) index]);
+
+                if (bestItemValue >= itemValue) continue;
+
                 bestItem = item;
                 bestItemValue = itemValue;
             }
+
+            bool IsValidItem(SPItemVM item)
+            {
+                if (!_originVM.IsInWarSet && !item.IsCivilianItem) return false;
+                if (!item.IsEquipableItem) return false;
+                if (item.IsLocked) return false;
+                if (item.ItemCount == 0) return false;
+                if (!CharacterHelper.CanUseItemBasedOnSkill(character, item.ItemRosterElement.EquipmentElement))
+                    return false;
+                if (equipment[EquipmentIndex.Horse].IsEmpty && item.ItemType == EquipmentIndex.HorseHarness)
+                    return false;
+                if (item.ItemType != EquipmentIndex.Weapon0 || index is > EquipmentIndex.Weapon4)
+                    return item.ItemType == index;
+                
+                var itemPrimaryWeapon = item.ItemRosterElement.EquipmentElement.Item?.PrimaryWeapon;
+                var currentPrimaryWeapon = equipment[index].Item?.PrimaryWeapon;
+                
+                if (itemPrimaryWeapon?.WeaponClass != currentPrimaryWeapon?.WeaponClass) return false;
+                
+                return item.ItemType <= index;
+            }
+
+            
+        }
+        catch (Exception e)
+        {
+            Helper.ShowMessage($"{e.Message}", Colors.Red);
         }
         
-        return Task.FromResult(bestItem);
+        /////////////
+        // stopwatch.Stop();
+        // Helper.ShowMessage($"GetBestItem {stopwatch.ElapsedMilliseconds}ms");
         
-        // for (var i = 0; i < 20; i++)
-        // {
-        //     token.ThrowIfCancellationRequested();
-        //     await Task.Delay(100);
-        //     Helper.ShowMessage($"{num}: {i}");
-        // }
-
-        // return null;
+        return bestItem;
     }
+    
 
     private void UnequipItem(EquipmentIndex equipmentIndex, CharacterObject character)
     {
+        // Stopwatch stopwatch = new Stopwatch();
+        //
+        // stopwatch.Start();
+        //////////////
         var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
         
         if (equipment[equipmentIndex].IsEmpty) return;
         
-        var transferCommand = TransferCommand.Transfer(
+        var unequipCommand = TransferCommand.Transfer(
             1,
             InventoryLogic.InventorySide.Equipment,
             InventoryLogic.InventorySide.PlayerInventory,
@@ -88,21 +119,33 @@ internal class BestItemManager
             character,
             !_originVM.IsInWarSet);
         
-        _inventoryLogic.AddTransferCommand(transferCommand);
+        _inventoryLogic.AddTransferCommand(unequipCommand);
+        /////////////
+        // stopwatch.Stop();
+        // Helper.ShowMessage($"UnequipItem {stopwatch.ElapsedMilliseconds}ms");
     }
 
     private void EquipItem(EquipmentIndex equipmentIndex, CharacterObject? character, SPItemVM? item)
     {
+        // Stopwatch stopwatch = new Stopwatch();
+        //
+        // stopwatch.Start();
+        //////////////
+        if (item is null) return;
+        
         var equipCommand = TransferCommand.Transfer(
             1,
-            item!.InventorySide,
+            item.InventorySide,
             InventoryLogic.InventorySide.Equipment,
-            item.ItemRosterElement,
+            new ItemRosterElement(item.ItemRosterElement.EquipmentElement, 1),
             EquipmentIndex.None,
             equipmentIndex,
             character,
             !_originVM.IsInWarSet);
         
         _inventoryLogic.AddTransferCommand(equipCommand);
+        /////////////
+        // stopwatch.Stop();
+        // Helper.ShowMessage($"EquipItem {stopwatch.ElapsedMilliseconds}ms");
     }
 }

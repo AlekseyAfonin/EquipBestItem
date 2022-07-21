@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using EquipBestItem.Extensions;
 using EquipBestItem.Layers;
 using EquipBestItem.Models.Entities;
 using EquipBestItem.Models.Enums;
 using EquipBestItem.ViewModels;
 using SandBox.GauntletUI;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
-using TaleWorlds.Core;
+using TaleWorlds.Library;
 using TaleWorlds.ScreenSystem;
 
 namespace EquipBestItem.Models;
@@ -21,43 +21,53 @@ internal class CoefficientsSettings
     private readonly CoefficientsSettingsVM _vm;
     private readonly CharacterCoefficientsRepository _repository;
     private readonly CustomEquipmentIndex _equipmentIndex;
-    private readonly SPInventoryVM _originVM;
+    private readonly ModSPInventoryVM _modVM;
     private readonly CharacterCoefficients _currentCharacterCoefficients;
     private readonly CharacterCoefficients _defaultCharacterCoefficients;
     
     internal CoefficientsSettings(CoefficientsSettingsVM vm, CustomEquipmentIndex equipmentIndex, 
-        CharacterCoefficientsRepository repository, SPInventoryVM originVM)
+        CharacterCoefficientsRepository repository, ModSPInventoryVM modVM)
     {
         _vm = vm;
         _repository = repository;
         _equipmentIndex = equipmentIndex;
-        _originVM = originVM;
+        _modVM = modVM;
         
-        _currentCharacterCoefficients = _repository.Read(_originVM.CurrentCharacterName);
+        _currentCharacterCoefficients = _repository.Read(_modVM.CurrentCharacterName);
         _defaultCharacterCoefficients = _repository.Read(CharacterCoefficients.Default);
 
-        VisibleParams = GetVisibleParams().GetFlags();
+        VisibleParams = GetVisibleParams();
     }
 
     public void LoadValues()
     {
         foreach (var param in VisibleParams)
         {
-            var value = Coefficients.GetPropValue($"{param}");
-            _vm.SetPropertyValue($"{param}IsHidden", false);
-            _vm.SetPropertyValue($"{param}Value", value);
-            _vm.SetPropertyValue($"{param}", value);
-            UpdateCheckboxState(param, value);
+            var paramName = param.ToString();
+            var value = Coefficients.GetPropValue($"{paramName}");
+            _vm.SetPropertyValue($"{paramName}IsHidden", false);
+            _vm.SetPropertyValue($"{paramName}", value);
+            UpdateCheckboxState(value, paramName);
         }
 
         UpdateVisibleParamsPercentText();
+
+        //_vm.PropertyChanged += OnPropertyChanged;
+        _vm.PropertyChangedWithValue += OnPropertyChangedWithValue;
     }
 
-    private Coefficients Coefficients => _originVM.IsInWarSet
+    private void OnPropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
+    {
+        Coefficients.SetPropValue($"{e.PropertyName}", e.Value);
+        UpdateVisibleParamsPercentText();
+        Task.Run(async () => await _modVM.UpdateBestItemsAsync());
+    }
+
+    private Coefficients Coefficients => _modVM.IsInWarSet
         ? _currentCharacterCoefficients.WarCoefficients[(int) _equipmentIndex]
         : _currentCharacterCoefficients.CivilCoefficients[(int) _equipmentIndex];
 
-    private Coefficients DefaultCoefficients => _originVM.IsInWarSet
+    private Coefficients DefaultCoefficients => _modVM.IsInWarSet
         ? _defaultCharacterCoefficients.WarCoefficients[(int) _equipmentIndex]
         : _defaultCharacterCoefficients.CivilCoefficients[(int) _equipmentIndex];
 
@@ -67,9 +77,10 @@ internal class CoefficientsSettings
     {
         _repository.Update(_currentCharacterCoefficients);
         _repository.Update(_defaultCharacterCoefficients);
+        _vm.PropertyChangedWithValue -= OnPropertyChangedWithValue;
     }
     
-    private ItemParams GetVisibleParams()
+    private ItemParams[] GetVisibleParams()
     {
         return _equipmentIndex switch
         {
@@ -89,42 +100,30 @@ internal class CoefficientsSettings
         };
     }
     
-    public void UpdateCheckboxState(ItemParams itemParam, object propertyValue)
+    public void UpdateCheckboxState(object propertyValue, [CallerMemberName] string? propertyName = null)
     {
-        var paramName = itemParam.ToString();
-        var defaultValue = DefaultCoefficients.GetPropValue($"{paramName}");
+        var defaultValue = DefaultCoefficients.GetPropValue($"{propertyName}");
         var comparisonResult = propertyValue switch
         {
             float value => Math.Abs(value - (float) defaultValue) < Tolerance,
             string value => value == (string) defaultValue,
             _ => throw new ArgumentOutOfRangeException()
         };
-        _vm.SetPropertyValue($"{paramName}IsDefault", comparisonResult);
+        _vm.SetPropertyValue($"{propertyName}IsDefault", comparisonResult);
     }
 
-    public void CoefficientsUpdate(object value, [CallerMemberName] string? propertyName = null)
-    {
-        Coefficients.GetType()
-            .GetProperty($"{propertyName}", typeof(float))?
-            .SetValue(Coefficients, value);
-        _originVM.RefreshValues();
-    }
-
-    public void UpdateVisibleParamsPercentText(float? propertyValue = null,
-        [CallerMemberName] string? propertyName = null)
+    private void UpdateVisibleParamsPercentText()
     {
         foreach (var param in VisibleParams)
         {
             var paramName = param.ToString();
-            var value = paramName == propertyName
-                ? propertyValue ?? (float) _vm.GetPropertyValue($"{paramName}Value")
-                : (float) _vm.GetPropertyValue($"{paramName}Value");
+            var value = (float) _vm.GetPropertyValue($"{paramName}");
             _vm.SetPropertyValue($"{paramName}PercentText", GetValuePercentText(value));
         }
 
         string GetValuePercentText(float value)
         {
-            var sum = VisibleParams.Sum(param => (float) _vm.GetPropertyValue($"{param}Value"));
+            var sum = VisibleParams.Sum(param => (float) _vm.GetPropertyValue($"{param}"));
 
             if (sum == 0) return "0%";
 
@@ -138,9 +137,9 @@ internal class CoefficientsSettings
     {
         foreach (var param in VisibleParams)
         {
-            var value = DefaultCoefficients.GetPropValue($"{param}");
-            _vm.SetPropertyValue($"{param}", value);
-            _vm.SetPropertyValue($"{param}Value", value);
+            var paramName = param.ToString();
+            var value = DefaultCoefficients.GetPropValue($"{paramName}");
+            _vm.SetPropertyValue($"{paramName}", value);
         }
     }
     
@@ -148,7 +147,6 @@ internal class CoefficientsSettings
     {
         foreach (var param in VisibleParams)
         {
-            _vm.SetPropertyValue($"{param}Value", 0);
             _vm.SetPropertyValue($"{param}", 0);
         }
     }
@@ -162,29 +160,28 @@ internal class CoefficientsSettings
 
     public void CheckboxClick(string paramName)
     {
-        var param = Helper.ParseEnum<ItemParams>(paramName);
         var charactersCoefficients = _repository.ReadAll().Where(p => p.Name != CharacterCoefficients.Default).ToList();
-        var newValue = _vm.GetPropertyValue($"{param}");
+        var newValue = _vm.GetPropertyValue($"{paramName}");
 
         foreach (var charCoefficients in charactersCoefficients)
         {
-            var coefficients = _originVM.IsInWarSet
+            var coefficients = _modVM.IsInWarSet
                 ? charCoefficients.WarCoefficients[(int) _equipmentIndex]
                 : charCoefficients.CivilCoefficients[(int) _equipmentIndex];
-            var defaultValue = DefaultCoefficients.GetPropValue($"{param}");
-            var oldValue = coefficients.GetPropValue($"{param}");
+            var defaultValue = DefaultCoefficients.GetPropValue($"{paramName}");
+            var oldValue = coefficients.GetPropValue($"{paramName}");
             var comparisonResult = oldValue switch
             {
                 float value => Math.Abs(value - (float) defaultValue) < Tolerance,
                 string value => value == (string) defaultValue,
                 _ => throw new ArgumentOutOfRangeException()
             };
-            if (comparisonResult) coefficients.SetPropValue($"{param}", newValue);
+            if (comparisonResult) coefficients.SetPropValue($"{paramName}", newValue);
         }
 
-        DefaultCoefficients.SetPropValue($"{param}", newValue);
-        UpdateCheckboxState(param, newValue);
+        DefaultCoefficients.SetPropValue($"{paramName}", newValue);
+        UpdateCheckboxState(newValue, paramName);
 
-        charactersCoefficients.ForEach(cc => _repository.Update(cc));
+        charactersCoefficients.ForEach(characterCoefficients => _repository.Update(characterCoefficients));
     }
 }

@@ -5,7 +5,7 @@ namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
 internal class LeftWidget : WidgetNode
 {
-    internal LeftWidget(TestParams itemParam)
+    internal LeftWidget(ItemParams itemParam)
     {
         Node =
             new XElement("Widget",

@@ -5,7 +5,7 @@ namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
 internal class LeftRichTextWidget : WidgetNode
 {
-    internal LeftRichTextWidget(TestParams itemParam)
+    internal LeftRichTextWidget(ItemParams itemParam)
     {
         Node =
             new XElement("RichTextWidget",

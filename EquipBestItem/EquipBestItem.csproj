@@ -37,5 +37,9 @@
   <ItemGroup>
     <PackageReference Update="Bannerlord.ReferenceAssemblies.EarlyAccess" Version="1.7.2.316284" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UIExtenderEx\XmlGenerators\EquipBestItemMenuWidget" />
+  </ItemGroup>
   
 </Project>

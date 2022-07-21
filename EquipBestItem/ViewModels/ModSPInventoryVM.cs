@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using EquipBestItem.Extensions;
 using EquipBestItem.Layers;
 using EquipBestItem.Models;
 using EquipBestItem.Models.Entities;
+using EquipBestItem.Models.Enums;
 using EquipBestItem.UIExtenderEx;
 using SandBox.GauntletUI;
 using TaleWorlds.CampaignSystem;
@@ -20,14 +22,14 @@ using TaleWorlds.ScreenSystem;
 
 namespace EquipBestItem.ViewModels;
 
-internal partial class ModSPInventoryVM : ViewModel
+internal class ModSPInventoryVM : ViewModel
 {
     private readonly SPInventoryVM _originVM;
     private readonly SPInventoryVMMixin _mixinVM;
     private readonly BestItemManager _bestItemManager;
     private readonly SettingsRepository _settingsRepository;
     private readonly CharacterCoefficientsRepository _coefficientsRepository;
-    private SPItemVM?[] _bestItems = new SPItemVM[12];
+    public SPItemVM?[] BestItems = new SPItemVM[12];
     
     public ModSPInventoryVM(SPInventoryVM originVM, SPInventoryVMMixin mixinVM)
     {
@@ -48,7 +50,8 @@ internal partial class ModSPInventoryVM : ViewModel
     }
 
     private CharacterObject CurrentCharacter { get; set; } = InventoryManager.InventoryLogic.InitialEquipmentCharacter;
-    
+    public string CurrentCharacterName => _originVM.CurrentCharacterName;
+    public bool IsInWarSet => _originVM.IsInWarSet;
     
     public override void RefreshValues()
     {
@@ -70,7 +73,10 @@ internal partial class ModSPInventoryVM : ViewModel
     public void ExecuteEquipBestItem(string equipmentIndexName)
     {
         var equipmentIndex = Helper.ParseEnum<EquipmentIndex>(equipmentIndexName);
-        _bestItemManager.EquipBestItem(equipmentIndex, CurrentCharacter, ref _bestItems[(int)equipmentIndex]);
+        _bestItemManager.EquipBestItem(equipmentIndex, CurrentCharacter, ref BestItems[(int)equipmentIndex]);
+        _originVM.ExecuteRemoveZeroCounts();
+        _originVM.RefreshValues();
+        _originVM.GetMethod("UpdateCharacterEquipment");
     }
     
     /// <summary>
@@ -86,138 +92,64 @@ internal partial class ModSPInventoryVM : ViewModel
         OpenCloseCoefficientsSettingsLayer(equipmentIndex);
     }
 
-    private readonly SemaphoreSlim _semaphore = new(1);
-    private (CancellationTokenSource cts, Task task)? _state;
-
-    internal async Task RestartUpdateAsync()
-    {
-        Task? task;
-        
-        await _semaphore.WaitAsync();
-
-        try
-        {
-            if (_state.HasValue)
-            {
-                _state.Value.cts.Cancel();
-                _state.Value.cts.Dispose();
-
-                try
-                {
-                    await _state.Value.task;
-                }
-                catch (OperationCanceledException)
-                {
-                    InformationManager.DisplayMessage(new InformationMessage($"_state exc"));
-                }
-
-                _state = null;
-            }
-
-            var cts = new CancellationTokenSource();
-            task = UpdateAsync(cts.Token);
-
-            _state = (cts, task);
-        }
-        finally
-        {
-            _semaphore.Release();
-        }
-
-        try
-        {
-            await task;
-        }
-        catch (OperationCanceledException)
-        {
-            //InformationManager.DisplayMessage(new InformationMessage($"RestartUpdateAsync"));
-        }
-    }
-
+    private CancellationTokenSource? _cts;
+    
     /// <summary>
     /// Updating the viewmodel when you do something
     /// </summary>
-    internal async Task UpdateAsync(CancellationToken token)
+    internal async Task UpdateBestItemsAsync()
     {
+        if (_cts is not null)
+        {
+            _cts.Cancel();
+            _cts = null;
+        }
+
+        _cts = new CancellationTokenSource();
+        var token = _cts.Token;
+
         try
         {
-            var rightItemList = (bool) _settingsRepository.Read(Settings.IsRightPanelLocked).Value
+            var coefficients = _originVM.IsInWarSet
+                ? _coefficientsRepository.Read(CurrentCharacterName)
+                    .WarCoefficients
+                : _coefficientsRepository.Read(CurrentCharacterName)
+                    .CivilCoefficients;
+            var rightItems = (bool) _settingsRepository.Read(Settings.IsRightPanelLocked).Value
                 ? null
                 : _originVM.RightItemListVM;
-            var leftItemList = (bool) _settingsRepository.Read(Settings.IsLeftPanelLocked).Value
+            var leftItems = (bool) _settingsRepository.Read(Settings.IsLeftPanelLocked).Value
                 ? null
                 : _originVM.LeftItemListVM;
             
-            for (var equipIndex = EquipmentIndex.WeaponItemBeginSlot;
-                 equipIndex < EquipmentIndex.NumEquipmentSetSlots;
-                 equipIndex++)
+            var bestItems = new SPItemVM?[12];
+            for (var index = EquipmentIndex.WeaponItemBeginSlot; index < EquipmentIndex.NumEquipmentSetSlots; index++)
             {
-                token.ThrowIfCancellationRequested();
+                bestItems[(int) index] = await Task.Run(() => 
+                    _bestItemManager.GetBestItem(CurrentCharacter, index, coefficients, rightItems, leftItems), token);
 
-                var equipment = _originVM.IsInWarSet
-                    ? CurrentCharacter.FirstBattleEquipment
-                    : CurrentCharacter.FirstCivilianEquipment;
-                var coefficients = _originVM.IsInWarSet
-                    ? _coefficientsRepository.Read(CurrentCharacter.Name.ToString())
-                        .WarCoefficients[(int) equipIndex]
-                    : _coefficientsRepository.Read(CurrentCharacter.Name.ToString())
-                        .CivilCoefficients[(int) equipIndex];
-                _bestItems[(int) equipIndex] = await _bestItemManager.GetBestItemAsync(token, coefficients, equipment[equipIndex], equipIndex, rightItemList, leftItemList);
-                
-                SlotButtonUpdate(equipIndex, _bestItems[(int) equipIndex] is not null);
+                if (token.IsCancellationRequested) return;
             }
+            
+            BestItems = bestItems;
+
+            UpdateEquipButtons();
         }
-        catch (OperationCanceledException)
+        catch (MBException e)
         {
-            //InformationManager.DisplayMessage(new InformationMessage($"UpdateAsync exception num starts: {numberOfStarts}"));
-            throw;
-        }
-
-
-
-
-
-        void SlotButtonUpdate(EquipmentIndex index, bool value)
-        {
-            //InformationManager.DisplayMessage(new InformationMessage($"SlotButtonUpdate: {index.ToString()}"));
-            switch (index)
-            {
-                case EquipmentIndex.Head:
-                    _mixinVM.IsHeadButtonEnabled = value;
-                    break;
-                case EquipmentIndex.Cape:
-                    _mixinVM.IsCapeButtonEnabled = value;
-                    break;
-                case EquipmentIndex.Weapon0:
-                    _mixinVM.IsWeapon0ButtonEnabled = value;
-                    break;
-                case EquipmentIndex.Weapon1:
-                    _mixinVM.IsWeapon1ButtonEnabled = value;
-                    break;
-                case EquipmentIndex.Weapon2:
-                    _mixinVM.IsWeapon2ButtonEnabled = value;
-                    break;
-                case EquipmentIndex.Weapon3:
-                    _mixinVM.IsWeapon3ButtonEnabled = value;
-                    break;
-                case EquipmentIndex.Body:
-                    _mixinVM.IsBodyButtonEnabled = value;
-                    break;
-                case EquipmentIndex.Leg:
-                    _mixinVM.IsLegButtonEnabled = value;
-                    break;
-                case EquipmentIndex.Gloves:
-                    _mixinVM.IsGlovesButtonEnabled = value;
-                    break;
-                case EquipmentIndex.Horse:
-                    _mixinVM.IsHorseButtonEnabled = value;
-                    break;
-                case EquipmentIndex.HorseHarness:
-                    _mixinVM.IsHorseHarnessButtonEnabled = value;
-                    break;
-            }
+            Helper.ShowMessage($"{e.Message}");
         }
     }
+
+    private void UpdateEquipButtons()
+    {
+        for (var index = CustomEquipmentIndex.Weapon0; index <= CustomEquipmentIndex.HorseHarness; index++)
+        {
+            _mixinVM.SetPropValue($"Is{index}ButtonDisabled", BestItems[(int) index] is null);
+            _originVM.OnPropertyChanged($"{index}BestItem");
+        }
+    }
+    
 
     /// <summary>
     /// Updating the repository with missing characters.
@@ -270,7 +202,7 @@ internal partial class ModSPInventoryVM : ViewModel
 
         void OpenCoefficientSettings()
         {
-            coefficientsSettingsLayer = new CoefficientsSettingsLayer(17, equipmentIndex, _coefficientsRepository, _originVM);
+            coefficientsSettingsLayer = new CoefficientsSettingsLayer(17, equipmentIndex, _coefficientsRepository, this);
             inventoryScreen?.AddLayer(coefficientsSettingsLayer);
             coefficientsSettingsLayer.InputRestrictions.SetInputRestrictions();
         }
@@ -280,4 +212,74 @@ internal partial class ModSPInventoryVM : ViewModel
             inventoryScreen?.RemoveLayer(coefficientsSettingsLayer);
         }
     }
+
+    private void EquipCharacter(CharacterObject character)
+    {
+        var coefficients = IsInWarSet
+            ? _coefficientsRepository.Read(character.Name.ToString()).WarCoefficients
+            : _coefficientsRepository.Read(character.Name.ToString()).CivilCoefficients;
+        var rightItems = (bool) _settingsRepository.Read(Settings.IsRightPanelLocked).Value
+            ? null
+            : _originVM.RightItemListVM;
+        var leftItems = (bool) _settingsRepository.Read(Settings.IsLeftPanelLocked).Value
+            ? null
+            : _originVM.LeftItemListVM;
+        
+        for (var index = EquipmentIndex.WeaponItemBeginSlot; index < EquipmentIndex.NumEquipmentSetSlots; index++)
+        {
+            var bestItem = _bestItemManager.GetBestItem(character, index, coefficients, rightItems, leftItems);
+
+            _bestItemManager.EquipBestItem(index, character, ref bestItem);
+        }
+    }
+
+    public void EquipCurrentCharacter()
+    {
+        Stopwatch stopwatch = new Stopwatch();
+        
+        stopwatch.Start();
+        //////////////
+        EquipCharacter(CurrentCharacter);
+        
+        _originVM.ExecuteRemoveZeroCounts();
+        _originVM.RefreshValues();
+        _originVM.GetMethod("UpdateCharacterEquipment");
+        
+        stopwatch.Stop();
+        Helper.ShowMessage($"EquipCurrentCharacter {stopwatch.ElapsedMilliseconds}ms");
+    }
+
+    public void EquipAllCharacters()
+    {
+        var roster = InventoryManager.InventoryLogic.RightMemberRoster.GetTroopRoster();
+
+        foreach (var rosterElement in roster.Where(rosterElement => rosterElement.Character.IsHero))
+        {
+            EquipCharacter(rosterElement.Character);
+        }
+        
+        _originVM.ExecuteRemoveZeroCounts();
+        _originVM.RefreshValues();
+        _originVM.GetMethod("UpdateCharacterEquipment");
+    }
+
+    public void SwitchLeftPanelLock()
+    {
+        var settings = _settingsRepository.Read(Settings.IsLeftPanelLocked);
+        settings.Value = !(bool)settings.Value;
+        _settingsRepository.Update(settings);
+        Task.Run(async () => await UpdateBestItemsAsync());
+    }
+    
+    public void SwitchRightPanelLock()
+    {
+        var settings = _settingsRepository.Read(Settings.IsRightPanelLocked);
+        settings.Value = !(bool)settings.Value;
+        _settingsRepository.Update(settings);
+        Task.Run(async () => await UpdateBestItemsAsync());
+    }
+
+    public bool IsLeftPanelLocked => (bool) _settingsRepository.Read(Settings.IsLeftPanelLocked).Value;
+    public bool IsRightPanelLocked => (bool) _settingsRepository.Read(Settings.IsRightPanelLocked).Value;
+    
 }

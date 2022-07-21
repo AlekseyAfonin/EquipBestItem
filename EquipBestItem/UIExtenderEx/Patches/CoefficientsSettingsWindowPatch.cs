@@ -20,7 +20,7 @@ public class CoefficientsSettingsWindowPatch : PrefabExtensionInsertPatch
     
     public CoefficientsSettingsWindowPatch()
     {
-        foreach (var paramName in (TestParams[]) Enum.GetValues(typeof(TestParams)))
+        foreach (var paramName in (ItemParams[]) Enum.GetValues(typeof(ItemParams)))
         {
             var row = new CoefficientsSettingsListPanel(paramName);
             var child = new XDocument(row.Node);

@@ -5,7 +5,7 @@ namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
 internal class LeftListPanel : WidgetNode
 {
-    internal LeftListPanel(TestParams itemParam)
+    internal LeftListPanel(ItemParams itemParam)
     {
         Node =
             new XElement("ListPanel",

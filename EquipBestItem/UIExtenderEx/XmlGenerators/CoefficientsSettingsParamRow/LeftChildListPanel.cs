@@ -5,7 +5,7 @@ namespace EquipBestItem.UIExtenderEx.XmlGenerators.CoefficientsSettingsParamRow;
 
 internal class LeftChildListPanel : WidgetNode
 {
-    internal LeftChildListPanel(TestParams itemParam)
+    internal LeftChildListPanel(ItemParams itemParam)
     {
         Node =
             new XElement("ListPanel",
@@ -14,7 +14,7 @@ internal class LeftChildListPanel : WidgetNode
                 new XAttribute("HeightSizePolicy", $"CoverChildren"),
                 new XAttribute("HorizontalAlignment", "Left"),
                 new XAttribute("VerticalAlignment", $"Center"),
-                new XAttribute("IsVisible", true), //Todo Check
+                new XAttribute("IsVisible", true),
                 new XElement("Children", new LeftRichTextWidget(itemParam).Node));
     }
 }

@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
 using EquipBestItem.Models.Entities;
 using EquipBestItem.Models.Enums;
+using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
+using TaleWorlds.MountAndBlade;
 using TaleWorlds.ScreenSystem;
 
 namespace EquipBestItem.Extensions;
@@ -16,87 +19,130 @@ internal static class CalculateExtensions
     {
         var itemObject = equipmentElement.Item;
 
-        if (itemObject.HasArmorComponent) return GetComponentValue(itemObject.ArmorComponent, ItemTypes.Armor);
-        if (itemObject.HasHorseComponent) return GetComponentValue(itemObject.HorseComponent, ItemTypes.Horse);
-        if (!itemObject.HasWeaponComponent) return 0;
-        
-        var pw = itemObject.WeaponComponent.PrimaryWeapon;
-        
-        if (pw.IsRangedWeapon) return GetComponentValue(pw, pw.IsConsumable ? ItemTypes.Consumable : ItemTypes.RangedWeapon);
-        if (pw.IsMeleeWeapon) return GetComponentValue(pw, ItemTypes.MeleeWeapon);
-        if (pw.IsShield) return GetComponentValue(pw, ItemTypes.Shield);
-        
-        return 0;
+        if (itemObject.HasArmorComponent) return GetComponentValue(0, ItemTypes.Armor);
+        if (itemObject.HasHorseComponent) return GetComponentValue(0, ItemTypes.Horse);
+        if (!itemObject.HasWeaponComponent) return 0f;
 
-        float GetComponentValue<T>(T itemComponent, ItemParams itemParams)
+        var pw = equipmentElement.Item.PrimaryWeapon;
+        //var usageIndex = 0;
+
+        switch (pw.WeaponClass)
+        {
+            case WeaponClass.Dagger:
+            case WeaponClass.OneHandedSword:
+            case WeaponClass.TwoHandedSword:
+            case WeaponClass.OneHandedAxe:
+            case WeaponClass.TwoHandedAxe:
+            case WeaponClass.Mace:
+            case WeaponClass.Pick:
+            case WeaponClass.TwoHandedMace:
+            case WeaponClass.OneHandedPolearm:
+            case WeaponClass.TwoHandedPolearm:
+            case WeaponClass.LowGripPolearm:
+                return GetComponentValue(0, ItemTypes.MeleeWeapon);
+            case WeaponClass.Arrow:
+            case WeaponClass.Bolt:
+            case WeaponClass.Cartridge:
+                return GetComponentValue(0, ItemTypes.Ammo);
+            case WeaponClass.Bow:
+                return GetComponentValue(0, ItemTypes.Bow);
+            case WeaponClass.Crossbow:
+            case WeaponClass.Pistol:
+            case WeaponClass.Musket:
+                return GetComponentValue(0, ItemTypes.Crossbow);
+            case WeaponClass.Stone:
+            case WeaponClass.Boulder:
+            case WeaponClass.ThrowingAxe:
+            case WeaponClass.ThrowingKnife:
+            case WeaponClass.Javelin:
+                return GetComponentValue(0, ItemTypes.Thrown);
+            case WeaponClass.SmallShield:
+            case WeaponClass.LargeShield:
+                return GetComponentValue(0, ItemTypes.Shield);
+            case WeaponClass.Undefined:
+            case WeaponClass.Banner:
+            case WeaponClass.NumClasses:
+            default:
+                return 0f;
+        }
+
+        float GetComponentValue(int indexUsage = 0, params ItemParams[] itemParams)
         {
             float sumCoefficients = 0;
             float value = 0;
 
-            foreach (var param in itemParams.GetFlags())
+            foreach (var param in itemParams)
             {
-                var coefficient = GetPropValue(coefficients, param.ToString());
+                var coefficientValue = coefficients.GetCoefficientValue(param);
 
-                if (coefficient == 0) continue;
+                if (coefficientValue == 0) continue;
                 
-                sumCoefficients += coefficient;
+                sumCoefficients += coefficientValue;
                 
                 // The weight is not in the properties of the component, so we take it from the parent object
-                value += param == ItemParams.Weight 
-                    ? itemObject.Weight * coefficient 
-                    : itemComponent.GetPropModValue(equipmentElement.ItemModifier, param) * coefficient;
+                value += param == ItemParams.Weight
+                    ? equipmentElement.GetEquipmentElementWeight() * coefficientValue
+                    : equipmentElement.GetModifiedValue(param, indexUsage) * coefficientValue;
             }
             
             return sumCoefficients > 0 ? value / sumCoefficients : 0;
         }
-        
-        float GetPropValue(Coefficients item, string propName)
-        {
-            var propertyValue = item.GetType().GetProperty(propName)?.GetValue(item);
-            return Convert.ToSingle(propertyValue);
-        }
     }
-    
-    private static float GetPropModValue<T>(this T item, ItemModifier? itemModifier, ItemParams itemParams)
+
+    private static float GetCoefficientValue(this Coefficients coefficients, ItemParams itemParam) => itemParam switch
     {
-        var propertyValue = item?.GetType().GetProperty(itemParams.ToString())?.GetValue(item);
-        
-        return itemModifier is null
-            ? Convert.ToSingle(propertyValue)
-            : propertyValue switch
-            {
-                int v => ApplyIntModifier(v),                 
-                short v => ApplyShortModifier(v),                                      
-                _ => throw new ArgumentOutOfRangeException()
-            };
-        
-        int ApplyIntModifier(int value) =>
-            itemParams switch
-            {
-                ItemParams.HeadArmor => Math.Max(0, itemModifier.ModifyArmor(value)),
-                ItemParams.BodyArmor => Math.Max(0, itemModifier.ModifyArmor(value)),
-                ItemParams.ArmArmor => Math.Max(0, itemModifier.ModifyArmor(value)),
-                ItemParams.LegArmor => Math.Max(0, itemModifier.ModifyArmor(value)),
-                ItemParams.ChargeDamage => Math.Max(0, itemModifier.ModifyMountCharge(value)),
-                ItemParams.HitPoints => Math.Max(0, itemModifier.ModifyMountHitPoints(value)),
-                ItemParams.Maneuver => Math.Max(0, itemModifier.ModifyMountManeuver(value)),
-                ItemParams.Speed => Math.Max(0, itemModifier.ModifyMountSpeed(value)),
-                ItemParams.ThrustSpeed => Math.Max(0, itemModifier.ModifySpeed(value)),
-                ItemParams.SwingSpeed => Math.Max(0, itemModifier.ModifySpeed(value)),
-                ItemParams.MissileSpeed => Math.Max(0, itemModifier.ModifyMissileSpeed(value)),
-                ItemParams.MissileDamage => Math.Max(0, itemModifier.ModifyDamage(value)),            
-                ItemParams.ThrustDamage => Math.Max(0, itemModifier.ModifyDamage(value)),
-                ItemParams.SwingDamage => Math.Max(0, itemModifier.ModifyDamage(value)),
-                ItemParams.WeaponLength => value,
-                ItemParams.Accuracy => value,
-                ItemParams.Handling => value,
-                _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
-            };
-        
-        short ApplyShortModifier(short value) => itemParams switch
-            {
-                ItemParams.MaxDataValue => Math.Max((short)0, itemModifier.ModifyHitPoints(value)),
-                _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
-            };
-    }
+        ItemParams.HeadArmor => coefficients.HeadArmor,
+        ItemParams.BodyArmor => coefficients.BodyArmor,
+        ItemParams.ArmArmor => coefficients.ArmArmor,
+        ItemParams.LegArmor => coefficients.LegArmor,
+        ItemParams.ChargeDamage => coefficients.ChargeDamage,
+        ItemParams.HitPoints => coefficients.HitPoints,
+        ItemParams.Maneuver => coefficients.Maneuver,
+        ItemParams.Speed => coefficients.Speed,
+        ItemParams.MaxDataValue => coefficients.MaxDataValue,
+        ItemParams.ThrustSpeed => coefficients.ThrustSpeed,
+        ItemParams.SwingSpeed => coefficients.SwingSpeed,
+        ItemParams.MissileSpeed => coefficients.MissileSpeed,
+        ItemParams.MissileDamage => coefficients.MissileDamage,
+        ItemParams.WeaponLength => coefficients.WeaponLength,
+        ItemParams.ThrustDamage => coefficients.ThrustDamage,
+        ItemParams.SwingDamage => coefficients.SwingDamage,
+        ItemParams.Accuracy => coefficients.Accuracy,
+        ItemParams.Handling => coefficients.Handling,
+        ItemParams.Weight => coefficients.Weight,
+        _ => throw new ArgumentOutOfRangeException(nameof(itemParam), itemParam, null)
+    };
+
+    private static int GetModifiedValue(this EquipmentElement item, ItemParams itemParam, int weaponUsage = 0) =>
+        itemParam switch
+        {
+            ItemParams.HeadArmor => item.GetModifiedHeadArmor(),
+            ItemParams.BodyArmor when item.Item.Type is ItemObject.ItemTypeEnum.HorseHarness => item
+                .GetModifiedMountBodyArmor(),
+            ItemParams.BodyArmor when item.Item.Type is not ItemObject.ItemTypeEnum.HorseHarness => item
+                .GetModifiedBodyArmor(),
+            ItemParams.ArmArmor => item.GetModifiedArmArmor(),
+            ItemParams.LegArmor => item.GetModifiedLegArmor(),
+            ItemParams.ChargeDamage => item.GetModifiedMountCharge(EquipmentElement.Invalid),
+            ItemParams.HitPoints => item.GetModifiedMountHitPoints(),
+            ItemParams.Maneuver => item.GetModifiedMountManeuver(EquipmentElement.Invalid),
+            ItemParams.Speed => item.GetModifiedMountSpeed(EquipmentElement.Invalid),
+            ItemParams.MaxDataValue when item.Item.Weapons[weaponUsage].IsShield => 
+                item.GetModifiedMaximumHitPointsForUsage(weaponUsage),
+            ItemParams.MaxDataValue when item.Item.Weapons[weaponUsage].IsConsumable => 
+                item.GetModifiedStackCountForUsage(weaponUsage),
+            ItemParams.MaxDataValue when item.Item.Type is ItemObject.ItemTypeEnum.Crossbow
+                or ItemObject.ItemTypeEnum.Musket
+                or ItemObject.ItemTypeEnum.Pistol => item.Item.Weapons[weaponUsage].MaxDataValue,
+            ItemParams.ThrustSpeed => item.GetModifiedThrustDamageForUsage(weaponUsage),
+            ItemParams.SwingSpeed => item.GetModifiedSwingSpeedForUsage(weaponUsage),
+            ItemParams.MissileSpeed => item.GetModifiedMissileSpeedForUsage(weaponUsage),
+            ItemParams.MissileDamage => item.GetModifiedMissileDamageForUsage(weaponUsage),
+            ItemParams.WeaponLength => item.Item.Weapons[weaponUsage].WeaponLength,
+            ItemParams.ThrustDamage => item.GetModifiedThrustDamageForUsage(weaponUsage),
+            ItemParams.SwingDamage => item.GetModifiedSwingDamageForUsage(weaponUsage),
+            ItemParams.Accuracy => item.Item.Weapons[weaponUsage].Accuracy,
+            ItemParams.Handling => item.GetModifiedHandlingForUsage(weaponUsage),
+            _ => 0
+        };
 }
