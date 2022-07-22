@@ -14,7 +14,7 @@ internal class LeftRichTextWidget : WidgetNode
                 new XAttribute("MarginRight", 0),
                 new XAttribute("VerticalAlignment", $"Center"),
                 new XAttribute("Brush", "SPOptions.OptionName.Text"),
-                new XAttribute("IsEnabled", false),
+                //new XAttribute("IsEnabled", false),
                 new XAttribute("Text", $"@{itemParam}Text"));
     }
 }

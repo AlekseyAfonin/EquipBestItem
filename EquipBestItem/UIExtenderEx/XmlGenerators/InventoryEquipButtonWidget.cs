@@ -42,6 +42,14 @@ internal class InventoryEquipButtonWidget : WidgetNode
                             new XAttribute("SuggestedWidth", 14),
                             new XAttribute("SuggestedHeight", 14),
                             new XAttribute("HorizontalAlignment", $"Left"),
-                            new XAttribute("Brush", $"EquipBestItem.SlotButton")))));
+                            new XAttribute("Brush", $"EquipBestItem.SlotButton"),
+                            new XElement("Children",
+                                new XElement("HintWidget",
+                                    new XAttribute("DoNotAcceptEvents", true),
+                                    new XAttribute("DataSource", "{ButtonEquipHint}"),
+                                    new XAttribute("WidthSizePolicy", "StretchToParent"),
+                                    new XAttribute("HeightSizePolicy", $"StretchToParent"),
+                                    new XAttribute("Command.HoverBegin", $"ExecuteBeginHint"),
+                                    new XAttribute("Command.HoverEnd", $"ExecuteEndHint")))))));
     }
 }

@@ -20,7 +20,7 @@
     <SubModule>
       <Name value="$modulename$" />
       <DLLName value="$moduleid$.$gameversion$.dll" />
-      <SubModuleClassType value="$moduleid$.SubModule" />
+      <SubModuleClassType value="$moduleid$.EquipBestItemSubModule" />
       <Tags />
     </SubModule>
   </SubModules>

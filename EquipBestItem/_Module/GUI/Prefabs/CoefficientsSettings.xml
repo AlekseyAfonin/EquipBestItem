@@ -57,8 +57,9 @@
                                               Brush="Popup.Button.Base" Command.Click="ExecuteDefault"
                                               UpdateChildrenStates="true">
                                     <Children>
+                                        <HintWidget DataSource="{ButtonDefaultHint}" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" />
                                         <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"
-                                                    Brush="Popup.Button.Text" Text="Default"/>
+                                                    Brush="Popup.Button.Text" Text="@ButtonDefaultText"/>
                                     </Children>
                                 </ButtonWidget>
                                 <!--Lock Button-->
@@ -68,8 +69,9 @@
                                               Brush="Popup.Button.Base" Command.Click="ExecuteLock"
                                               UpdateChildrenStates="true">
                                     <Children>
+                                        <HintWidget DataSource="{ButtonLockHint}" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" />
                                         <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"
-                                                    Brush="Popup.Button.Text" Text="Lock"/>
+                                                    Brush="Popup.Button.Text" Text="@ButtonLockText"/>
                                     </Children>
                                 </ButtonWidget>
                             </Children>

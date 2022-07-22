@@ -29,21 +29,6 @@ internal partial class CoefficientsSettingsVM
     [DataSourceProperty] public string HandlingText { get; } = new TextObject("{=YOSEIvyf}Handling: ").ToString();
     [DataSourceProperty] public string WeaponBodyArmorText { get; } = new TextObject("{=bLWyjOdS}Body Armor: ").ToString();
 
-    /* Template percent text
-    [DataSourceProperty]
-    public string _PercentText
-    {
-        get => _PercentText;
-        set
-        {
-            if (_PercentText == value) return;
-            _PercentText = value;
-            OnPropertyChanged();
-        }
-    }
-   */
-
-
     [DataSourceProperty]
     public string HeaderText
     {

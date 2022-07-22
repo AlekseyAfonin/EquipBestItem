@@ -40,6 +40,7 @@
 
   <ItemGroup>
     <Folder Include="UIExtenderEx\XmlGenerators\EquipBestItemMenuWidget" />
+    <Folder Include="_Module\ModuleData" />
   </ItemGroup>
   
 </Project>

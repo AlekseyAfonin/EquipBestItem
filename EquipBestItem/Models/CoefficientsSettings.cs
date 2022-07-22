@@ -10,7 +10,9 @@ using EquipBestItem.Models.Entities;
 using EquipBestItem.Models.Enums;
 using EquipBestItem.ViewModels;
 using SandBox.GauntletUI;
+using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 using TaleWorlds.ScreenSystem;
 
 namespace EquipBestItem.Models;
@@ -184,4 +186,22 @@ internal class CoefficientsSettings
 
         charactersCoefficients.ForEach(characterCoefficients => _repository.Update(characterCoefficients));
     }
+
+    public string GetHeaderText(EquipmentIndex equipmentIndex) => equipmentIndex switch
+    {
+        EquipmentIndex.WeaponItemBeginSlot => new TextObject("{=2RIyK1bp}Weapons") + " 1",
+        EquipmentIndex.Weapon1 => new TextObject("{=2RIyK1bp}Weapons") + " 2",
+        EquipmentIndex.Weapon2 => new TextObject("{=2RIyK1bp}Weapons") + " 3",
+        EquipmentIndex.Weapon3 => new TextObject("{=2RIyK1bp}Weapons") + " 4",
+        EquipmentIndex.Weapon4 => new TextObject("{=2RIyK1bp}Weapons") + " 5",
+        EquipmentIndex.Head => new TextObject("{=O3dhjtOS}Head Armor").ToString(),
+        EquipmentIndex.Body => new TextObject("{=HkfY3Ds5}Body Armor").ToString(),
+        EquipmentIndex.Leg => new TextObject("{=11aiaODt}Foot Armor").ToString(),
+        EquipmentIndex.Gloves => new TextObject("{=kx7q8ybD}Arm Armor").ToString(),
+        EquipmentIndex.Cape => new TextObject("{=k8QpbFnj}Cape").ToString(),
+        EquipmentIndex.Horse => new TextObject("{=mountnoun}Mount").ToString(),
+        EquipmentIndex.HorseHarness => new TextObject("{=b5t34yLX}Horse Harness").ToString(),
+        _ => throw new ArgumentOutOfRangeException(nameof(equipmentIndex), equipmentIndex, null)
+    };
+
 }

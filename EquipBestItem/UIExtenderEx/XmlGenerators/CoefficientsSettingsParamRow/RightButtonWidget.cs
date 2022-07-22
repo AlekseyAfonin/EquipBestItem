@@ -7,7 +7,7 @@ internal class RightButtonWidget : WidgetNode
 {
     internal RightButtonWidget(ItemParams itemParam)
     {
-        Node = 
+        Node =
             new XElement("ButtonWidget",
                 new XAttribute("DoNotPassEventsToChildren", "true"),
                 new XAttribute("WidthSizePolicy", "Fixed"),
@@ -24,6 +24,14 @@ internal class RightButtonWidget : WidgetNode
                 new XAttribute("IsSelected", $"@{itemParam}IsDefault"),
                 new XAttribute("ToggleIndicator", "ToggleIndicator"),
                 new XAttribute("UpdateChildrenStates", "true"),
-                new XElement("Children", new RightButtonWidgetImageWidget().Node));
+                new XElement("Children",
+                    new XElement("HintWidget",
+                        new XAttribute("DoNotAcceptEvents", true),
+                        new XAttribute("DataSource", "{CheckboxHint}"),
+                        new XAttribute("WidthSizePolicy", "StretchToParent"),
+                        new XAttribute("HeightSizePolicy", $"StretchToParent"),
+                        new XAttribute("Command.HoverBegin", $"ExecuteBeginHint"),
+                        new XAttribute("Command.HoverEnd", $"ExecuteEndHint")),
+                    new RightButtonWidgetImageWidget().Node));
     }
 }

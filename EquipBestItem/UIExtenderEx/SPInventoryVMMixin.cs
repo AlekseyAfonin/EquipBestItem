@@ -11,6 +11,8 @@ using EquipBestItem.ViewModels;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection;
+using TaleWorlds.Localization;
 
 namespace EquipBestItem.UIExtenderEx;
 
@@ -110,13 +112,43 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         ModSPInventory.OnFinalize();
         base.OnFinalize();
     }
-    
+
     public override void OnRefresh()
     {
         base.OnRefresh();
         Task.Run(async () => await ModSPInventory.UpdateBestItemsAsync());
     }
-
+    
+    [DataSourceProperty] 
+    public HintViewModel ButtonEquipCurrentHint { get; } = 
+        new (new TextObject("{=ebi_hint_equip_current}Equip current character"));
+    
+    [DataSourceProperty] 
+    public HintViewModel ButtonEquipAllHint { get; } = 
+        new (new TextObject("{=ebi_hint_equip_all}Equip all characters"));
+    
+    [DataSourceProperty]
+    public HintViewModel ButtonLeftPanelLockHint { get; } = 
+        new (new TextObject("{=ebi_hint_left_panel_lock}Disable search in left-hand items"));
+    
+    [DataSourceProperty]
+    public HintViewModel ButtonLeftPanelUnlockHint { get; } = 
+        new (new TextObject("{=ebi_hint_left_panel_unlock}Enable search in the left-hand items"));
+    
+    [DataSourceProperty]
+    public HintViewModel ButtonRightPanelLockHint { get; } = 
+        new (new TextObject("{=ebi_hint_right_panel_lock}Disable search in right-hand items"));
+    
+    [DataSourceProperty]
+    public HintViewModel ButtonRightPanelUnlockHint { get; } = 
+        new (new TextObject("{=ebi_hint_right_panel_unlock}Enable search in right-hand items"));
+    
+    [DataSourceProperty]
+    public HintViewModel ButtonMenuHideHint { get; } = new (new TextObject("{=ebi_hint_menu_hide}Hide buttons panel"));
+    
+    [DataSourceProperty]
+    public HintViewModel ButtonMenuShowHint { get; } = new (new TextObject("{=ebi_hint_menu_show}Show buttons panel"));
+    
     private bool _isHeadButtonDisabled;
 
     [DataSourceProperty]
@@ -126,7 +158,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isHeadButtonDisabled == value) return;
-            
             _isHeadButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -142,7 +173,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isCapeButtonDisabled == value) return;
-            
             _isCapeButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -158,7 +188,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isBodyButtonDisabled == value) return;
-            
             _isBodyButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -174,7 +203,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isLegButtonDisabled == value) return;
-            
             _isLegButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -190,7 +218,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isGlovesButtonDisabled == value) return;
-            
             _isGlovesButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -206,7 +233,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isHorseButtonDisabled == value) return;
-            
             _isHorseButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -222,7 +248,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isHorseHarnessButtonDisabled == value) return;
-            
             _isHorseHarnessButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -238,7 +263,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isWeapon0ButtonDisabled == value) return;
-            
             _isWeapon0ButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -254,7 +278,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isWeapon1ButtonDisabled == value) return;
-            
             _isWeapon1ButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -270,7 +293,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isWeapon2ButtonDisabled == value) return;
-            
             _isWeapon2ButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -286,7 +308,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isWeapon3ButtonDisabled == value) return;
-            
             _isWeapon3ButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -302,7 +323,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isLeftMenuVisible == value) return;
-            
             _isLeftMenuVisible = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -318,7 +338,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isRightMenuVisible == value) return;
-            
             _isRightMenuVisible = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -334,7 +353,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isLeftPanelLocked == value) return;
-            
             _isLeftPanelLocked = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -342,6 +360,7 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
             ViewModel!.OnPropertyChanged("LeftOpenedLockIsHidden");
         }
     }
+    
     [DataSourceProperty]
     public bool LeftClosedLockIsHidden => IsLeftPanelLocked;
 
@@ -357,7 +376,6 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
         set
         {
             if (_isRightPanelLocked == value) return;
-            
             _isRightPanelLocked = value;
             ViewModel!.OnPropertyChanged();
             ModSPInventory.OnPropertyChanged();
@@ -381,7 +399,9 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
     [DataSourceProperty] public SPItemVM? Weapon1BestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Weapon1];
     [DataSourceProperty] public SPItemVM? Weapon2BestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Weapon2];
     [DataSourceProperty] public SPItemVM? Weapon3BestItem => ModSPInventory.BestItems[(int) EquipmentIndex.Weapon3];
-    [DataSourceProperty] public SPItemVM? HorseHarnessBestItem => ModSPInventory.BestItems[(int) EquipmentIndex.HorseHarness];
+    [DataSourceProperty] public SPItemVM? HorseHarnessBestItem => 
+        ModSPInventory.BestItems[(int) EquipmentIndex.HorseHarness];
+    
     
 
     [DataSourceMethod]
@@ -448,10 +468,4 @@ public sealed class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
     {
         ViewModel?.ExecuteResetTranstactions();
     }
-    
-    // [DataSourceMethod]
-    // private void EquipEquipment(SPItemVM itemVM)
-    // {
-    //     InformationManager.DisplayMessage(new InformationMessage($"EquipEquipment test {Time.ApplicationTime}"));
-    // }
 }
