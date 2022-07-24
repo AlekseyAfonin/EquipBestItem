@@ -38,7 +38,7 @@ internal class CoefficientsSettings
         _currentCharacterCoefficients = _repository.Read(_modVM.CurrentCharacterName);
         _defaultCharacterCoefficients = _repository.Read(CharacterCoefficients.Default);
 
-        VisibleParams = GetVisibleParams();
+        _visibleParams = GetVisibleParams();
     }
 
     public void LoadValues()
@@ -52,6 +52,12 @@ internal class CoefficientsSettings
             UpdateCheckboxState(value, paramName);
         }
 
+        if (_equipmentIndex < CustomEquipmentIndex.Head)
+        {
+            _vm.WeaponClassIsHidden = false;
+            _vm.WeaponClass = Coefficients.WeaponClass;
+        }
+        
         UpdateVisibleParamsPercentText();
 
         //_vm.PropertyChanged += OnPropertyChanged;
@@ -61,6 +67,7 @@ internal class CoefficientsSettings
     private void OnPropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
     {
         Coefficients.SetPropValue($"{e.PropertyName}", e.Value);
+        //Coefficients.SetPropValue($"{e.PropertyName}", Enum.Parse(typeof(WeaponClass),e.Value.ToString()));
         UpdateVisibleParamsPercentText();
         Task.Run(async () => await _modVM.UpdateBestItemsAsync());
     }
@@ -73,7 +80,35 @@ internal class CoefficientsSettings
         ? _defaultCharacterCoefficients.WarCoefficients[(int) _equipmentIndex]
         : _defaultCharacterCoefficients.CivilCoefficients[(int) _equipmentIndex];
 
-    private IEnumerable<ItemParams> VisibleParams { get; }
+    private IEnumerable<ItemParams> _visibleParams;
+    
+    public IEnumerable<ItemParams> VisibleParams
+    {
+        get => _visibleParams;
+        set
+        {
+            if (Equals(value, _visibleParams)) return;
+
+            foreach (var param in _visibleParams)
+            {
+                _vm.SetPropertyValue($"{param}IsHidden", true);
+            }
+
+            foreach (var param in value)
+            {
+                var paramName = param.ToString();
+                _vm.SetPropertyValue($"{paramName}IsHidden", false);
+                var paramValue = Coefficients.GetPropValue($"{paramName}");
+                _vm.SetPropertyValue($"{paramName}", paramValue);
+                UpdateCheckboxState(paramValue, paramName);
+                
+            }
+            
+            UpdateVisibleParamsPercentText();
+
+            _visibleParams = value;
+        }
+    }
 
     public void OnFinalize()
     {
@@ -81,26 +116,28 @@ internal class CoefficientsSettings
         _repository.Update(_defaultCharacterCoefficients);
         _vm.PropertyChangedWithValue -= OnPropertyChangedWithValue;
     }
-    
-    private ItemParams[] GetVisibleParams()
+
+    public WeaponClass GetSelectedWeaponClass()
     {
-        return _equipmentIndex switch
-        {
-            CustomEquipmentIndex.Weapon0 => ItemTypes.Weapon,
-            CustomEquipmentIndex.Weapon1 => ItemTypes.Weapon,
-            CustomEquipmentIndex.Weapon2 => ItemTypes.Weapon,
-            CustomEquipmentIndex.Weapon3 => ItemTypes.Weapon,
-            CustomEquipmentIndex.Weapon4 => ItemTypes.Weapon,
-            CustomEquipmentIndex.Head => ItemTypes.Head,
-            CustomEquipmentIndex.Body => ItemTypes.Armor,
-            CustomEquipmentIndex.Leg => ItemTypes.Legs,
-            CustomEquipmentIndex.Gloves => ItemTypes.Arms,
-            CustomEquipmentIndex.Cape => ItemTypes.Capes,
-            CustomEquipmentIndex.Horse => ItemTypes.Horse,
-            CustomEquipmentIndex.HorseHarness => ItemTypes.HorseHarness,
-            _ => throw new ArgumentOutOfRangeException(nameof(_equipmentIndex), _equipmentIndex, null)
-        };
+        return Coefficients.WeaponClass;
     }
+    
+    private IEnumerable<ItemParams> GetVisibleParams() => _equipmentIndex switch
+    {
+        CustomEquipmentIndex.Weapon0 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
+        CustomEquipmentIndex.Weapon1 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
+        CustomEquipmentIndex.Weapon2 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
+        CustomEquipmentIndex.Weapon3 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
+        CustomEquipmentIndex.Weapon4 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
+        CustomEquipmentIndex.Head => ItemTypes.Head,
+        CustomEquipmentIndex.Body => ItemTypes.Armor,
+        CustomEquipmentIndex.Leg => ItemTypes.Legs,
+        CustomEquipmentIndex.Gloves => ItemTypes.Arms,
+        CustomEquipmentIndex.Cape => ItemTypes.Capes,
+        CustomEquipmentIndex.Horse => ItemTypes.Horse,
+        CustomEquipmentIndex.HorseHarness => ItemTypes.HorseHarness,
+        _ => throw new ArgumentOutOfRangeException(nameof(_equipmentIndex), _equipmentIndex, null)
+    };
     
     public void UpdateCheckboxState(object propertyValue, [CallerMemberName] string? propertyName = null)
     {
@@ -108,7 +145,7 @@ internal class CoefficientsSettings
         var comparisonResult = propertyValue switch
         {
             float value => Math.Abs(value - (float) defaultValue) < Tolerance,
-            string value => value == (string) defaultValue,
+            WeaponClass value => value == (WeaponClass) defaultValue,
             _ => throw new ArgumentOutOfRangeException()
         };
         _vm.SetPropertyValue($"{propertyName}IsDefault", comparisonResult);
@@ -163,7 +200,9 @@ internal class CoefficientsSettings
     public void CheckboxClick(string paramName)
     {
         var charactersCoefficients = _repository.ReadAll().Where(p => p.Name != CharacterCoefficients.Default).ToList();
-        var newValue = _vm.GetPropertyValue($"{paramName}");
+        var newValue = paramName == "WeaponClass" 
+            ? Enum.Parse(typeof(WeaponClass), _vm.WeaponClassSelector?.SelectedItem.StringItem!) 
+            : _vm.GetPropertyValue($"{paramName}");
 
         foreach (var charCoefficients in charactersCoefficients)
         {
@@ -175,7 +214,7 @@ internal class CoefficientsSettings
             var comparisonResult = oldValue switch
             {
                 float value => Math.Abs(value - (float) defaultValue) < Tolerance,
-                string value => value == (string) defaultValue,
+                WeaponClass value => value == (WeaponClass) defaultValue,
                 _ => throw new ArgumentOutOfRangeException()
             };
             if (comparisonResult) coefficients.SetPropValue($"{paramName}", newValue);
@@ -189,18 +228,18 @@ internal class CoefficientsSettings
 
     public string GetHeaderText(EquipmentIndex equipmentIndex) => equipmentIndex switch
     {
-        EquipmentIndex.WeaponItemBeginSlot => new TextObject("{=2RIyK1bp}Weapons") + " 1",
+        EquipmentIndex.Weapon0 => new TextObject("{=2RIyK1bp}Weapons") + " 1",
         EquipmentIndex.Weapon1 => new TextObject("{=2RIyK1bp}Weapons") + " 2",
         EquipmentIndex.Weapon2 => new TextObject("{=2RIyK1bp}Weapons") + " 3",
         EquipmentIndex.Weapon3 => new TextObject("{=2RIyK1bp}Weapons") + " 4",
         EquipmentIndex.Weapon4 => new TextObject("{=2RIyK1bp}Weapons") + " 5",
-        EquipmentIndex.Head => new TextObject("{=O3dhjtOS}Head Armor").ToString(),
-        EquipmentIndex.Body => new TextObject("{=HkfY3Ds5}Body Armor").ToString(),
-        EquipmentIndex.Leg => new TextObject("{=11aiaODt}Foot Armor").ToString(),
-        EquipmentIndex.Gloves => new TextObject("{=kx7q8ybD}Arm Armor").ToString(),
-        EquipmentIndex.Cape => new TextObject("{=k8QpbFnj}Cape").ToString(),
-        EquipmentIndex.Horse => new TextObject("{=mountnoun}Mount").ToString(),
-        EquipmentIndex.HorseHarness => new TextObject("{=b5t34yLX}Horse Harness").ToString(),
+        EquipmentIndex.Head => GameTexts.FindText("str_inventory_helm_slot").ToString(),
+        EquipmentIndex.Body => GameTexts.FindText("str_inventory_armor_slot").ToString(),
+        EquipmentIndex.Leg => GameTexts.FindText("str_inventory_boot_slot").ToString(),
+        EquipmentIndex.Gloves => GameTexts.FindText("str_inventory_glove_slot").ToString(),
+        EquipmentIndex.Cape => GameTexts.FindText("str_inventory_cloak_slot").ToString(),
+        EquipmentIndex.Horse => GameTexts.FindText("str_inventory_mount_slot").ToString(),
+        EquipmentIndex.HorseHarness => GameTexts.FindText("str_inventory_mount_armor_slot").ToString(),
         _ => throw new ArgumentOutOfRangeException(nameof(equipmentIndex), equipmentIndex, null)
     };
 

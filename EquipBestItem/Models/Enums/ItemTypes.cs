@@ -1,8 +1,13 @@
+using System;
+using System.Collections.Generic;
+using TaleWorlds.Core;
+using TaleWorlds.Localization;
+
 namespace EquipBestItem.Models.Enums;
 
 internal static class ItemTypes
 {
-    public static readonly ItemParams[] Armor = 
+    public static readonly ItemParams[] Armor =
     {
         ItemParams.Weight,
         ItemParams.ArmArmor,
@@ -39,11 +44,11 @@ internal static class ItemTypes
 
     public static readonly ItemParams[] Thrown =
     {
-        ItemParams.Accuracy, 
-        ItemParams.Weight, 
-        ItemParams.MissileSpeed, 
+        ItemParams.Accuracy,
+        ItemParams.Weight,
+        ItemParams.MissileSpeed,
         ItemParams.MissileDamage,
-        ItemParams.WeaponLength, 
+        ItemParams.WeaponLength,
         ItemParams.MaxDataValue
     };
 
@@ -72,7 +77,7 @@ internal static class ItemTypes
         ItemParams.ThrustSpeed,
         ItemParams.MaxDataValue
     };
-    
+
     public static readonly ItemParams[] Shield =
     {
         ItemParams.Weight,
@@ -120,4 +125,29 @@ internal static class ItemTypes
         ItemParams.Weight,
         ItemParams.BodyArmor
     };
+
+    public static ItemParams[] GetParamsByWeaponClass(WeaponClass wc) => wc switch
+    {
+        WeaponClass.Undefined or WeaponClass.NumClasses or WeaponClass.Banner => Weapon,
+        >= WeaponClass.Dagger and <= WeaponClass.LowGripPolearm               => MeleeWeapon,
+        >= WeaponClass.Arrow and <= WeaponClass.Cartridge                     => Ammo,
+        WeaponClass.Bow                                                       => Bow,
+        >= WeaponClass.Stone and <= WeaponClass.Javelin                       => Thrown,
+        WeaponClass.Pistol or WeaponClass.Musket or WeaponClass.Crossbow      => Crossbow,
+        WeaponClass.SmallShield or WeaponClass.LargeShield                    => Shield,
+        _ => throw new ArgumentOutOfRangeException(nameof(wc), wc, null)
+    };
+
+    public static IEnumerable<string> GetParamsNames()
+    {
+        var names = new string[(int) WeaponClass.NumClasses];
+        names[(int) WeaponClass.Undefined] = new TextObject("{=ebi_undefined}Defined by the slot").ToString();
+
+        for (var i = (int)WeaponClass.Dagger; i < (int)WeaponClass.NumClasses; i++)
+        {
+            names[i] = GameTexts.FindText("str_inventory_weapon",$"{i}").ToString();
+        }
+
+        return names;
+    }
 }

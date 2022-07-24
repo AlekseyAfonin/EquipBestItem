@@ -18,5 +18,6 @@
         <string id="ebi_hint_right_panel_lock" text="Disable search in right-hand items" />
         <string id="ebi_hint_menu_hide" text="Hide buttons panel" />
         <string id="ebi_hint_menu_show" text="Show buttons panel" />
+        <string id="ebi_undefined" text="Defined by the slot" />
     </strings>
 </base>

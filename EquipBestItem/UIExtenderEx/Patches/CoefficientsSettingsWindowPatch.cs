@@ -33,5 +33,5 @@ public class CoefficientsSettingsWindowPatch : PrefabExtensionInsertPatch
     [PrefabExtensionXmlNodes]
     public IEnumerable<XmlNode> Nodes => _nodes;
     public override InsertType Type => InsertType.Child;
-    public override int Index => 1;
+    public override int Index => 3;
 }

@@ -24,47 +24,8 @@ internal static class CalculateExtensions
         if (!itemObject.HasWeaponComponent) return 0f;
 
         var pw = equipmentElement.Item.PrimaryWeapon;
-        //var usageIndex = 0;
 
-        switch (pw.WeaponClass)
-        {
-            case WeaponClass.Dagger:
-            case WeaponClass.OneHandedSword:
-            case WeaponClass.TwoHandedSword:
-            case WeaponClass.OneHandedAxe:
-            case WeaponClass.TwoHandedAxe:
-            case WeaponClass.Mace:
-            case WeaponClass.Pick:
-            case WeaponClass.TwoHandedMace:
-            case WeaponClass.OneHandedPolearm:
-            case WeaponClass.TwoHandedPolearm:
-            case WeaponClass.LowGripPolearm:
-                return GetComponentValue(0, ItemTypes.MeleeWeapon);
-            case WeaponClass.Arrow:
-            case WeaponClass.Bolt:
-            case WeaponClass.Cartridge:
-                return GetComponentValue(0, ItemTypes.Ammo);
-            case WeaponClass.Bow:
-                return GetComponentValue(0, ItemTypes.Bow);
-            case WeaponClass.Crossbow:
-            case WeaponClass.Pistol:
-            case WeaponClass.Musket:
-                return GetComponentValue(0, ItemTypes.Crossbow);
-            case WeaponClass.Stone:
-            case WeaponClass.Boulder:
-            case WeaponClass.ThrowingAxe:
-            case WeaponClass.ThrowingKnife:
-            case WeaponClass.Javelin:
-                return GetComponentValue(0, ItemTypes.Thrown);
-            case WeaponClass.SmallShield:
-            case WeaponClass.LargeShield:
-                return GetComponentValue(0, ItemTypes.Shield);
-            case WeaponClass.Undefined:
-            case WeaponClass.Banner:
-            case WeaponClass.NumClasses:
-            default:
-                return 0f;
-        }
+        return GetComponentValue(0, ItemTypes.GetParamsByWeaponClass(pw.WeaponClass));
 
         float GetComponentValue(int indexUsage = 0, params ItemParams[] itemParams)
         {

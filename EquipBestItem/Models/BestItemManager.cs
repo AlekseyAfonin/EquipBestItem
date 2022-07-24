@@ -46,7 +46,8 @@ internal class BestItemManager
         try
         {
             var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
-            var bestItemValue = equipment[index].IsEmpty ? 0 : equipment[index].GetItemValue(coefficients[(int) index]);
+            var bestItemValue = equipment[index].IsEmpty || WeaponClasNotEqual(equipment[index])
+                ? 0 : equipment[index].GetItemValue(coefficients[(int) index]);
 
             var validItems = itemsLists
                 .Where(items => items is not null)
@@ -63,7 +64,8 @@ internal class BestItemManager
                 bestItemValue = itemValue;
             }
 
-            bool IsValidItem(SPItemVM item)
+            // Фильтр предметов по условиям
+            bool IsValidItem(SPItemVM item) //TODO refactor
             {
                 if (!_originVM.IsInWarSet && !item.IsCivilianItem) return false;
                 if (!item.IsEquipableItem) return false;
@@ -73,18 +75,40 @@ internal class BestItemManager
                     return false;
                 if (equipment[EquipmentIndex.Horse].IsEmpty && item.ItemType == EquipmentIndex.HorseHarness)
                     return false;
-                if (item.ItemType != EquipmentIndex.Weapon0 || index is > EquipmentIndex.Weapon4)
+                if (item.ItemType != EquipmentIndex.Weapon0 || index > EquipmentIndex.Weapon4)
                     return item.ItemType == index;
                 
                 var itemPrimaryWeapon = item.ItemRosterElement.EquipmentElement.Item?.PrimaryWeapon;
                 var currentPrimaryWeapon = equipment[index].Item?.PrimaryWeapon;
                 
-                if (itemPrimaryWeapon?.WeaponClass != currentPrimaryWeapon?.WeaponClass) return false;
+                if (coefficients[(int) index].WeaponClass == WeaponClass.Undefined)
+                {
+                    if (itemPrimaryWeapon?.WeaponClass != currentPrimaryWeapon?.WeaponClass) return false;
+                }  
+                else
+                {
+                    if (coefficients[(int) index].WeaponClass != itemPrimaryWeapon?.WeaponClass) return false;
+                }
+
+                // Исключаем из поиска щиты, если щит уже надет
+                if (coefficients[(int) index].WeaponClass is not (WeaponClass.SmallShield or WeaponClass.LargeShield))
+                    return item.ItemType <= index;
                 
+                for (var i = EquipmentIndex.Weapon0; i <= EquipmentIndex.ExtraWeaponSlot; i++)
+                {
+                    if (equipment[i].Item?.PrimaryWeapon?.WeaponClass is WeaponClass.SmallShield
+                        or WeaponClass.LargeShield) return false;
+                }
+
                 return item.ItemType <= index;
             }
 
-            
+            // Проверка соответствия класса оружия слота, если выбран класс отружия отличный от WeaponClass.Undefined
+            bool WeaponClasNotEqual(EquipmentElement item)
+            {
+                return item.Item?.PrimaryWeapon?.WeaponClass != coefficients[(int)index].WeaponClass &&
+                       coefficients[(int)index].WeaponClass != WeaponClass.Undefined;
+            }
         }
         catch (Exception e)
         {

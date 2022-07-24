@@ -515,6 +515,19 @@ internal partial class CoefficientsSettingsVM
             _model.UpdateCheckboxState(value);
         }
     }
+    
+    [DataSourceProperty]
+    public WeaponClass WeaponClass
+    {
+        get => _weaponClass;
+        set
+        {
+            if (_weaponClass == value) return;
+            _weaponClass = value;
+            OnPropertyChangedWithValue(value);
+            _model.UpdateCheckboxState(value);
+        }
+    }
 
     [DataSourceProperty]
     public bool HeadArmorIsDefault
@@ -740,6 +753,18 @@ internal partial class CoefficientsSettingsVM
         {
             if (_handlingIsDefault == value) return;
             _handlingIsDefault = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    [DataSourceProperty]
+    public bool WeaponClassIsDefault
+    {
+        get => _weaponClassIsDefault;
+        set
+        {
+            if (_weaponClassIsDefault == value) return;
+            _weaponClassIsDefault = value;
             OnPropertyChanged();
         }
     }

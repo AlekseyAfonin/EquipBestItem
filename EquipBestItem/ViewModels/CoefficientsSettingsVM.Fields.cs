@@ -1,4 +1,5 @@
 using System;
+using TaleWorlds.Core;
 
 namespace EquipBestItem.ViewModels;
 
@@ -6,6 +7,9 @@ internal partial class CoefficientsSettingsVM
 {
     private const float Tolerance = 0.00001f;
     
+    private bool _weaponClassIsHidden = true;
+    private bool _weaponClassIsDefault;
+    private WeaponClass _weaponClass;
 
     private float _weight;                                      // Slider value which used in percent text
     private string _weightPercentText = string.Empty;           // Slider percent value of all visible params
