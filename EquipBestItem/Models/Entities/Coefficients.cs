@@ -1,5 +1,3 @@
-using System;
-using System.Xml.Serialization;
 using TaleWorlds.Core;
 
 namespace EquipBestItem.Models.Entities;

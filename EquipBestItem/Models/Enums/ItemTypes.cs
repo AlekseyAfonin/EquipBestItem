@@ -126,27 +126,28 @@ internal static class ItemTypes
         ItemParams.BodyArmor
     };
 
-    public static ItemParams[] GetParamsByWeaponClass(WeaponClass wc) => wc switch
+    public static ItemParams[] GetParamsByWeaponClass(WeaponClass wc)
     {
-        WeaponClass.Undefined or WeaponClass.NumClasses or WeaponClass.Banner => Weapon,
-        >= WeaponClass.Dagger and <= WeaponClass.LowGripPolearm               => MeleeWeapon,
-        >= WeaponClass.Arrow and <= WeaponClass.Cartridge                     => Ammo,
-        WeaponClass.Bow                                                       => Bow,
-        >= WeaponClass.Stone and <= WeaponClass.Javelin                       => Thrown,
-        WeaponClass.Pistol or WeaponClass.Musket or WeaponClass.Crossbow      => Crossbow,
-        WeaponClass.SmallShield or WeaponClass.LargeShield                    => Shield,
-        _ => throw new ArgumentOutOfRangeException(nameof(wc), wc, null)
-    };
+        return wc switch
+        {
+            WeaponClass.Undefined or WeaponClass.NumClasses or WeaponClass.Banner => Weapon,
+            >= WeaponClass.Dagger and <= WeaponClass.LowGripPolearm => MeleeWeapon,
+            >= WeaponClass.Arrow and <= WeaponClass.Cartridge => Ammo,
+            WeaponClass.Bow => Bow,
+            >= WeaponClass.Stone and <= WeaponClass.Javelin => Thrown,
+            WeaponClass.Pistol or WeaponClass.Musket or WeaponClass.Crossbow => Crossbow,
+            WeaponClass.SmallShield or WeaponClass.LargeShield => Shield,
+            _ => throw new ArgumentOutOfRangeException(nameof(wc), wc, null)
+        };
+    }
 
     public static IEnumerable<string> GetParamsNames()
     {
         var names = new string[(int) WeaponClass.NumClasses];
         names[(int) WeaponClass.Undefined] = new TextObject("{=ebi_undefined}Defined by the slot").ToString();
 
-        for (var i = (int)WeaponClass.Dagger; i < (int)WeaponClass.NumClasses; i++)
-        {
-            names[i] = GameTexts.FindText("str_inventory_weapon",$"{i}").ToString();
-        }
+        for (var i = (int) WeaponClass.Dagger; i < (int) WeaponClass.NumClasses; i++)
+            names[i] = GameTexts.FindText("str_inventory_weapon", $"{i}").ToString();
 
         return names;
     }

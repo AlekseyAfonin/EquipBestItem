@@ -7,13 +7,13 @@ using EquipBestItem.Models.Enums;
 namespace EquipBestItem.UIExtenderEx.Patches;
 
 /// <summary>
-/// https://butr.github.io/Bannerlord.UIExtenderEx/articles/v2/PrefabExtensionInsertPatch.html
+///     https://butr.github.io/Bannerlord.UIExtenderEx/articles/v2/PrefabExtensionInsertPatch.html
 /// </summary>
-[PrefabExtension(movie:"Inventory", "descendant::InventoryEquippedItemSlot[@Parameter.DropTag='Equipment_2']")]
+[PrefabExtension("Inventory", "descendant::InventoryEquippedItemSlot[@Parameter.DropTag='Equipment_2']")]
 public class InventoryWeapon2SlotPatch : PrefabExtensionInsertPatch
 {
     private readonly XmlDocument _xmlDocument;
-    
+
     public InventoryWeapon2SlotPatch()
     {
         var button = new InventoryEquipButtonWidget(CustomEquipmentIndex.Weapon2);
@@ -22,7 +22,11 @@ public class InventoryWeapon2SlotPatch : PrefabExtensionInsertPatch
         _xmlDocument.LoadXml(child.ToString());
     }
 
-    [PrefabExtensionXmlNode]
-    public XmlNode GetPrefabExtension() => _xmlDocument;
     public override InsertType Type => InsertType.Child;
+
+    [PrefabExtensionXmlNode]
+    public XmlNode GetPrefabExtension()
+    {
+        return _xmlDocument;
+    }
 }

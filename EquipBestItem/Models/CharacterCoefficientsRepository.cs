@@ -1,27 +1,26 @@
-using EquipBestItem.Models.Entities;
-using SharpRepository.Repository;
-using System.Collections;
 using System.Collections.Generic;
+using EquipBestItem.Models.Entities;
+using EquipBestItem.XmlRepository;
 
 namespace EquipBestItem.Models;
 
 internal class CharacterCoefficientsRepository
 {
-    private readonly IRepository<CharacterCoefficients, string> _repository;
+    private readonly IRepository<CharacterCoefficients> _repository;
 
-    internal CharacterCoefficientsRepository(IRepository<CharacterCoefficients, string> repository)
+    internal CharacterCoefficientsRepository(IRepository<CharacterCoefficients> repository)
     {
         _repository = repository;
     }
 
     internal void Create(CharacterCoefficients entity)
     {
-        _repository.Add(entity);
+        _repository.Create(entity);
     }
 
     internal CharacterCoefficients Read(string name)
     {
-        return _repository.Get(name);
+        return _repository.Read(name);
     }
 
     internal void Update(CharacterCoefficients entity)
@@ -33,9 +32,9 @@ internal class CharacterCoefficientsRepository
     {
         _repository.Delete(name);
     }
-    
+
     internal IEnumerable<CharacterCoefficients> ReadAll()
     {
-        return _repository.GetAll();
+        return _repository.ReadAll();
     }
 }

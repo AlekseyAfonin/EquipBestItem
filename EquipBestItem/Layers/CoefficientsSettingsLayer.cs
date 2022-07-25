@@ -1,20 +1,18 @@
 using EquipBestItem.Models;
-using EquipBestItem.UIExtenderEx;
 using EquipBestItem.ViewModels;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
-using TaleWorlds.GauntletUI.Data;
 
 namespace EquipBestItem.Layers;
 
 internal class CoefficientsSettingsLayer : GauntletLayer
 {
-    public readonly EquipmentIndex EquipmentIndex;
     private readonly CoefficientsSettingsVM _vm;
-    
+    public readonly EquipmentIndex EquipmentIndex;
+
     internal CoefficientsSettingsLayer(int localOrder, EquipmentIndex equipmentIndex,
-        CharacterCoefficientsRepository repository, ModSPInventoryVM modVM, string categoryId = "GauntletLayer", bool shouldClear = false) : 
+        CharacterCoefficientsRepository repository, ModSPInventoryVM modVM, string categoryId = "GauntletLayer",
+        bool shouldClear = false) :
         base(localOrder, categoryId, shouldClear)
     {
         _vm = new CoefficientsSettingsVM(equipmentIndex, repository, modVM);

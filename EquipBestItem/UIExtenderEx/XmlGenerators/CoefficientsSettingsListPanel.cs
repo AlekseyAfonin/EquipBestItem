@@ -18,9 +18,9 @@ internal class CoefficientsSettingsListPanel : WidgetNode
                 new XAttribute("HorizontalAlignment", "Center"),
                 new XAttribute("VerticalAlignment", "Top"),
                 new XAttribute("LayoutImp.LayoutMethod", "HorizontalLeftToRight"),
-                new XAttribute("MarginTop", $"!EBI.MainWindow.MarginTop"),
-                new XAttribute("Sprite", $"BlankWhiteSquare_9"),
-                new XAttribute("Color", $"#8B5C2200"),
+                new XAttribute("MarginTop", "!EBI.MainWindow.MarginTop"),
+                new XAttribute("Sprite", "BlankWhiteSquare_9"),
+                new XAttribute("Color", "#8B5C2200"),
                 new XElement("Children", new LeftListPanel(itemParam).Node, new RightListPanel(itemParam).Node));
     }
 }

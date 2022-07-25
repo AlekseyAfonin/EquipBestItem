@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+<base type="string">
     <tags>
-        <tag language="Русский" />
+        <tag language="Русский"/>
     </tags>
     <strings>
-        <string id="ebi_default" text="По умолчанию" />
-        <string id="ebi_lock" text="Отключить" />
-        <string id="ebi_hint_default" text="Сбросить к значениям по умолчанию" />
-        <string id="ebi_hint_lock" text="Отключить поиск для данного слота" />
-        <string id="ebi_hint_checkbox" text="Установить значением по умолчанию" />
-        <string id="ebi_hint_percent" text="Насколько параметр влияет при поиске предметов" />
-        <string id="ebi_hint_equip_current" text="Снарядить текущего персонажа" />
-        <string id="ebi_hint_equip_all" text="Снарядить всех персонажей" />
-        <string id="ebi_hint_left_panel_unlock" text="Включить поиск в левых предметах" />
-        <string id="ebi_hint_left_panel_lock" text="Отключить поиск в левых предметах" />
-        <string id="ebi_hint_right_panel_unlock" text="Включить поиск в правых предметах" />
-        <string id="ebi_hint_right_panel_lock" text="Отключить поиск в правых предметах" />
-        <string id="ebi_hint_menu_hide" text="Скрыть панель кнопок" />
-        <string id="ebi_hint_menu_show" text="Показать панель кнопок" />
-        <string id="ebi_undefined" text="Определяется слотом" />
+        <string id="ebi_default" text="По умолчанию"/>
+        <string id="ebi_lock" text="Отключить"/>
+        <string id="ebi_hint_default" text="Сбросить к значениям по умолчанию"/>
+        <string id="ebi_hint_lock" text="Отключить поиск для данного слота"/>
+        <string id="ebi_hint_checkbox" text="Установить значением по умолчанию"/>
+        <string id="ebi_hint_percent" text="Насколько параметр влияет при поиске предметов"/>
+        <string id="ebi_hint_equip_current" text="Снарядить текущего персонажа"/>
+        <string id="ebi_hint_equip_all" text="Снарядить всех персонажей"/>
+        <string id="ebi_hint_left_panel_unlock" text="Включить поиск в левых предметах"/>
+        <string id="ebi_hint_left_panel_lock" text="Отключить поиск в левых предметах"/>
+        <string id="ebi_hint_right_panel_unlock" text="Включить поиск в правых предметах"/>
+        <string id="ebi_hint_right_panel_lock" text="Отключить поиск в правых предметах"/>
+        <string id="ebi_hint_menu_hide" text="Скрыть панель кнопок"/>
+        <string id="ebi_hint_menu_show" text="Показать панель кнопок"/>
+        <string id="ebi_undefined" text="Определяется слотом"/>
     </strings>
 </base>

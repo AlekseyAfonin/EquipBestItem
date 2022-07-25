@@ -6,7 +6,7 @@ internal class RightSliderWidgetThirdWidget : WidgetNode
 {
     internal RightSliderWidgetThirdWidget()
     {
-        Node = 
+        Node =
             new XElement("Widget",
                 new XAttribute("WidthSizePolicy", "Fixed"),
                 new XAttribute("HeightSizePolicy", "Fixed"),

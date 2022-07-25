@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+<base type="string">
     <tags>
-        <tag language="English" />
+        <tag language="English"/>
     </tags>
     <strings>
-        <string id="ebi_default" text="Default" />
-        <string id="ebi_lock" text="Lock" />
-        <string id="ebi_hint_default" text="Reset to default values" />
-        <string id="ebi_hint_lock" text="Disable search for this slot" />
-        <string id="ebi_hint_checkbox" text="Set to default value" />
-        <string id="ebi_hint_percent" text="How much does the parameter affect the value of the item" />
-        <string id="ebi_hint_equip_current" text="Equip current character" />
-        <string id="ebi_hint_equip_all" text="Equip all characters" />
-        <string id="ebi_hint_left_panel_unlock" text="Enable search in the left-hand items" />
-        <string id="ebi_hint_left_panel_lock" text="Disable search in left-hand items" />
-        <string id="ebi_hint_right_panel_unlock" text="Enable search in right-hand items" />
-        <string id="ebi_hint_right_panel_lock" text="Disable search in right-hand items" />
-        <string id="ebi_hint_menu_hide" text="Hide buttons panel" />
-        <string id="ebi_hint_menu_show" text="Show buttons panel" />
-        <string id="ebi_undefined" text="Defined by the slot" />
+        <string id="ebi_default" text="Default"/>
+        <string id="ebi_lock" text="Lock"/>
+        <string id="ebi_hint_default" text="Reset to default values"/>
+        <string id="ebi_hint_lock" text="Disable search for this slot"/>
+        <string id="ebi_hint_checkbox" text="Set to default value"/>
+        <string id="ebi_hint_percent" text="How much does the parameter affect the value of the item"/>
+        <string id="ebi_hint_equip_current" text="Equip current character"/>
+        <string id="ebi_hint_equip_all" text="Equip all characters"/>
+        <string id="ebi_hint_left_panel_unlock" text="Enable search in the left-hand items"/>
+        <string id="ebi_hint_left_panel_lock" text="Disable search in left-hand items"/>
+        <string id="ebi_hint_right_panel_unlock" text="Enable search in right-hand items"/>
+        <string id="ebi_hint_right_panel_lock" text="Disable search in right-hand items"/>
+        <string id="ebi_hint_menu_hide" text="Hide buttons panel"/>
+        <string id="ebi_hint_menu_show" text="Show buttons panel"/>
+        <string id="ebi_undefined" text="Defined by the slot"/>
     </strings>
 </base>

@@ -6,7 +6,7 @@ internal class RightSliderWidgetImageWidget : WidgetNode
 {
     internal RightSliderWidgetImageWidget()
     {
-        Node = 
+        Node =
             new XElement("ImageWidget",
                 new XAttribute("Id", "SliderHandle"),
                 new XAttribute("DoNotAcceptEvents", "true"),

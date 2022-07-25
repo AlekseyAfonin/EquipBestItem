@@ -1,5 +1,4 @@
 using TaleWorlds.GauntletUI;
-using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade.GauntletUI.Widgets.Inventory;
 
 namespace EquipBestItem.Widgets;

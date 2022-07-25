@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <Name value="$modulename$" />
-  <Id value="$moduleid$" />
-  <Version value="v$version$" />
-  <Official value="false" />
-  <DefaultModule value="false" />
-  <SingleplayerModule value="true" />
-  <MultiplayerModule value="false" />
-  <DependedModules>
-    <DependedModule Id="Bannerlord.Harmony" />
-    <DependedModule Id="Bannerlord.UIExtenderEx" />
-    <DependedModule Id="Native" />
-    <DependedModule Id="SandBoxCore" />
-    <DependedModule Id="Sandbox" />
-    <DependedModule Id="StoryMode" />
-    <DependedModule Id="CustomBattle" />
-  </DependedModules>
-  <SubModules>
-    <SubModule>
-      <Name value="$modulename$" />
-      <DLLName value="$moduleid$.$gameversion$.dll" />
-      <SubModuleClassType value="$moduleid$.EquipBestItemSubModule" />
-      <Tags />
-    </SubModule>
-  </SubModules>
+    <Name value="$modulename$"/>
+    <Id value="$moduleid$"/>
+    <Version value="v$version$"/>
+    <Official value="false"/>
+    <DefaultModule value="false"/>
+    <SingleplayerModule value="true"/>
+    <MultiplayerModule value="false"/>
+    <DependedModules>
+        <DependedModule Id="Bannerlord.Harmony"/>
+        <DependedModule Id="Bannerlord.UIExtenderEx"/>
+        <DependedModule Id="Native"/>
+        <DependedModule Id="SandBoxCore"/>
+        <DependedModule Id="Sandbox"/>
+        <DependedModule Id="StoryMode"/>
+        <DependedModule Id="CustomBattle"/>
+    </DependedModules>
+    <SubModules>
+        <SubModule>
+            <Name value="$modulename$"/>
+            <DLLName value="$moduleid$.$gameversion$.dll"/>
+            <SubModuleClassType value="$moduleid$.EquipBestItemSubModule"/>
+            <Tags/>
+        </SubModule>
+    </SubModules>
 </Module>

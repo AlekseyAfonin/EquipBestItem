@@ -32,7 +32,7 @@
         </Layers>
         <Styles>
             <Style Name="Default">
-                <BrushLayer Name="Default" />
+                <BrushLayer Name="Default"/>
             </Style>
         </Styles>
     </Brush>
@@ -42,16 +42,16 @@
         </Layers>
         <Styles>
             <Style Name="Default">
-                <BrushLayer Name="Default" ColorFactor="1.0" />
+                <BrushLayer Name="Default" ColorFactor="1.0"/>
             </Style>
             <Style Name="Hovered">
-                <BrushLayer Name="Default" ColorFactor="1.5" />
+                <BrushLayer Name="Default" ColorFactor="1.5"/>
             </Style>
             <Style Name="Pressed">
-                <BrushLayer Name="Default" ColorFactor="0.85" />
+                <BrushLayer Name="Default" ColorFactor="0.85"/>
             </Style>
             <Style Name="Disabled">
-                <BrushLayer Name="Default" ColorFactor="0.2" />
+                <BrushLayer Name="Default" ColorFactor="0.2"/>
             </Style>
             <Style Name="Selected">
                 <BrushLayer Name="Default" ColorFactor="2.0"/>
@@ -63,55 +63,55 @@
             <BrushLayer Name="Default" Sprite="equipbestitem_button_equip_all"/>
         </Layers>
         <Styles>
-			<Style Name="Default">
-				<BrushLayer Name="Default" ColorFactor="1.0" />
-			</Style>
-			<Style Name="Hovered">
-				<BrushLayer Name="Default" ColorFactor="1.5" />
-			</Style>
-			<Style Name="Pressed">
-				<BrushLayer Name="Default" ColorFactor="0.85" />
-			</Style>
-			<Style Name="Disabled">
-				<BrushLayer Name="Default" ColorFactor="0.2" />
-			</Style>
+            <Style Name="Default">
+                <BrushLayer Name="Default" ColorFactor="1.0"/>
+            </Style>
+            <Style Name="Hovered">
+                <BrushLayer Name="Default" ColorFactor="1.5"/>
+            </Style>
+            <Style Name="Pressed">
+                <BrushLayer Name="Default" ColorFactor="0.85"/>
+            </Style>
+            <Style Name="Disabled">
+                <BrushLayer Name="Default" ColorFactor="0.2"/>
+            </Style>
         </Styles>
     </Brush>
-	<Brush Name="EquipBestItem.EquipCurrentCharacterButton">
-		<Layers>
-			<BrushLayer Name="Default" Sprite="Inventory\equip"/>
-		</Layers>
-		<Styles>
-			<Style Name="Default">
-				<BrushLayer Name="Default" ColorFactor="1.0" />
-			</Style>
-			<Style Name="Hovered">
-				<BrushLayer Name="Default" ColorFactor="1.5" />
-			</Style>
-			<Style Name="Pressed">
-				<BrushLayer Name="Default" ColorFactor="0.85" />
-			</Style>
-			<Style Name="Disabled">
-				<BrushLayer Name="Default" ColorFactor="0.2" />
-			</Style>
-		</Styles>
-	</Brush>
-    <Brush Name="EquipBestItem.LockPanelButton.Opened">
+    <Brush Name="EquipBestItem.EquipCurrentCharacterButton">
         <Layers>
-            <BrushLayer Name="Default" Sprite="StdAssets\lock_opened" />
+            <BrushLayer Name="Default" Sprite="Inventory\equip"/>
         </Layers>
         <Styles>
             <Style Name="Default">
-                <BrushLayer Name="Default" ColorFactor="1" />
+                <BrushLayer Name="Default" ColorFactor="1.0"/>
             </Style>
             <Style Name="Hovered">
-                <BrushLayer Name="Default" ColorFactor="1.4" />
+                <BrushLayer Name="Default" ColorFactor="1.5"/>
             </Style>
             <Style Name="Pressed">
-                <BrushLayer Name="Default" ColorFactor="1.6" />
+                <BrushLayer Name="Default" ColorFactor="0.85"/>
             </Style>
             <Style Name="Disabled">
-                <BrushLayer Name="Default" ColorFactor="0.1" />
+                <BrushLayer Name="Default" ColorFactor="0.2"/>
+            </Style>
+        </Styles>
+    </Brush>
+    <Brush Name="EquipBestItem.LockPanelButton.Opened">
+        <Layers>
+            <BrushLayer Name="Default" Sprite="StdAssets\lock_opened"/>
+        </Layers>
+        <Styles>
+            <Style Name="Default">
+                <BrushLayer Name="Default" ColorFactor="1"/>
+            </Style>
+            <Style Name="Hovered">
+                <BrushLayer Name="Default" ColorFactor="1.4"/>
+            </Style>
+            <Style Name="Pressed">
+                <BrushLayer Name="Default" ColorFactor="1.6"/>
+            </Style>
+            <Style Name="Disabled">
+                <BrushLayer Name="Default" ColorFactor="0.1"/>
             </Style>
         </Styles>
         <SoundProperties>
@@ -122,30 +122,30 @@
             </EventSounds>
         </SoundProperties>
     </Brush>
-	<Brush Name="EquipBestItem.LockPanelButton.Closed">
-		<Layers>
-			<BrushLayer Name="Default" Sprite="StdAssets\lock_closed" />
-		</Layers>
-		<Styles>
-			<Style Name="Default">
-				<BrushLayer Name="Default" ColorFactor="1" />
-			</Style>
-			<Style Name="Hovered">
-				<BrushLayer Name="Default" ColorFactor="1.4" />
-			</Style>
-			<Style Name="Pressed">
-				<BrushLayer Name="Default" ColorFactor="1.6" />
-			</Style>
-			<Style Name="Disabled">
-				<BrushLayer Name="Default" ColorFactor="0.1" />
-			</Style>
-		</Styles>
-		<SoundProperties>
-			<StateSounds>
-			</StateSounds>
-			<EventSounds>
-				<EventSound EventName="Click" Audio="popup"/>
-			</EventSounds>
-		</SoundProperties>
-	</Brush>
+    <Brush Name="EquipBestItem.LockPanelButton.Closed">
+        <Layers>
+            <BrushLayer Name="Default" Sprite="StdAssets\lock_closed"/>
+        </Layers>
+        <Styles>
+            <Style Name="Default">
+                <BrushLayer Name="Default" ColorFactor="1"/>
+            </Style>
+            <Style Name="Hovered">
+                <BrushLayer Name="Default" ColorFactor="1.4"/>
+            </Style>
+            <Style Name="Pressed">
+                <BrushLayer Name="Default" ColorFactor="1.6"/>
+            </Style>
+            <Style Name="Disabled">
+                <BrushLayer Name="Default" ColorFactor="0.1"/>
+            </Style>
+        </Styles>
+        <SoundProperties>
+            <StateSounds>
+            </StateSounds>
+            <EventSounds>
+                <EventSound EventName="Click" Audio="popup"/>
+            </EventSounds>
+        </SoundProperties>
+    </Brush>
 </Brushes>

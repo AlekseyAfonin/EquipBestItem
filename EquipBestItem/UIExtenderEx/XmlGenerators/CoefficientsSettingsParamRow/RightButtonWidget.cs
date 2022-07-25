@@ -29,9 +29,9 @@ internal class RightButtonWidget : WidgetNode
                         new XAttribute("DoNotAcceptEvents", true),
                         new XAttribute("DataSource", "{CheckboxHint}"),
                         new XAttribute("WidthSizePolicy", "StretchToParent"),
-                        new XAttribute("HeightSizePolicy", $"StretchToParent"),
-                        new XAttribute("Command.HoverBegin", $"ExecuteBeginHint"),
-                        new XAttribute("Command.HoverEnd", $"ExecuteEndHint")),
+                        new XAttribute("HeightSizePolicy", "StretchToParent"),
+                        new XAttribute("Command.HoverBegin", "ExecuteBeginHint"),
+                        new XAttribute("Command.HoverEnd", "ExecuteEndHint")),
                     new RightButtonWidgetImageWidget().Node));
     }
 }

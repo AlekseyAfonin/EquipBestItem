@@ -13,5 +13,5 @@ public enum CustomEquipmentIndex
     Gloves,
     Cape,
     Horse,
-    HorseHarness,
+    HorseHarness
 }

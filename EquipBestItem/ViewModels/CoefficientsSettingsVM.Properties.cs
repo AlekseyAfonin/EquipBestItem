@@ -1,5 +1,4 @@
 using System;
-using EquipBestItem.Models.Enums;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -11,23 +10,49 @@ internal partial class CoefficientsSettingsVM
     [DataSourceProperty] public string HeadArmorText { get; } = GameTexts.FindText("str_head_armor").ToString();
     [DataSourceProperty] public string BodyArmorText { get; } = GameTexts.FindText("str_body_armor").ToString();
     [DataSourceProperty] public string LegArmorText { get; } = GameTexts.FindText("str_leg_armor").ToString();
-    [DataSourceProperty] public string ArmArmorText { get; } = new TextObject("{=cf61cce254c7dca65be9bebac7fb9bf5}Arm Armor: ").ToString();
+
+    [DataSourceProperty]
+    public string ArmArmorText { get; } = new TextObject("{=cf61cce254c7dca65be9bebac7fb9bf5}Arm Armor: ").ToString();
+
     [DataSourceProperty] public string WeightText { get; } = GameTexts.FindText("str_weight_text").ToString();
     [DataSourceProperty] public string HitPointsText { get; } = new TextObject("{=aCkzVUCR}Hit Points: ").ToString();
-    [DataSourceProperty] public string ChargeDamageText { get; } = new TextObject("{=c7638a0869219ae845de0f660fd57a9d}Charge Damage: ").ToString();
-    [DataSourceProperty] public string ManeuverText { get; } = new TextObject("{=3025020b83b218707499f0de3135ed0a}Maneuver: ").ToString();
-    [DataSourceProperty] public string SpeedText { get; } = new TextObject("{=74dc1908cb0b990e80fb977b5a0ef10d}Speed: ").ToString();
+
+    [DataSourceProperty]
+    public string ChargeDamageText { get; } =
+        new TextObject("{=c7638a0869219ae845de0f660fd57a9d}Charge Damage: ").ToString();
+
+    [DataSourceProperty]
+    public string ManeuverText { get; } = new TextObject("{=3025020b83b218707499f0de3135ed0a}Maneuver: ").ToString();
+
+    [DataSourceProperty]
+    public string SpeedText { get; } = new TextObject("{=74dc1908cb0b990e80fb977b5a0ef10d}Speed: ").ToString();
+
     [DataSourceProperty] public string MaxDataValueText { get; } = new TextObject("{=aCkzVUCR}Hit Points: ").ToString();
-    [DataSourceProperty] public string ThrustSpeedText { get; } = new TextObject("{=VPYazFVH}Thrust Speed: ").ToString();
+
+    [DataSourceProperty]
+    public string ThrustSpeedText { get; } = new TextObject("{=VPYazFVH}Thrust Speed: ").ToString();
+
     [DataSourceProperty] public string SwingSpeedText { get; } = new TextObject("{=nfQhamAF}Swing Speed: ").ToString();
-    [DataSourceProperty] public string MissileSpeedText { get; } = new TextObject("{=YukbQgHJ}Missile Speed: ").ToString();
-    [DataSourceProperty] public string MissileDamageText { get; } = new TextObject("{=c9c5dfed2ca6bcb7a73d905004c97b23}Damage: ").ToString();
+
+    [DataSourceProperty]
+    public string MissileSpeedText { get; } = new TextObject("{=YukbQgHJ}Missile Speed: ").ToString();
+
+    [DataSourceProperty]
+    public string MissileDamageText { get; } = new TextObject("{=c9c5dfed2ca6bcb7a73d905004c97b23}Damage: ").ToString();
+
     [DataSourceProperty] public string WeaponLengthText { get; } = new TextObject("{=XUtiwiYP}Length: ").ToString();
-    [DataSourceProperty] public string ThrustDamageText { get; } = new TextObject("{=7sUhWG0E}Thrust Damage: ").ToString();
-    [DataSourceProperty] public string SwingDamageText { get; } = new TextObject("{=fMmlUHyz}Swing Damage: ").ToString();
+
+    [DataSourceProperty]
+    public string ThrustDamageText { get; } = new TextObject("{=7sUhWG0E}Thrust Damage: ").ToString();
+
+    [DataSourceProperty]
+    public string SwingDamageText { get; } = new TextObject("{=fMmlUHyz}Swing Damage: ").ToString();
+
     [DataSourceProperty] public string AccuracyText { get; } = new TextObject("{=xEWwbGVK}Accuracy: ").ToString();
     [DataSourceProperty] public string HandlingText { get; } = new TextObject("{=YOSEIvyf}Handling: ").ToString();
-    [DataSourceProperty] public string WeaponBodyArmorText { get; } = new TextObject("{=bLWyjOdS}Body Armor: ").ToString();
+
+    [DataSourceProperty]
+    public string WeaponBodyArmorText { get; } = new TextObject("{=bLWyjOdS}Body Armor: ").ToString();
 
     [DataSourceProperty]
     public string HeaderText
@@ -515,7 +540,7 @@ internal partial class CoefficientsSettingsVM
             _model.UpdateCheckboxState(value);
         }
     }
-    
+
     [DataSourceProperty]
     public WeaponClass WeaponClass
     {
@@ -756,7 +781,7 @@ internal partial class CoefficientsSettingsVM
             OnPropertyChanged();
         }
     }
-    
+
     [DataSourceProperty]
     public bool WeaponClassIsDefault
     {

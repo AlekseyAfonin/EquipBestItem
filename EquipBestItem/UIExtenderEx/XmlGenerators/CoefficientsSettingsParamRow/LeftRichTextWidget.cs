@@ -10,9 +10,9 @@ internal class LeftRichTextWidget : WidgetNode
         Node =
             new XElement("RichTextWidget",
                 new XAttribute("WidthSizePolicy", "StretchToParent"),
-                new XAttribute("HeightSizePolicy", $"CoverChildren"),
+                new XAttribute("HeightSizePolicy", "CoverChildren"),
                 new XAttribute("MarginRight", 0),
-                new XAttribute("VerticalAlignment", $"Center"),
+                new XAttribute("VerticalAlignment", "Center"),
                 new XAttribute("Brush", "SPOptions.OptionName.Text"),
                 //new XAttribute("IsEnabled", false),
                 new XAttribute("Text", $"@{itemParam}Text"));

@@ -7,7 +7,7 @@ internal class RightRichTextWidget : WidgetNode
 {
     internal RightRichTextWidget(ItemParams itemParam)
     {
-        Node = 
+        Node =
             new XElement("RichTextWidget",
                 new XAttribute("WidthSizePolicy", "Fixed"),
                 new XAttribute("SuggestedWidth", "50"),
@@ -22,8 +22,8 @@ internal class RightRichTextWidget : WidgetNode
                         new XAttribute("DoNotAcceptEvents", true),
                         new XAttribute("DataSource", "{PercentHint}"),
                         new XAttribute("WidthSizePolicy", "StretchToParent"),
-                        new XAttribute("HeightSizePolicy", $"StretchToParent"),
-                        new XAttribute("Command.HoverBegin", $"ExecuteBeginHint"),
-                        new XAttribute("Command.HoverEnd", $"ExecuteEndHint"))));
+                        new XAttribute("HeightSizePolicy", "StretchToParent"),
+                        new XAttribute("Command.HoverBegin", "ExecuteBeginHint"),
+                        new XAttribute("Command.HoverEnd", "ExecuteEndHint"))));
     }
 }

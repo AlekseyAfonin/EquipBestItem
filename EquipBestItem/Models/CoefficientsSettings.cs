@@ -20,25 +20,59 @@ namespace EquipBestItem.Models;
 internal class CoefficientsSettings
 {
     private const float Tolerance = 0.00001f;
-    private readonly CoefficientsSettingsVM _vm;
-    private readonly CharacterCoefficientsRepository _repository;
-    private readonly CustomEquipmentIndex _equipmentIndex;
-    private readonly ModSPInventoryVM _modVM;
     private readonly CharacterCoefficients _currentCharacterCoefficients;
     private readonly CharacterCoefficients _defaultCharacterCoefficients;
-    
-    internal CoefficientsSettings(CoefficientsSettingsVM vm, CustomEquipmentIndex equipmentIndex, 
+    private readonly CustomEquipmentIndex _equipmentIndex;
+    private readonly ModSPInventoryVM _modVM;
+    private readonly CharacterCoefficientsRepository _repository;
+    private readonly CoefficientsSettingsVM _vm;
+
+    private IEnumerable<ItemParams> _visibleParams;
+
+    internal CoefficientsSettings(CoefficientsSettingsVM vm, CustomEquipmentIndex equipmentIndex,
         CharacterCoefficientsRepository repository, ModSPInventoryVM modVM)
     {
         _vm = vm;
         _repository = repository;
         _equipmentIndex = equipmentIndex;
         _modVM = modVM;
-        
+
         _currentCharacterCoefficients = _repository.Read(_modVM.CurrentCharacterName);
         _defaultCharacterCoefficients = _repository.Read(CharacterCoefficients.Default);
 
         _visibleParams = GetVisibleParams();
+    }
+
+    private Coefficients Coefficients => _modVM.IsInWarSet
+        ? _currentCharacterCoefficients.WarCoefficients[(int) _equipmentIndex]
+        : _currentCharacterCoefficients.CivilCoefficients[(int) _equipmentIndex];
+
+    private Coefficients DefaultCoefficients => _modVM.IsInWarSet
+        ? _defaultCharacterCoefficients.WarCoefficients[(int) _equipmentIndex]
+        : _defaultCharacterCoefficients.CivilCoefficients[(int) _equipmentIndex];
+
+    public IEnumerable<ItemParams> VisibleParams
+    {
+        get => _visibleParams;
+        set
+        {
+            if (Equals(value, _visibleParams)) return;
+
+            foreach (var param in _visibleParams) _vm.SetPropertyValue($"{param}IsHidden", true);
+
+            foreach (var param in value)
+            {
+                var paramName = param.ToString();
+                _vm.SetPropertyValue($"{paramName}IsHidden", false);
+                var paramValue = Coefficients.GetPropValue($"{paramName}");
+                _vm.SetPropertyValue($"{paramName}", paramValue);
+                UpdateCheckboxState(paramValue, paramName);
+            }
+
+            UpdateVisibleParamsPercentText();
+
+            _visibleParams = value;
+        }
     }
 
     public void LoadValues()
@@ -57,57 +91,17 @@ internal class CoefficientsSettings
             _vm.WeaponClassIsHidden = false;
             _vm.WeaponClass = Coefficients.WeaponClass;
         }
-        
+
         UpdateVisibleParamsPercentText();
 
-        //_vm.PropertyChanged += OnPropertyChanged;
         _vm.PropertyChangedWithValue += OnPropertyChangedWithValue;
     }
 
     private void OnPropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
     {
         Coefficients.SetPropValue($"{e.PropertyName}", e.Value);
-        //Coefficients.SetPropValue($"{e.PropertyName}", Enum.Parse(typeof(WeaponClass),e.Value.ToString()));
         UpdateVisibleParamsPercentText();
         Task.Run(async () => await _modVM.UpdateBestItemsAsync());
-    }
-
-    private Coefficients Coefficients => _modVM.IsInWarSet
-        ? _currentCharacterCoefficients.WarCoefficients[(int) _equipmentIndex]
-        : _currentCharacterCoefficients.CivilCoefficients[(int) _equipmentIndex];
-
-    private Coefficients DefaultCoefficients => _modVM.IsInWarSet
-        ? _defaultCharacterCoefficients.WarCoefficients[(int) _equipmentIndex]
-        : _defaultCharacterCoefficients.CivilCoefficients[(int) _equipmentIndex];
-
-    private IEnumerable<ItemParams> _visibleParams;
-    
-    public IEnumerable<ItemParams> VisibleParams
-    {
-        get => _visibleParams;
-        set
-        {
-            if (Equals(value, _visibleParams)) return;
-
-            foreach (var param in _visibleParams)
-            {
-                _vm.SetPropertyValue($"{param}IsHidden", true);
-            }
-
-            foreach (var param in value)
-            {
-                var paramName = param.ToString();
-                _vm.SetPropertyValue($"{paramName}IsHidden", false);
-                var paramValue = Coefficients.GetPropValue($"{paramName}");
-                _vm.SetPropertyValue($"{paramName}", paramValue);
-                UpdateCheckboxState(paramValue, paramName);
-                
-            }
-            
-            UpdateVisibleParamsPercentText();
-
-            _visibleParams = value;
-        }
     }
 
     public void OnFinalize()
@@ -121,24 +115,27 @@ internal class CoefficientsSettings
     {
         return Coefficients.WeaponClass;
     }
-    
-    private IEnumerable<ItemParams> GetVisibleParams() => _equipmentIndex switch
+
+    private IEnumerable<ItemParams> GetVisibleParams()
     {
-        CustomEquipmentIndex.Weapon0 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
-        CustomEquipmentIndex.Weapon1 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
-        CustomEquipmentIndex.Weapon2 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
-        CustomEquipmentIndex.Weapon3 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
-        CustomEquipmentIndex.Weapon4 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
-        CustomEquipmentIndex.Head => ItemTypes.Head,
-        CustomEquipmentIndex.Body => ItemTypes.Armor,
-        CustomEquipmentIndex.Leg => ItemTypes.Legs,
-        CustomEquipmentIndex.Gloves => ItemTypes.Arms,
-        CustomEquipmentIndex.Cape => ItemTypes.Capes,
-        CustomEquipmentIndex.Horse => ItemTypes.Horse,
-        CustomEquipmentIndex.HorseHarness => ItemTypes.HorseHarness,
-        _ => throw new ArgumentOutOfRangeException(nameof(_equipmentIndex), _equipmentIndex, null)
-    };
-    
+        return _equipmentIndex switch
+        {
+            CustomEquipmentIndex.Weapon0 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
+            CustomEquipmentIndex.Weapon1 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
+            CustomEquipmentIndex.Weapon2 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
+            CustomEquipmentIndex.Weapon3 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
+            CustomEquipmentIndex.Weapon4 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
+            CustomEquipmentIndex.Head => ItemTypes.Head,
+            CustomEquipmentIndex.Body => ItemTypes.Armor,
+            CustomEquipmentIndex.Leg => ItemTypes.Legs,
+            CustomEquipmentIndex.Gloves => ItemTypes.Arms,
+            CustomEquipmentIndex.Cape => ItemTypes.Capes,
+            CustomEquipmentIndex.Horse => ItemTypes.Horse,
+            CustomEquipmentIndex.HorseHarness => ItemTypes.HorseHarness,
+            _ => throw new ArgumentOutOfRangeException(nameof(_equipmentIndex), _equipmentIndex, null)
+        };
+    }
+
     public void UpdateCheckboxState(object propertyValue, [CallerMemberName] string? propertyName = null)
     {
         var defaultValue = DefaultCoefficients.GetPropValue($"{propertyName}");
@@ -181,16 +178,13 @@ internal class CoefficientsSettings
             _vm.SetPropertyValue($"{paramName}", value);
         }
     }
-    
+
     public void LockClick()
     {
-        foreach (var param in VisibleParams)
-        {
-            _vm.SetPropertyValue($"{param}", 0);
-        }
+        foreach (var param in VisibleParams) _vm.SetPropertyValue($"{param}", 0);
     }
 
-    public void CloseClick()
+    public static void CloseClick()
     {
         var inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
         var coefficientsSettingsLayer = inventoryScreen?.Layers.FindLayer<CoefficientsSettingsLayer>();
@@ -199,9 +193,9 @@ internal class CoefficientsSettings
 
     public void CheckboxClick(string paramName)
     {
-        var charactersCoefficients = _repository.ReadAll().Where(p => p.Name != CharacterCoefficients.Default).ToList();
-        var newValue = paramName == "WeaponClass" 
-            ? Enum.Parse(typeof(WeaponClass), _vm.WeaponClassSelector?.SelectedItem.StringItem!) 
+        var charactersCoefficients = _repository.ReadAll().Where(p => p.Key != CharacterCoefficients.Default).ToList();
+        var newValue = paramName == "WeaponClass"
+            ? Enum.Parse(typeof(WeaponClass), _vm.WeaponClassSelector?.SelectedItem.StringItem!)
             : _vm.GetPropertyValue($"{paramName}");
 
         foreach (var charCoefficients in charactersCoefficients)
@@ -226,21 +220,19 @@ internal class CoefficientsSettings
         charactersCoefficients.ForEach(characterCoefficients => _repository.Update(characterCoefficients));
     }
 
-    public string GetHeaderText(EquipmentIndex equipmentIndex) => equipmentIndex switch
+    public static string GetHeaderText(EquipmentIndex equipmentIndex)
     {
-        EquipmentIndex.Weapon0 => new TextObject("{=2RIyK1bp}Weapons") + " 1",
-        EquipmentIndex.Weapon1 => new TextObject("{=2RIyK1bp}Weapons") + " 2",
-        EquipmentIndex.Weapon2 => new TextObject("{=2RIyK1bp}Weapons") + " 3",
-        EquipmentIndex.Weapon3 => new TextObject("{=2RIyK1bp}Weapons") + " 4",
-        EquipmentIndex.Weapon4 => new TextObject("{=2RIyK1bp}Weapons") + " 5",
-        EquipmentIndex.Head => GameTexts.FindText("str_inventory_helm_slot").ToString(),
-        EquipmentIndex.Body => GameTexts.FindText("str_inventory_armor_slot").ToString(),
-        EquipmentIndex.Leg => GameTexts.FindText("str_inventory_boot_slot").ToString(),
-        EquipmentIndex.Gloves => GameTexts.FindText("str_inventory_glove_slot").ToString(),
-        EquipmentIndex.Cape => GameTexts.FindText("str_inventory_cloak_slot").ToString(),
-        EquipmentIndex.Horse => GameTexts.FindText("str_inventory_mount_slot").ToString(),
-        EquipmentIndex.HorseHarness => GameTexts.FindText("str_inventory_mount_armor_slot").ToString(),
-        _ => throw new ArgumentOutOfRangeException(nameof(equipmentIndex), equipmentIndex, null)
-    };
-
+        return equipmentIndex switch
+        {
+            var index and < EquipmentIndex.Head => $"{new TextObject("{=2RIyK1bp}Weapons")} {index}",
+            EquipmentIndex.Head => GameTexts.FindText("str_inventory_helm_slot").ToString(),
+            EquipmentIndex.Body => GameTexts.FindText("str_inventory_armor_slot").ToString(),
+            EquipmentIndex.Leg => GameTexts.FindText("str_inventory_boot_slot").ToString(),
+            EquipmentIndex.Gloves => GameTexts.FindText("str_inventory_glove_slot").ToString(),
+            EquipmentIndex.Cape => GameTexts.FindText("str_inventory_cloak_slot").ToString(),
+            EquipmentIndex.Horse => GameTexts.FindText("str_inventory_mount_slot").ToString(),
+            EquipmentIndex.HorseHarness => GameTexts.FindText("str_inventory_mount_armor_slot").ToString(),
+            _ => throw new ArgumentOutOfRangeException(nameof(equipmentIndex), equipmentIndex, null)
+        };
+    }
 }

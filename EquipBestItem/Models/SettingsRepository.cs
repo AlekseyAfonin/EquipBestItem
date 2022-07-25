@@ -1,46 +1,40 @@
-﻿using EquipBestItem.Models.Entities;
-using SharpRepository.Repository;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using EquipBestItem.Models.Entities;
+using EquipBestItem.XmlRepository;
 
-namespace EquipBestItem.Models
+namespace EquipBestItem.Models;
+
+internal class SettingsRepository
 {
-    internal class SettingsRepository
+    private readonly IRepository<Settings> _repository;
+
+    internal SettingsRepository(IRepository<Settings> repository)
     {
-        private readonly IRepository<Settings, string> _repository;
+        _repository = repository;
+    }
 
-        internal SettingsRepository(IRepository<Settings, string> repository)
-        {
-            _repository = repository;
-        }
+    internal void Create(Settings entity)
+    {
+        _repository.Create(entity);
+    }
 
-        internal void Create(Settings entity)
-        {
-            _repository.Add(entity);
-        }
+    internal Settings Read(string name)
+    {
+        return _repository.Read(name);
+    }
 
-        internal Settings Read(string name)
-        {
-            return _repository.Get(name);
-        }
+    internal void Update(Settings entity)
+    {
+        _repository.Update(entity);
+    }
 
-        internal void Update(Settings entity)
-        {
-            _repository.Update(entity);
-        }
+    internal void Delete(string name)
+    {
+        _repository.Delete(name);
+    }
 
-        internal void Delete(string name)
-        {
-            _repository.Delete(name);
-        }
-
-        internal IEnumerable<Settings> ReadAll()
-        {
-            return _repository.GetAll();
-        }
+    internal IEnumerable<Settings> ReadAll()
+    {
+        return _repository.ReadAll();
     }
 }

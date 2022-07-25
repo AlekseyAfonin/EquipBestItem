@@ -1,60 +1,36 @@
 ﻿using System;
-using TaleWorlds.MountAndBlade;
 using Bannerlord.UIExtenderEx;
-using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
-using TaleWorlds.ModuleManager;
+using TaleWorlds.Library;
+using TaleWorlds.MountAndBlade;
 using TaleWorlds.TwoDimension;
 
-namespace EquipBestItem
+namespace EquipBestItem;
+
+public class EquipBestItemSubModule : MBSubModuleBase
 {
-    public class EquipBestItemSubModule : MBSubModuleBase
+    private readonly UIExtender _uiExtender = new("EquipBestItem");
+    private SpriteCategory _category = null!;
+
+    protected override void OnSubModuleLoad()
     {
-        //private static Harmony _harmony;
-        //private static Assembly _assembly;
-        private readonly UIExtender _uiExtender = new("EquipBestItem");
-        private SpriteCategory _category;
-        
-        protected override void OnSubModuleLoad()
+        base.OnSubModuleLoad();
+
+        try
         {
-            base.OnSubModuleLoad();
+            var spriteData = UIResourceManager.SpriteData;
+            var resourceContext = UIResourceManager.ResourceContext;
+            var resourceDepot = UIResourceManager.UIResourceDepot;
 
-            try 
-            {
-                
-                var spriteData = UIResourceManager.SpriteData;
-                var resourceContext = UIResourceManager.ResourceContext;
-                var resourceDepot = UIResourceManager.UIResourceDepot;
+            _category = spriteData.SpriteCategories["ui_equipbestitem"];
+            _category.Load(resourceContext, resourceDepot);
 
-                _category = spriteData.SpriteCategories["ui_equipbestitem"]; // select which category to load, put your category name here
-                _category.Load(resourceContext, resourceDepot); // load the selected category
-                
-                _uiExtender.Register(typeof(EquipBestItemSubModule).Assembly);
-                _uiExtender.Enable();
-                
-                //_harmony = new Harmony("EquipBestItem");
-                //_assembly = Assembly.GetExecutingAssembly();
-                //_harmony.PatchAll(_assembly);
-            }
-            catch (Exception exception)
-            {
-                //MessageBox.Show($"EquipBestItem failed to apply UIExtender patches {exception.Message})");
-            }
+            _uiExtender.Register(typeof(EquipBestItemSubModule).Assembly);
+            _uiExtender.Enable();
         }
-
-        protected override void InitializeGameStarter(Game game, IGameStarter starterObject)
+        catch (Exception exception)
         {
-            base.InitializeGameStarter(game, starterObject);
-        }
-
-        protected override void OnSubModuleUnloaded()
-        {
-            base.OnSubModuleUnloaded();
-        }
-
-        protected override void OnBeforeInitialModuleScreenSetAsRoot()
-        {
-            base.OnBeforeInitialModuleScreenSetAsRoot();
+            Helper.ShowMessage($"EquipBestItem failed to apply UIExtender patches {exception.Message})", Colors.Red);
         }
     }
 }
