@@ -34,7 +34,7 @@ internal static class CalculateExtensions
 
                 // The weight is not in the properties of the component, so we take it from the parent object
                 value += param == ItemParams.Weight
-                    ? equipmentElement.GetEquipmentElementWeight() * coefficientValue
+                    ? equipmentElement.GetEquipmentElementWeight() * coefficientValue * -1f
                     : equipmentElement.GetModifiedValue(param, indexUsage) * coefficientValue;
             }
 

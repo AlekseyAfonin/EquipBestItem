@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using EquipBestItem.Extensions;
 using EquipBestItem.Models.Entities;
 using Helpers;
@@ -34,16 +35,12 @@ internal class BestItemManager
     internal SPItemVM? GetBestItem(CharacterObject character, EquipmentIndex index, Coefficients[] coefficients,
         params MBBindingList<SPItemVM>?[] itemsLists)
     {
-        // Stopwatch stopwatch = new Stopwatch();
-        //
-        // stopwatch.Start();
-        //////////////
         SPItemVM? bestItem = null;
 
         try
         {
             var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
-            var bestItemValue = equipment[index].IsEmpty || WeaponClassNotUndefinedAndNotEqual(equipment[index])
+            var bestItemValue = equipment[index].IsEmpty || IsWeaponClassNotUndefinedAndNotEqual(equipment[index])
                 ? 0
                 : equipment[index].GetItemValue(coefficients[(int) index]);
 
@@ -52,15 +49,15 @@ internal class BestItemManager
                 .SelectMany(items => items)
                 .Where(IsValidItem);
 
-            foreach (var item in validItems)
+            Parallel.ForEach(validItems, item =>
             {
                 var itemValue = item.ItemRosterElement.EquipmentElement.GetItemValue(coefficients[(int) index]);
 
-                if (bestItemValue >= itemValue) continue;
+                if (bestItemValue >= itemValue) return;
 
                 bestItem = item;
                 bestItemValue = itemValue;
-            }
+            });
 
             // Фильтр предметов по условиям
             bool IsValidItem(SPItemVM item) //TODO refactor
@@ -76,6 +73,10 @@ internal class BestItemManager
                 if (equipment[EquipmentIndex.Horse].IsEmpty && item.ItemType == EquipmentIndex.HorseHarness)
                     return false;
 
+                if (item.ItemType == EquipmentIndex.HorseHarness)
+                    if (equipment[EquipmentIndex.Horse].Item?.HorseComponent?.Monster.FamilyType !=
+                        item.ItemRosterElement.EquipmentElement.Item?.ArmorComponent?.FamilyType) return false;
+
                 // Отделяем поиск оружия от других предметов
                 if (item.ItemType != EquipmentIndex.Weapon0 || index > EquipmentIndex.Weapon4)
                     return item.ItemType == index;
@@ -86,11 +87,24 @@ internal class BestItemManager
                 // Если выбранный класс оружия не определен, смотрим по классу оружия из слота, иначе по выбранному
                 if (coefficients[(int) index].WeaponClass == WeaponClass.Undefined)
                 {
+                    // Если не совпадают классы - пропускаем
                     if (itemPrimaryWeapon?.WeaponClass != currentPrimaryWeapon?.WeaponClass) return false;
 
                     // Дополнительный фильтр для коротких и длинных луков
                     if (currentPrimaryWeapon?.WeaponClass == WeaponClass.Bow &&
                         itemPrimaryWeapon?.ItemUsage != currentPrimaryWeapon.ItemUsage) return false;
+
+                    var currentWeaponComponents = item.ItemRosterElement.EquipmentElement.Item?.Weapons;
+                    var itemWeaponComponents = equipment[index].Item?.Weapons;
+                    
+                    // Если отличаются по количеству компонентов - пропускаем
+                    if (itemWeaponComponents?.Count != currentWeaponComponents?.Count) 
+                        return false;
+                    
+                    // Если они количество компонентов равно, то перебираем каждый и сравниваем по классу
+                    for (var i = 0; i < itemWeaponComponents?.Count; i++)
+                        if (currentWeaponComponents?[i].ItemUsage != itemWeaponComponents?[i].ItemUsage)
+                            return false;
                 }
                 else
                 {
@@ -109,8 +123,8 @@ internal class BestItemManager
                 return item.ItemType <= index;
             }
 
-            // Проверка соответствия класса оружия слота, если выбран класс отружия отличный от WeaponClass.Undefined
-            bool WeaponClassNotUndefinedAndNotEqual(EquipmentElement item)
+            // Проверка соответствия класса оружия слота, если выбран класс оружия отличный от WeaponClass.Undefined
+            bool IsWeaponClassNotUndefinedAndNotEqual(EquipmentElement item)
             {
                 return item.Item?.PrimaryWeapon?.WeaponClass != coefficients[(int) index].WeaponClass &&
                        coefficients[(int) index].WeaponClass != WeaponClass.Undefined;
@@ -121,20 +135,11 @@ internal class BestItemManager
             Helper.ShowMessage($"{e.Message}", Colors.Red);
         }
 
-        /////////////
-        // stopwatch.Stop();
-        // Helper.ShowMessage($"GetBestItem {stopwatch.ElapsedMilliseconds}ms");
-
         return bestItem;
     }
 
-
     private void UnequipItem(EquipmentIndex equipmentIndex, CharacterObject character)
     {
-        // Stopwatch stopwatch = new Stopwatch();
-        //
-        // stopwatch.Start();
-        //////////////
         var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
 
         if (equipment[equipmentIndex].IsEmpty) return;
@@ -150,32 +155,22 @@ internal class BestItemManager
             !_originVM.IsInWarSet);
 
         _inventoryLogic.AddTransferCommand(unequipCommand);
-        /////////////
-        // stopwatch.Stop();
-        // Helper.ShowMessage($"UnequipItem {stopwatch.ElapsedMilliseconds}ms");
     }
 
     private void EquipItem(EquipmentIndex equipmentIndex, CharacterObject? character, SPItemVM? item)
     {
-        // Stopwatch stopwatch = new Stopwatch();
-        //
-        // stopwatch.Start();
-        //////////////
         if (item is null) return;
 
         var equipCommand = TransferCommand.Transfer(
             1,
             item.InventorySide,
             InventoryLogic.InventorySide.Equipment,
-            new ItemRosterElement(item.ItemRosterElement.EquipmentElement, 1),
+            item.ItemRosterElement,
             EquipmentIndex.None,
             equipmentIndex,
             character,
             !_originVM.IsInWarSet);
 
         _inventoryLogic.AddTransferCommand(equipCommand);
-        /////////////
-        // stopwatch.Stop();
-        // Helper.ShowMessage($"EquipItem {stopwatch.ElapsedMilliseconds}ms");
     }
 }

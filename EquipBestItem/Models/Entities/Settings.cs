@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+
 namespace EquipBestItem.Models.Entities;
 
 public class Settings : BaseEntity
@@ -6,5 +8,5 @@ public class Settings : BaseEntity
     public const string IsRightPanelLocked = "IsRightPanelLocked";
     public const string IsLeftMenuVisible = "IsLeftMenuVisible";
     public const string IsRightMenuVisible = "IsRightMenuVisible";
-    public object? Value { get; set; }
+    public bool Value { get; set; }
 }

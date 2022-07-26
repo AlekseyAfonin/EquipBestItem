@@ -11,11 +11,11 @@ internal class CoefficientsSettingsLayer : GauntletLayer
     public readonly EquipmentIndex EquipmentIndex;
 
     internal CoefficientsSettingsLayer(int localOrder, EquipmentIndex equipmentIndex,
-        CharacterCoefficientsRepository repository, ModSPInventoryVM modVM, string categoryId = "GauntletLayer",
+        CharacterCoefficientsRepository repository, SPInventoryMixin mixin, string categoryId = "GauntletLayer",
         bool shouldClear = false) :
         base(localOrder, categoryId, shouldClear)
     {
-        _vm = new CoefficientsSettingsVM(equipmentIndex, repository, modVM);
+        _vm = new CoefficientsSettingsVM(equipmentIndex, repository, mixin);
         EquipmentIndex = equipmentIndex;
         LoadMovie("CoefficientsSettings", _vm);
     }

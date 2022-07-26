@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -23,35 +24,35 @@ internal class CoefficientsSettings
     private readonly CharacterCoefficients _currentCharacterCoefficients;
     private readonly CharacterCoefficients _defaultCharacterCoefficients;
     private readonly CustomEquipmentIndex _equipmentIndex;
-    private readonly ModSPInventoryVM _modVM;
+    private readonly SPInventoryMixin _mixin;
     private readonly CharacterCoefficientsRepository _repository;
     private readonly CoefficientsSettingsVM _vm;
 
-    private IEnumerable<ItemParams> _visibleParams;
+    private ItemParams[] _visibleParams;
 
     internal CoefficientsSettings(CoefficientsSettingsVM vm, CustomEquipmentIndex equipmentIndex,
-        CharacterCoefficientsRepository repository, ModSPInventoryVM modVM)
+        CharacterCoefficientsRepository repository, SPInventoryMixin mixin)
     {
         _vm = vm;
         _repository = repository;
         _equipmentIndex = equipmentIndex;
-        _modVM = modVM;
+        _mixin = mixin;
 
-        _currentCharacterCoefficients = _repository.Read(_modVM.CurrentCharacterName);
+        _currentCharacterCoefficients = _repository.Read(_mixin.CurrentCharacterName);
         _defaultCharacterCoefficients = _repository.Read(CharacterCoefficients.Default);
 
         _visibleParams = GetVisibleParams();
     }
 
-    private Coefficients Coefficients => _modVM.IsInWarSet
+    private Coefficients Coefficients => _mixin.IsInWarSet
         ? _currentCharacterCoefficients.WarCoefficients[(int) _equipmentIndex]
         : _currentCharacterCoefficients.CivilCoefficients[(int) _equipmentIndex];
 
-    private Coefficients DefaultCoefficients => _modVM.IsInWarSet
+    private Coefficients DefaultCoefficients => _mixin.IsInWarSet
         ? _defaultCharacterCoefficients.WarCoefficients[(int) _equipmentIndex]
         : _defaultCharacterCoefficients.CivilCoefficients[(int) _equipmentIndex];
 
-    public IEnumerable<ItemParams> VisibleParams
+    public ItemParams[] VisibleParams
     {
         get => _visibleParams;
         set
@@ -68,10 +69,9 @@ internal class CoefficientsSettings
                 _vm.SetPropertyValue($"{paramName}", paramValue);
                 UpdateCheckboxState(paramValue, paramName);
             }
-
-            UpdateVisibleParamsPercentText();
-
             _visibleParams = value;
+            UpdateParamText(_visibleParams);
+            UpdateVisibleParamsPercentText();
         }
     }
 
@@ -89,19 +89,35 @@ internal class CoefficientsSettings
         if (_equipmentIndex < CustomEquipmentIndex.Head)
         {
             _vm.WeaponClassIsHidden = false;
-            _vm.WeaponClass = Coefficients.WeaponClass;
+            
+            _vm.WeaponClass = GetWeaponClass();
         }
 
         UpdateVisibleParamsPercentText();
+        UpdateParamText(VisibleParams);
 
         _vm.PropertyChangedWithValue += OnPropertyChangedWithValue;
+    }
+    
+    private void UpdateParamText(ItemParams[] visibleParams)
+    {
+        if (visibleParams.SequenceEqual(ItemTypes.Ammo) || visibleParams.SequenceEqual(ItemTypes.Thrown))
+            _vm.MaxDataValueText = new TextObject("{=05fdfc6e238429753ef282f2ce97c1f8}Stack Amount: ").ToString(); 
+        if (visibleParams.SequenceEqual(ItemTypes.Bow) || visibleParams.SequenceEqual(ItemTypes.Crossbow) || visibleParams.SequenceEqual(ItemTypes.Shield))
+            _vm.ThrustSpeedText = new TextObject("{=74dc1908cb0b990e80fb977b5a0ef10d}Speed: ").ToString();
+        if (visibleParams.SequenceEqual(ItemTypes.Crossbow))
+            _vm.MaxDataValueText = new TextObject("{=6adabc1f82216992571c3e22abc164d7}Ammo Limit: ").ToString();  
+        if (visibleParams.SequenceEqual(ItemTypes.Shield))
+            _vm.MaxDataValueText = new TextObject("{=aCkzVUCR}Hit Points: ").ToString(); 
+        if (visibleParams.SequenceEqual(ItemTypes.MeleeWeapon))
+            _vm.ThrustSpeedText = new TextObject("{=VPYazFVH}Thrust Speed: ").ToString();
     }
 
     private void OnPropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
     {
         Coefficients.SetPropValue($"{e.PropertyName}", e.Value);
         UpdateVisibleParamsPercentText();
-        Task.Run(async () => await _modVM.UpdateBestItemsAsync());
+        Task.Run(async () => await _mixin.UpdateBestItemsAsync());
     }
 
     public void OnFinalize()
@@ -116,15 +132,19 @@ internal class CoefficientsSettings
         return Coefficients.WeaponClass;
     }
 
-    private IEnumerable<ItemParams> GetVisibleParams()
+    public WeaponClass GetWeaponClass()
+    {
+        return Coefficients.WeaponClass == WeaponClass.Undefined
+            ? _mixin.CurrentCharacter.Equipment[(int) _equipmentIndex].Item?.PrimaryWeapon?.WeaponClass ??
+              Coefficients.WeaponClass
+            : Coefficients.WeaponClass;
+    }
+
+    public ItemParams[] GetVisibleParams()
     {
         return _equipmentIndex switch
         {
-            CustomEquipmentIndex.Weapon0 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
-            CustomEquipmentIndex.Weapon1 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
-            CustomEquipmentIndex.Weapon2 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
-            CustomEquipmentIndex.Weapon3 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
-            CustomEquipmentIndex.Weapon4 => ItemTypes.GetParamsByWeaponClass(Coefficients.WeaponClass),
+            <= CustomEquipmentIndex.Weapon4 => ItemTypes.GetParamsByWeaponClass(GetWeaponClass()),
             CustomEquipmentIndex.Head => ItemTypes.Head,
             CustomEquipmentIndex.Body => ItemTypes.Armor,
             CustomEquipmentIndex.Leg => ItemTypes.Legs,
@@ -186,21 +206,22 @@ internal class CoefficientsSettings
 
     public static void CloseClick()
     {
-        var inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
-        var coefficientsSettingsLayer = inventoryScreen?.Layers.FindLayer<CoefficientsSettingsLayer>();
-        inventoryScreen?.RemoveLayer(coefficientsSettingsLayer);
+        if (ScreenManager.TopScreen is not InventoryGauntletScreen inventoryScreen) return;
+        if (inventoryScreen.Layers.FindLayer<CoefficientsSettingsLayer>() is not ScreenLayer coefficientsSettingsLayer) 
+            return;
+        inventoryScreen.RemoveLayer(coefficientsSettingsLayer);
     }
 
     public void CheckboxClick(string paramName)
     {
         var charactersCoefficients = _repository.ReadAll().Where(p => p.Key != CharacterCoefficients.Default).ToList();
         var newValue = paramName == "WeaponClass"
-            ? Enum.Parse(typeof(WeaponClass), _vm.WeaponClassSelector?.SelectedItem.StringItem!)
+            ? _vm.WeaponClassSelector.SelectedIndex
             : _vm.GetPropertyValue($"{paramName}");
 
         foreach (var charCoefficients in charactersCoefficients)
         {
-            var coefficients = _modVM.IsInWarSet
+            var coefficients = _mixin.IsInWarSet
                 ? charCoefficients.WarCoefficients[(int) _equipmentIndex]
                 : charCoefficients.CivilCoefficients[(int) _equipmentIndex];
             var defaultValue = DefaultCoefficients.GetPropValue($"{paramName}");
@@ -224,7 +245,7 @@ internal class CoefficientsSettings
     {
         return equipmentIndex switch
         {
-            var index and < EquipmentIndex.Head => $"{new TextObject("{=2RIyK1bp}Weapons")} {index}",
+            var index and < EquipmentIndex.Head => $"{new TextObject("{=2RIyK1bp}Weapons")} {(int)index + 1}",
             EquipmentIndex.Head => GameTexts.FindText("str_inventory_helm_slot").ToString(),
             EquipmentIndex.Body => GameTexts.FindText("str_inventory_armor_slot").ToString(),
             EquipmentIndex.Leg => GameTexts.FindText("str_inventory_boot_slot").ToString(),

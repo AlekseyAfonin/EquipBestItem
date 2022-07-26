@@ -1,7 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using TaleWorlds.Core;
 
 namespace EquipBestItem.Models.Entities;
 
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+[SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Global")]
 public class Coefficients
 {
     public float HeadArmor { get; set; }

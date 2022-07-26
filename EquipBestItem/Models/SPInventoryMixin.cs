@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -19,18 +21,19 @@ using TaleWorlds.ScreenSystem;
 
 namespace EquipBestItem.ViewModels;
 
-internal class ModSPInventoryVM : ViewModel
+internal class SPInventoryMixin : ViewModel
 {
     private readonly BestItemManager _bestItemManager;
     private readonly CharacterCoefficientsRepository _coefficientsRepository;
     private readonly SPInventoryVMMixin _mixinVM;
     private readonly SPInventoryVM _originVM;
     private readonly SettingsRepository _settingsRepository;
+    private readonly IEnumerable<Settings> _settings;
 
     private CancellationTokenSource? _cts;
     public SPItemVM?[] BestItems = new SPItemVM[12];
 
-    public ModSPInventoryVM(SPInventoryVM originVM, SPInventoryVMMixin mixinVM)
+    public SPInventoryMixin(SPInventoryVM originVM, SPInventoryVMMixin mixinVM)
     {
         _originVM = originVM;
         _mixinVM = mixinVM;
@@ -43,17 +46,21 @@ internal class ModSPInventoryVM : ViewModel
         Seeds.EnsurePopulated(charCoefficientsRepository, Seeds.DefaultCharacterCoefficients);
         _coefficientsRepository = new CharacterCoefficientsRepository(charCoefficientsRepository);
 
+        _settings = _settingsRepository.ReadAll().ToList();
+
         _bestItemManager = new BestItemManager(originVM);
 
         UpdateCharacters();
     }
 
-    private CharacterObject CurrentCharacter { get; set; } = InventoryManager.InventoryLogic.InitialEquipmentCharacter;
+    public CharacterObject CurrentCharacter { get; set; } = InventoryManager.InventoryLogic.InitialEquipmentCharacter;
     public string CurrentCharacterName => _originVM.CurrentCharacterName;
     public bool IsInWarSet => _originVM.IsInWarSet;
 
-    public bool IsLeftPanelLocked => (bool) _settingsRepository.Read(Settings.IsLeftPanelLocked).Value;
-    public bool IsRightPanelLocked => (bool) _settingsRepository.Read(Settings.IsRightPanelLocked).Value;
+    public bool IsLeftPanelLocked => _settings.First(x => x.Key == Settings.IsLeftPanelLocked).Value;
+    public bool IsRightPanelLocked => _settings.First(x => x.Key == Settings.IsRightPanelLocked).Value;
+    public bool IsLeftMenuVisible => _settings.First(x => x.Key == Settings.IsLeftMenuVisible).Value;
+    public bool IsRightMenuVisible => _settings.First(x => x.Key == Settings.IsRightMenuVisible).Value;
 
     public override void RefreshValues()
     {
@@ -118,10 +125,10 @@ internal class ModSPInventoryVM : ViewModel
                     .WarCoefficients
                 : _coefficientsRepository.Read(CurrentCharacterName)
                     .CivilCoefficients;
-            var rightItems = (bool) _settingsRepository.Read(Settings.IsRightPanelLocked).Value
+            var rightItems = _settingsRepository.Read(Settings.IsRightPanelLocked).Value
                 ? null
                 : _originVM.RightItemListVM;
-            var leftItems = (bool) _settingsRepository.Read(Settings.IsLeftPanelLocked).Value
+            var leftItems = _settingsRepository.Read(Settings.IsLeftPanelLocked).Value
                 ? null
                 : _originVM.LeftItemListVM;
 
@@ -225,10 +232,10 @@ internal class ModSPInventoryVM : ViewModel
         var coefficients = IsInWarSet
             ? _coefficientsRepository.Read(character.Name.ToString()).WarCoefficients
             : _coefficientsRepository.Read(character.Name.ToString()).CivilCoefficients;
-        var rightItems = (bool) _settingsRepository.Read(Settings.IsRightPanelLocked).Value
+        var rightItems = _settingsRepository.Read(Settings.IsRightPanelLocked).Value
             ? null
             : _originVM.RightItemListVM;
-        var leftItems = (bool) _settingsRepository.Read(Settings.IsLeftPanelLocked).Value
+        var leftItems = _settingsRepository.Read(Settings.IsLeftPanelLocked).Value
             ? null
             : _originVM.LeftItemListVM;
 
@@ -271,7 +278,7 @@ internal class ModSPInventoryVM : ViewModel
     public void SwitchLeftPanelLock()
     {
         var settings = _settingsRepository.Read(Settings.IsLeftPanelLocked);
-        settings.Value = !(bool) settings.Value;
+        settings.Value = !settings.Value;
         _settingsRepository.Update(settings);
         Task.Run(async () => await UpdateBestItemsAsync());
     }
@@ -279,8 +286,22 @@ internal class ModSPInventoryVM : ViewModel
     public void SwitchRightPanelLock()
     {
         var settings = _settingsRepository.Read(Settings.IsRightPanelLocked);
-        settings.Value = !(bool) settings.Value;
+        settings.Value = !settings.Value;
         _settingsRepository.Update(settings);
         Task.Run(async () => await UpdateBestItemsAsync());
+    }
+
+    public void SwitchLeftMenu()
+    {
+        var settings = _settingsRepository.Read(Settings.IsLeftMenuVisible);
+        settings.Value = !settings.Value;
+        _settingsRepository.Update(settings);
+    }
+    
+    public void SwitchRightMenu()
+    {
+        var settings = _settingsRepository.Read(Settings.IsRightMenuVisible);
+        settings.Value = !settings.Value;
+        _settingsRepository.Update(settings);
     }
 }

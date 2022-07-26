@@ -1,5 +1,6 @@
 using System;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
@@ -7,15 +8,136 @@ namespace EquipBestItem.ViewModels;
 
 internal partial class CoefficientsSettingsVM
 {
+    private float _accuracy;                            // Slider value
+    private bool _accuracyIsDefault;                    // Param checkbox state
+    private bool _accuracyIsHidden = true;              // Row hidden state
+    private string _accuracyPercentText = string.Empty; // Slider percent value of all visible params
+
+    private float _armArmor;
+    private bool _armArmorIsDefault;
+    private bool _armArmorIsHidden = true;
+    private string _armArmorPercentText = string.Empty;
+
+    private float _bodyArmor;
+    private bool _bodyArmorIsDefault;
+    private bool _bodyArmorIsHidden = true;
+    private string _bodyArmorPercentText = string.Empty;
+
+    private float _chargeDamage;
+    private bool _chargeDamageIsDefault;
+    private bool _chargeDamageIsHidden = true;
+    private string _chargeDamagePercentText = string.Empty;
+
+    private float _handling;
+    private bool _handlingIsDefault;
+    private bool _handlingIsHidden = true;
+    private string _handlingPercentText = string.Empty;
+
+    private float _headArmor;
+    private bool _headArmorIsDefault;
+    private bool _headArmorIsHidden = true;
+    private string _headArmorPercentText = string.Empty;
+
+    private float _hitPoints;
+    private bool _hitPointsIsDefault;
+    private bool _hitPointsIsHidden = true;
+    private string _hitPointsPercentText = string.Empty;
+
+    private float _legArmor;
+    private bool _legArmorIsDefault;
+    private bool _legArmorIsHidden = true;
+    private string _legArmorPercentText = string.Empty;
+
+    private float _maneuver;
+    private bool _maneuverIsDefault;
+    private bool _maneuverIsHidden = true;
+    private string _maneuverPercentText = string.Empty;
+
+    private float _maxDataValue;
+    private bool _maxDataValueIsDefault;
+    private bool _maxDataValueIsHidden = true;
+    private string _maxDataValuePercentText = string.Empty;
+
+    private float _missileDamage;
+    private bool _missileDamageIsDefault;
+    private bool _missileDamageIsHidden = true;
+    private string _missileDamagePercentText = string.Empty;
+
+    private float _missileSpeed;
+    private bool _missileSpeedIsDefault;
+    private bool _missileSpeedIsHidden = true;
+    private string _missileSpeedPercentText = string.Empty;
+
+    private float _speed;
+    private bool _speedIsDefault;
+    private bool _speedIsHidden = true;
+    private string _speedPercentText = string.Empty;
+
+    private float _swingDamage;
+    private bool _swingDamageIsDefault;
+    private bool _swingDamageIsHidden = true;
+    private string _swingDamagePercentText = string.Empty;
+
+    private float _swingSpeed;
+    private bool _swingSpeedIsDefault;
+    private bool _swingSpeedIsHidden = true;
+    private string _swingSpeedPercentText = string.Empty;
+
+    private float _thrustDamage;
+    private bool _thrustDamageIsDefault;
+    private bool _thrustDamageIsHidden = true;
+    private string _thrustDamagePercentText = string.Empty;
+
+    private float _thrustSpeed;
+    private bool _thrustSpeedIsDefault;
+    private bool _thrustSpeedIsHidden = true;
+    private string _thrustSpeedPercentText = string.Empty;
+    
+    private float _weaponLength;
+    private bool _weaponLengthIsDefault;
+    private bool _weaponLengthIsHidden = true;
+    private string _weaponLengthPercentText = string.Empty;
+
+    private float _weight; 
+    private bool _weightIsDefault; 
+    private bool _weightIsHidden = true; 
+    private string _weightPercentText = string.Empty; 
+    
+    private WeaponClass _weaponClass;
+    private bool _weaponClassIsDefault;
+    private bool _weaponClassIsHidden = true;
+    
+    private string _maxDataValueText = new TextObject("{=aCkzVUCR}Hit Points: ").ToString();
+    private string _thrustSpeedText = new TextObject("{=VPYazFVH}Thrust Speed: ").ToString();
+
+    [DataSourceProperty]
+    public HintViewModel ButtonDefaultHint { get; } = new(new TextObject("{=ebi_hint_default}Reset to default values"));
+
+    [DataSourceProperty]
+    public HintViewModel ButtonLockHint { get; } = new(new TextObject("{=ebi_hint_lock}Disable search for this slot"));
+
+    [DataSourceProperty]
+    public HintViewModel CheckboxHint { get; } = new(new TextObject("{=ebi_hint_checkbox}Set to default value"));
+
+    [DataSourceProperty]
+    public HintViewModel PercentHint { get; } =
+        new(new TextObject("{=ebi_hint_percent}How much does the parameter affect the value of the item"));
+
+    [DataSourceProperty] public string ButtonDefaultText { get; } = new TextObject("{=ebi_default}Default").ToString();
+    [DataSourceProperty] public string ButtonLockText { get; } = new TextObject("{=ebi_lock}Lock").ToString();
+    
     [DataSourceProperty] public string HeadArmorText { get; } = GameTexts.FindText("str_head_armor").ToString();
     [DataSourceProperty] public string BodyArmorText { get; } = GameTexts.FindText("str_body_armor").ToString();
     [DataSourceProperty] public string LegArmorText { get; } = GameTexts.FindText("str_leg_armor").ToString();
 
     [DataSourceProperty]
-    public string ArmArmorText { get; } = new TextObject("{=cf61cce254c7dca65be9bebac7fb9bf5}Arm Armor: ").ToString();
+    public string ArmArmorText { get; } =
+        new TextObject("{=cf61cce254c7dca65be9bebac7fb9bf5}Arm Armor: ").ToString();
 
     [DataSourceProperty] public string WeightText { get; } = GameTexts.FindText("str_weight_text").ToString();
-    [DataSourceProperty] public string HitPointsText { get; } = new TextObject("{=aCkzVUCR}Hit Points: ").ToString();
+    
+    [DataSourceProperty]
+    public string HitPointsText { get; } = new TextObject("{=aCkzVUCR}Hit Points: ").ToString();
 
     [DataSourceProperty]
     public string ChargeDamageText { get; } =
@@ -26,11 +148,6 @@ internal partial class CoefficientsSettingsVM
 
     [DataSourceProperty]
     public string SpeedText { get; } = new TextObject("{=74dc1908cb0b990e80fb977b5a0ef10d}Speed: ").ToString();
-
-    [DataSourceProperty] public string MaxDataValueText { get; } = new TextObject("{=aCkzVUCR}Hit Points: ").ToString();
-
-    [DataSourceProperty]
-    public string ThrustSpeedText { get; } = new TextObject("{=VPYazFVH}Thrust Speed: ").ToString();
 
     [DataSourceProperty] public string SwingSpeedText { get; } = new TextObject("{=nfQhamAF}Swing Speed: ").ToString();
 
@@ -53,6 +170,54 @@ internal partial class CoefficientsSettingsVM
 
     [DataSourceProperty]
     public string WeaponBodyArmorText { get; } = new TextObject("{=bLWyjOdS}Body Armor: ").ToString();
+ 
+    [DataSourceProperty]
+    public string MaxDataValueText
+    {
+        get => _maxDataValueText;
+        set
+        {
+            if (_maxDataValueText == value) return;
+            _maxDataValueText = value;
+            OnPropertyChanged();
+        }
+    } 
+    
+    [DataSourceProperty]
+    public string ThrustSpeedText
+    {
+        get => _thrustSpeedText;
+        set
+        {
+            if (_thrustSpeedText == value) return;
+            _thrustSpeedText = value;
+            OnPropertyChanged();
+        }
+    } 
+    
+    [DataSourceProperty]
+    public bool WeaponClassIsHidden
+    {
+        get => _weaponClassIsHidden;
+        set
+        {
+            if (_weaponClassIsHidden == value) return;
+            _weaponClassIsHidden = value;
+            OnPropertyChanged();
+        }
+    }
+
+    [DataSourceProperty]
+    public SelectorVM<SelectorItemVM> WeaponClassSelector
+    {
+        get => _weaponClassSelector;
+        set
+        {
+            if (value == _weaponClassSelector) return;
+            _weaponClassSelector = value;
+            OnPropertyChangedWithValue(value);
+        }
+    }
 
     [DataSourceProperty]
     public string HeaderText
