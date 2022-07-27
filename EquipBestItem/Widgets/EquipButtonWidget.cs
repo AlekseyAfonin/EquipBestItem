@@ -11,7 +11,7 @@ public class EquipButtonWidget : ButtonWidget
     {
     }
 
-    // Показываем кнопки на слотах, даже если нет предметов лучше. Это позволит открыть настройки фильтров
+    // Show the buttons on the slots, even if there are no better items. This will open the filter settings
     protected override void OnLateUpdate(float dt)
     {
         base.OnLateUpdate(dt);
@@ -25,7 +25,7 @@ public class EquipButtonWidget : ButtonWidget
         if (Input.IsKeyReleased(InputKey.LeftAlt)) IsDisabled = _lastState;
     }
 
-    // Блокируем основную функцию кнопки, но оставляем возможность открыть настройки через ПКМ
+    // Block the main function of the button, but leave the option to open the settings via right mouse button
     protected override void OnMousePressed()
     {
         if (Input.IsKeyDown(InputKey.LeftAlt)) return;

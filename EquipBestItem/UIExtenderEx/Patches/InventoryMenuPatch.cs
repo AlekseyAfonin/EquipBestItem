@@ -13,7 +13,7 @@ namespace EquipBestItem.UIExtenderEx.Patches;
 [PrefabExtension("Inventory", "descendant::InventoryCenterPanelWidget[@Id='CenterPanel']/Children")]
 public class InventoryMenuPatch : PrefabExtensionInsertPatch
 {
-    private readonly List<XmlNode> _nodes = new();
+    private readonly List<XmlNode> _nodes;
 
     public InventoryMenuPatch()
     {

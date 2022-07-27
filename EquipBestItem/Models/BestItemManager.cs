@@ -41,7 +41,7 @@ internal class BestItemManager
         {
             var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
             var bestItemValue = equipment[index].IsEmpty || IsWeaponClassNotUndefinedAndNotEqual(equipment[index])
-                ? 0
+                ? 0f
                 : equipment[index].GetItemValue(coefficients[(int) index]);
 
             var validItems = itemsLists

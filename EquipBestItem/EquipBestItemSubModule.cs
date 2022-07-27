@@ -23,4 +23,18 @@ public class EquipBestItemSubModule : MBSubModuleBase
             Helper.ShowMessage($"EquipBestItem failed to apply UIExtender patches {exception.Message})", Colors.Red);
         }
     }
+    
+    protected override void OnSubModuleUnloaded()
+    {
+        base.OnSubModuleUnloaded();
+
+        try
+        {
+            _uiExtender.Disable();
+        }
+        catch (Exception exception)
+        {
+            Helper.ShowMessage($"EquipBestItem failed to disable UIExtender patches {exception.Message})", Colors.Red);
+        }
+    }
 }

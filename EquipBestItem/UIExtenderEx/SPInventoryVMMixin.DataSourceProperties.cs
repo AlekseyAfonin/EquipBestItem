@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
@@ -6,6 +7,8 @@ using TaleWorlds.Localization;
 
 namespace EquipBestItem.UIExtenderEx;
 
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public sealed partial class SPInventoryVMMixin
 {
     private bool _isBodyButtonDisabled;
@@ -250,8 +253,10 @@ public sealed partial class SPInventoryVMMixin
             _isLeftPanelLocked = value;
             ViewModel!.OnPropertyChanged();
             _model.OnPropertyChanged();
-            ViewModel!.OnPropertyChanged("LeftClosedLockIsHidden");
-            ViewModel!.OnPropertyChanged("LeftOpenedLockIsHidden");
+            
+            // Updating the visibility status of the lock buttons
+            ViewModel!.OnPropertyChanged(nameof(LeftClosedLockIsHidden));
+            ViewModel!.OnPropertyChanged(nameof(LeftOpenedLockIsHidden));
         }
     }
     
@@ -265,8 +270,10 @@ public sealed partial class SPInventoryVMMixin
             _isRightPanelLocked = value;
             ViewModel!.OnPropertyChanged();
             _model.OnPropertyChanged();
-            ViewModel!.OnPropertyChanged("RightClosedLockIsHidden");
-            ViewModel!.OnPropertyChanged("RightOpenedLockIsHidden");
+            
+            // Updating the visibility status of the lock buttons
+            ViewModel!.OnPropertyChanged(nameof(RightClosedLockIsHidden));
+            ViewModel!.OnPropertyChanged(nameof(RightOpenedLockIsHidden));
         }
     }
 }

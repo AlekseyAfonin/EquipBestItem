@@ -1,19 +1,16 @@
 using System;
 using System.ComponentModel;
-using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Bannerlord.UIExtenderEx.Attributes;
 using Bannerlord.UIExtenderEx.ViewModels;
 using EquipBestItem.Models;
-using EquipBestItem.ViewModels;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
-using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
-using TaleWorlds.Localization;
 
 namespace EquipBestItem.UIExtenderEx;
 
@@ -21,6 +18,7 @@ namespace EquipBestItem.UIExtenderEx;
 ///         https://butr.github.io/Bannerlord.UIExtenderEx/articles/v2/ViewModelMixin.html
 /// </summary>
 [ViewModelMixin("RefreshValues")]
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 public sealed partial class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryVM>
 {
     private readonly SPInventoryMixin _model;

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
@@ -6,6 +7,7 @@ using TaleWorlds.Localization;
 
 namespace EquipBestItem.ViewModels;
 
+[SuppressMessage("ReSharper", "StringLiteralTypo")]
 internal partial class CoefficientsSettingsVM
 {
     private float _accuracy;                            // Slider value

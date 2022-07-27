@@ -1,11 +1,8 @@
-using System.Threading.Tasks;
 using EquipBestItem.Models;
-using EquipBestItem.Models.Entities;
 using EquipBestItem.Models.Enums;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
-using TaleWorlds.Localization;
 
 namespace EquipBestItem.ViewModels;
 

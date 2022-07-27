@@ -1,12 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EquipBestItem.Extensions;
 using EquipBestItem.Layers;
-using EquipBestItem.Models;
 using EquipBestItem.Models.Entities;
 using EquipBestItem.Models.Enums;
 using EquipBestItem.UIExtenderEx;
@@ -19,7 +16,7 @@ using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.ScreenSystem;
 
-namespace EquipBestItem.ViewModels;
+namespace EquipBestItem.Models;
 
 internal class SPInventoryMixin : ViewModel
 {
@@ -47,13 +44,12 @@ internal class SPInventoryMixin : ViewModel
         _coefficientsRepository = new CharacterCoefficientsRepository(charCoefficientsRepository);
 
         _settings = _settingsRepository.ReadAll().ToList();
-
         _bestItemManager = new BestItemManager(originVM);
 
         UpdateCharacters();
     }
 
-    public CharacterObject CurrentCharacter { get; set; } = InventoryManager.InventoryLogic.InitialEquipmentCharacter;
+    public CharacterObject CurrentCharacter { get; private set; } = InventoryManager.InventoryLogic.InitialEquipmentCharacter;
     public string CurrentCharacterName => _originVM.CurrentCharacterName;
     public bool IsInWarSet => _originVM.IsInWarSet;
 
@@ -61,16 +57,6 @@ internal class SPInventoryMixin : ViewModel
     public bool IsRightPanelLocked => _settings.First(x => x.Key == Settings.IsRightPanelLocked).Value;
     public bool IsLeftMenuVisible => _settings.First(x => x.Key == Settings.IsLeftMenuVisible).Value;
     public bool IsRightMenuVisible => _settings.First(x => x.Key == Settings.IsRightMenuVisible).Value;
-
-    public override void RefreshValues()
-    {
-        base.RefreshValues();
-    }
-
-    public override void OnFinalize()
-    {
-        base.OnFinalize();
-    }
     
     public void UpdateCurrentCharacter(CharacterObject currentCharacter)
     {

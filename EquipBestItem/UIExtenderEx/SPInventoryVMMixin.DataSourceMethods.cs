@@ -1,10 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using Bannerlord.UIExtenderEx.Attributes;
-using TaleWorlds.Core.ViewModelCollection;
-using TaleWorlds.Library;
-using TaleWorlds.Localization;
 
 namespace EquipBestItem.UIExtenderEx;
 
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 public sealed partial class SPInventoryVMMixin
 {
     [DataSourceMethod]

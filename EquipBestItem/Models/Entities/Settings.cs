@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-
 namespace EquipBestItem.Models.Entities;
 
 public class Settings : BaseEntity
