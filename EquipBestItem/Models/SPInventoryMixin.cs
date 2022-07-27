@@ -65,7 +65,6 @@ internal class SPInventoryMixin : ViewModel
     public override void RefreshValues()
     {
         base.RefreshValues();
-        InformationManager.DisplayMessage(new InformationMessage("ModSP Refresh test"));
     }
 
     public override void OnFinalize()
@@ -97,8 +96,6 @@ internal class SPInventoryMixin : ViewModel
     /// <param name="equipmentIndexName">Slot name</param>
     public void ExecuteShowFilterSettings(string equipmentIndexName)
     {
-        InformationManager.DisplayMessage(new InformationMessage($"ShowSettings {equipmentIndexName}"));
-
         var equipmentIndex = Helper.ParseEnum<EquipmentIndex>(equipmentIndexName);
 
         OpenCloseCoefficientsSettingsLayer(equipmentIndex);
@@ -249,18 +246,11 @@ internal class SPInventoryMixin : ViewModel
 
     public void EquipCurrentCharacter()
     {
-        var stopwatch = new Stopwatch();
-
-        stopwatch.Start();
-        //////////////
         EquipCharacter(CurrentCharacter);
 
         _originVM.ExecuteRemoveZeroCounts();
         _originVM.RefreshValues();
         _originVM.GetMethod("UpdateCharacterEquipment");
-
-        stopwatch.Stop();
-        Helper.ShowMessage($"EquipCurrentCharacter {stopwatch.ElapsedMilliseconds}ms");
     }
 
     public void EquipAllCharacters()

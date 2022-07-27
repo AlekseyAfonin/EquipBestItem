@@ -22,7 +22,6 @@ internal class CoefficientsSettingsLayer : GauntletLayer
 
     protected override void OnFinalize()
     {
-        Helper.ShowMessage("CoefficientsSettingsLayer OnFinalize");
         _vm.OnFinalize();
         base.OnFinalize();
     }
