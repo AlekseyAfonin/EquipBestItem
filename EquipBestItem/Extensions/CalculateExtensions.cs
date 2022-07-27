@@ -13,7 +13,7 @@ internal static class CalculateExtensions
 
         if (itemObject.HasArmorComponent) return GetComponentValue(0, ItemTypes.Armor);
         if (itemObject.HasHorseComponent) return GetComponentValue(0, ItemTypes.Horse);
-        if (!itemObject.HasWeaponComponent) return 0f;
+        if (!itemObject.HasWeaponComponent) return 0;
 
         var pw = equipmentElement.Item.PrimaryWeapon;
 
@@ -97,7 +97,7 @@ internal static class CalculateExtensions
             ItemParams.SwingDamage => item.GetModifiedSwingDamageForUsage(weaponUsage),
             ItemParams.Accuracy => item.Item.Weapons[weaponUsage].Accuracy,
             ItemParams.Handling => item.GetModifiedHandlingForUsage(weaponUsage),
-            ItemParams.Weight => item.GetEquipmentElementWeight() * -1f,
+            ItemParams.Weight => item.GetEquipmentElementWeight() * -1,
             _ => 0
         };
     }

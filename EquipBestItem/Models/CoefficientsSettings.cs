@@ -204,7 +204,7 @@ internal class CoefficientsSettings
 
     public static void CloseClick()
     {
-        if (ScreenManager.TopScreen is not InventoryGauntletScreen inventoryScreen) return;
+        if (ScreenManager.TopScreen is not GauntletInventoryScreen inventoryScreen) return;
         if (inventoryScreen.Layers.FindLayer<CoefficientsSettingsLayer>() is not ScreenLayer coefficientsSettingsLayer) 
             return;
         inventoryScreen.RemoveLayer(coefficientsSettingsLayer);

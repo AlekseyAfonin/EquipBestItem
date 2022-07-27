@@ -1,7 +1,7 @@
 using EquipBestItem.Models;
 using EquipBestItem.Models.Enums;
 using TaleWorlds.Core;
-using TaleWorlds.Core.ViewModelCollection;
+using TaleWorlds.Core.ViewModelCollection.Selector;
 using TaleWorlds.Library;
 
 namespace EquipBestItem.ViewModels;
@@ -11,7 +11,7 @@ internal partial class CoefficientsSettingsVM : ViewModel
     private const float Tolerance = 0.00001f;
     private readonly CoefficientsSettings _model;
     private string _headerText;
-    private SelectorVM<SelectorItemVM> _weaponClassSelector = null!;
+    private SelectorVM<SelectorItemVM> _weaponClassSelector;
 
     internal CoefficientsSettingsVM(EquipmentIndex equipIndex, CharacterCoefficientsRepository repository,
         SPInventoryMixin mixin)

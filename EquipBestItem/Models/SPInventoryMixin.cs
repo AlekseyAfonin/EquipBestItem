@@ -11,7 +11,7 @@ using EquipBestItem.XmlRepository;
 using SandBox.GauntletUI;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Inventory;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
+using TaleWorlds.CampaignSystem.ViewModelCollection.Inventory;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.ScreenSystem;
@@ -176,7 +176,7 @@ internal class SPInventoryMixin : ViewModel
 
     private void OpenCloseCoefficientsSettingsLayer(EquipmentIndex equipmentIndex)
     {
-        var inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
+        var inventoryScreen = ScreenManager.TopScreen as GauntletInventoryScreen;
 
         var coefficientsSettingsLayer = inventoryScreen?.Layers.FindLayer<CoefficientsSettingsLayer>();
 
