@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<SpriteData>
+  <SpriteCategories>
+    <SpriteCategory>
+      <Name>ui_equipbestitem</Name>
+      <AlwaysLoad />
+      <SpriteSheetCount>1</SpriteSheetCount>
+      <SpriteSheetSize ID="1" Width="128" Height="64" />
+    </SpriteCategory>
+  </SpriteCategories>
+  <SpriteParts>
+    <SpritePart>
+      <SheetID>1</SheetID>
+      <Name>equipbestitem_button_equip</Name>
+      <Width>14</Width>
+      <Height>14</Height>
+      <SheetX>54</SheetX>
+      <SheetY>4</SheetY>
+      <CategoryName>ui_equipbestitem</CategoryName>
+    </SpritePart>
+    <SpritePart>
+      <SheetID>1</SheetID>
+      <Name>equipbestitem_button_equip_all</Name>
+      <Width>42</Width>
+      <Height>42</Height>
+      <SheetX>4</SheetX>
+      <SheetY>4</SheetY>
+      <CategoryName>ui_equipbestitem</CategoryName>
+    </SpritePart>
+  </SpriteParts>
+  <Sprites>
+    <GenericSprite>
+      <Name>equipbestitem_button_equip</Name>
+      <SpritePartName>equipbestitem_button_equip</SpritePartName>
+    </GenericSprite>
+    <GenericSprite>
+      <Name>equipbestitem_button_equip_all</Name>
+      <SpritePartName>equipbestitem_button_equip_all</SpritePartName>
+    </GenericSprite>
+  </Sprites>
+</SpriteData>
