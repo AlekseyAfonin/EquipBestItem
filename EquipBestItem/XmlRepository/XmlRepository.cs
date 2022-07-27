@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using EquipBestItem.Models.Entities;
-using TaleWorlds.Diamond.HelloWorld;
 
 namespace EquipBestItem.XmlRepository;
 
@@ -70,12 +68,14 @@ internal sealed class XmlRepository<T> : RepositoryBase<T> where T : BaseEntity,
 
             foreach (var entity in entities)
             {
-                Create(entity);
+                Entities.Add(entity);
             }
+            
+            SaveChanges();
         }
         catch (Exception e)
         {
-            Helper.ShowMessage($"Entities create exception {e.Message}");
+            Helper.ShowMessage($"Entities create exception: {e.Message}");
             throw;
         }
     }
@@ -90,7 +90,7 @@ internal sealed class XmlRepository<T> : RepositoryBase<T> where T : BaseEntity,
             using var streamReader = new StreamReader(fileStream);
             Entities = (List<T>) new XmlSerializer(typeof(List<T>)).Deserialize(streamReader);
         }
-        catch (Exception e)
+        catch
         {
             // ignored
         }
