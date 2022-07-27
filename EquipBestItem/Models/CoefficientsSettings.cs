@@ -216,7 +216,7 @@ internal class CoefficientsSettings
     {
         var charactersCoefficients = _repository.ReadAll().Where(p => p.Key != CharacterCoefficients.Default).ToList();
         var newValue = paramName == "WeaponClass"
-            ? _vm.WeaponClassSelector.SelectedIndex
+            ? (WeaponClass) _vm.WeaponClassSelector.SelectedIndex
             : _vm.GetPropertyValue($"{paramName}");
 
         foreach (var charCoefficients in charactersCoefficients)
