@@ -59,71 +59,104 @@ internal class BestItemManager
                 bestItemValue = itemValue;
             });
 
-            // Фильтр предметов по условиям
-            bool IsValidItem(SPItemVM item) //TODO refactor
+            bool IsValidItem(SPItemVM item)
             {
                 if (!_originVM.IsInWarSet && !item.IsCivilianItem) return false;
+                
                 if (!item.IsEquipableItem) return false;
+                
                 if (item.IsLocked) return false;
+                
                 if (item.ItemCount == 0) return false;
+                
                 if (!CharacterHelper.CanUseItemBasedOnSkill(character, item.ItemRosterElement.EquipmentElement))
                     return false;
 
-                // Отключаем поиск упряжки, если в слоте отсутствует ездовое животное
-                if (equipment[EquipmentIndex.Horse].IsEmpty && item.ItemType == EquipmentIndex.HorseHarness)
+                if (IsHorseHarnessNotValid()) return false;
+                   
+                if (IsItemNotWeapon()) return item.ItemType == index;
+
+                if (IsWeaponNotValid()) return false;
+
+                if (IsShieldNotValid()) return false;
+                
+                return item.ItemType <= index;
+
+                bool IsShieldNotValid()
+                {
+                    if (!IsShield(coefficients[(int) index].WeaponClass)) return false;
+
+                    // Exclude shields from the search if the shield is already on
+                    for (var i = EquipmentIndex.Weapon0; i <= EquipmentIndex.ExtraWeaponSlot; i++)
+                        if (IsShield(equipment[i].Item?.PrimaryWeapon?.WeaponClass)) return true;
+                    
                     return false;
 
-                if (item.ItemType == EquipmentIndex.HorseHarness)
+                    bool IsShield(WeaponClass? weaponClass)
+                    {
+                        return weaponClass is WeaponClass.SmallShield or WeaponClass.LargeShield;
+                    }
+                }
+                
+                bool IsWeaponNotValid()
+                {
+                    var itemPrimaryWeapon = item.ItemRosterElement.EquipmentElement.Item?.PrimaryWeapon;
+                    var currentPrimaryWeapon = equipment[index].Item?.PrimaryWeapon;
+
+                    // If the selected weapon class is not defined, we look at the weapon class from the slot,
+                    // otherwise by the selected
+                    if (coefficients[(int) index].WeaponClass == WeaponClass.Undefined)
+                    {
+                        // If the classes do not match, we skip
+                        if (itemPrimaryWeapon?.WeaponClass != currentPrimaryWeapon?.WeaponClass) return true;
+
+                        // Additional filter for short and long bows
+                        if (currentPrimaryWeapon?.WeaponClass == WeaponClass.Bow &&
+                            itemPrimaryWeapon?.ItemUsage != currentPrimaryWeapon.ItemUsage) return true;
+
+                        var currentWeaponComponents = item.ItemRosterElement.EquipmentElement.Item?.Weapons;
+                        var itemWeaponComponents = equipment[index].Item?.Weapons;
+
+                        // If they differ in the number of components skip
+                        if (itemWeaponComponents?.Count != currentWeaponComponents?.Count)
+                            return true;
+
+                        // If they have the same number of components, then we enumerate each one and compare by class
+                        for (var i = 0; i < itemWeaponComponents?.Count; i++)
+                            if (currentWeaponComponents?[i].ItemUsage != itemWeaponComponents?[i].ItemUsage)
+                                return true;
+                    }
+                    else
+                    {
+                        if (coefficients[(int) index].WeaponClass != itemPrimaryWeapon?.WeaponClass) return true;
+                    }
+
+                    return false;
+                }
+
+                bool IsHorseHarnessNotValid()
+                {
+                    if (item.ItemType != EquipmentIndex.HorseHarness) return false;
+                    
+                    // Disable the saddles search if there is no mount in the slot
+                    if (equipment[EquipmentIndex.Horse].IsEmpty && item.ItemType == EquipmentIndex.HorseHarness)
+                        return true;
+                    
+                    // Exclude from the search saddles that are not suitable for mount
                     if (equipment[EquipmentIndex.Horse].Item?.HorseComponent?.Monster.FamilyType !=
-                        item.ItemRosterElement.EquipmentElement.Item?.ArmorComponent?.FamilyType) return false;
+                        item.ItemRosterElement.EquipmentElement.Item?.ArmorComponent?.FamilyType) return true;
 
-                // Отделяем поиск оружия от других предметов
-                if (item.ItemType != EquipmentIndex.Weapon0 || index > EquipmentIndex.Weapon4)
-                    return item.ItemType == index;
-
-                var itemPrimaryWeapon = item.ItemRosterElement.EquipmentElement.Item?.PrimaryWeapon;
-                var currentPrimaryWeapon = equipment[index].Item?.PrimaryWeapon;
-
-                // Если выбранный класс оружия не определен, смотрим по классу оружия из слота, иначе по выбранному
-                if (coefficients[(int) index].WeaponClass == WeaponClass.Undefined)
-                {
-                    // Если не совпадают классы - пропускаем
-                    if (itemPrimaryWeapon?.WeaponClass != currentPrimaryWeapon?.WeaponClass) return false;
-
-                    // Дополнительный фильтр для коротких и длинных луков
-                    if (currentPrimaryWeapon?.WeaponClass == WeaponClass.Bow &&
-                        itemPrimaryWeapon?.ItemUsage != currentPrimaryWeapon.ItemUsage) return false;
-
-                    var currentWeaponComponents = item.ItemRosterElement.EquipmentElement.Item?.Weapons;
-                    var itemWeaponComponents = equipment[index].Item?.Weapons;
-                    
-                    // Если отличаются по количеству компонентов - пропускаем
-                    if (itemWeaponComponents?.Count != currentWeaponComponents?.Count) 
-                        return false;
-                    
-                    // Если они количество компонентов равно, то перебираем каждый и сравниваем по классу
-                    for (var i = 0; i < itemWeaponComponents?.Count; i++)
-                        if (currentWeaponComponents?[i].ItemUsage != itemWeaponComponents?[i].ItemUsage)
-                            return false;
+                    return false;
                 }
-                else
+                
+                // Separating the search for weapons from other items
+                bool IsItemNotWeapon()
                 {
-                    if (coefficients[(int) index].WeaponClass != itemPrimaryWeapon?.WeaponClass) return false;
+                    return item.ItemType != EquipmentIndex.Weapon0 || index > EquipmentIndex.Weapon4;
                 }
-
-                // Исключаем из поиска щиты, если щит уже надет
-                if (coefficients[(int) index].WeaponClass is not (WeaponClass.SmallShield or WeaponClass.LargeShield))
-                    return item.ItemType <= index;
-
-                for (var i = EquipmentIndex.Weapon0; i <= EquipmentIndex.ExtraWeaponSlot; i++)
-                    if (equipment[i].Item?.PrimaryWeapon?.WeaponClass is WeaponClass.SmallShield
-                        or WeaponClass.LargeShield)
-                        return false;
-
-                return item.ItemType <= index;
             }
 
-            // Проверка соответствия класса оружия слота, если выбран класс оружия отличный от WeaponClass.Undefined
+            // Checking the compliance of the slot's weapon class, if a weapon class other than WeaponClass.Undefined
             bool IsWeaponClassNotUndefinedAndNotEqual(EquipmentElement item)
             {
                 return item.Item?.PrimaryWeapon?.WeaponClass != coefficients[(int) index].WeaponClass &&

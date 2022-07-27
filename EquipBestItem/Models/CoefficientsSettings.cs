@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -132,7 +130,7 @@ internal class CoefficientsSettings
         return Coefficients.WeaponClass;
     }
 
-    public WeaponClass GetWeaponClass()
+    private WeaponClass GetWeaponClass()
     {
         return Coefficients.WeaponClass == WeaponClass.Undefined
             ? _mixin.CurrentCharacter.Equipment[(int) _equipmentIndex].Item?.PrimaryWeapon?.WeaponClass ??

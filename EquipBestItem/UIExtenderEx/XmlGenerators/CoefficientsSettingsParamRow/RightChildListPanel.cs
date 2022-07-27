@@ -14,7 +14,7 @@ internal class RightChildListPanel : WidgetNode
                 new XAttribute("HeightSizePolicy", "CoverChildren"),
                 new XAttribute("HorizontalAlignment", "Left"),
                 new XAttribute("VerticalAlignment", "Center"),
-                new XAttribute("IsVisible", true), //TODO Check
+                new XAttribute("IsVisible", true),
                 new XElement("Children",
                     new RightSliderWidget(itemParam).Node,
                     new RightRichTextWidget(itemParam).Node,

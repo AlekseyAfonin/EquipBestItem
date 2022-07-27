@@ -15,6 +15,6 @@ internal class RightSliderWidgetFirstWidget : WidgetNode
                 new XAttribute("HorizontalAlignment", "Center"),
                 new XAttribute("VerticalAlignment", "Center"),
                 new XAttribute("Sprite", @"SPGeneral\SPOptions\standart_slider_canvas"),
-                new XAttribute("IsEnabled", false)); //TODO Check
+                new XAttribute("IsEnabled", false));
     }
 }
