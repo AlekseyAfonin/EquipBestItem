@@ -10,11 +10,13 @@ namespace EquipBestItem.XmlRepository;
 internal sealed class XmlRepository<T> : RepositoryBase<T> where T : BaseEntity, new()
 {
     private readonly string _storagePath;
+    private readonly string _storageFolder;
 
-    internal XmlRepository(string storagePath)
+    internal XmlRepository(string storageFolder)
     {
         Entities = new List<T>();
-        _storagePath = $"{storagePath}{TypeName}.xml";
+        _storageFolder = storageFolder;
+        _storagePath = $"{_storageFolder}{TypeName}.xml";
         LoadItems();
     }
 
@@ -98,6 +100,8 @@ internal sealed class XmlRepository<T> : RepositoryBase<T> where T : BaseEntity,
 
     private void SaveChanges()
     {
+        if (!Directory.Exists(_storageFolder)) Directory.CreateDirectory(_storageFolder);
+    
         var writer = new StreamWriter(_storagePath, false);
         var serializer = new XmlSerializer(typeof(List<T>));
         serializer.Serialize(writer, Entities);

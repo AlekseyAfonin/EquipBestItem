@@ -5,7 +5,7 @@
         </Layers>
         <Styles>
             <Style Name="Default">
-                <BrushLayer Name="Default" Sprite="equipbestitem_button_equip" ColorFactor="0.7"
+                <BrushLayer Name="Default" Sprite="equipbestitem_button_equip" ColorFactor="0.4"
                             IsHidden="false"/>
             </Style>
             <Style Name="Hovered">
