@@ -32,10 +32,7 @@ internal static class CalculateExtensions
 
                 sumCoefficients += coefficientValue;
 
-                // The weight is not in the properties of the component, so we take it from the parent object
-                value += param == ItemParams.Weight
-                    ? equipmentElement.GetEquipmentElementWeight() * coefficientValue * -1f
-                    : equipmentElement.GetModifiedValue(param, indexUsage) * coefficientValue;
+                value += equipmentElement.GetModifiedValue(param, indexUsage) * coefficientValue;
             }
 
             return sumCoefficients > 0 ? value / sumCoefficients : 0;
@@ -69,7 +66,7 @@ internal static class CalculateExtensions
         };
     }
 
-    private static int GetModifiedValue(this EquipmentElement item, ItemParams itemParam, int weaponUsage = 0)
+    private static float GetModifiedValue(this EquipmentElement item, ItemParams itemParam, int weaponUsage = 0)
     {
         return itemParam switch
         {
@@ -100,6 +97,7 @@ internal static class CalculateExtensions
             ItemParams.SwingDamage => item.GetModifiedSwingDamageForUsage(weaponUsage),
             ItemParams.Accuracy => item.Item.Weapons[weaponUsage].Accuracy,
             ItemParams.Handling => item.GetModifiedHandlingForUsage(weaponUsage),
+            ItemParams.Weight => item.GetEquipmentElementWeight() * -1f,
             _ => 0
         };
     }
