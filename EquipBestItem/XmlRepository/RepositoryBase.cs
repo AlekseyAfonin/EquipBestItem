@@ -23,5 +23,7 @@ internal abstract class RepositoryBase<T> : IRepository<T> where T : BaseEntity
 
     public abstract IEnumerable<T> ReadAll();
 
+    public abstract void Create(IEnumerable<T> entities);
+
     public abstract bool Exists(string key);
 }

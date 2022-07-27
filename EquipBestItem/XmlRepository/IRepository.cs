@@ -15,5 +15,7 @@ internal interface IRepository<T> where T : BaseEntity
 
     IEnumerable<T> ReadAll();
 
+    void Create(IEnumerable<T> entities);
+
     bool Exists(string key);
 }
