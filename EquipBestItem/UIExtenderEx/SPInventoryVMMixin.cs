@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,14 +36,12 @@ public sealed partial class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryV
     {
         if (ViewModel is not null)
         {
-            ViewModel.PropertyChanged -= SPInventoryVM_PropertyChanged;
             ViewModel.PropertyChangedWithValue -= SPInventoryVM_PropertyChangedWithValue;
         }
 
         Game.Current.EventManager.UnregisterEvent(
             new Action<InventoryEquipmentTypeChangedEvent>(OnInventoryEquipmentTypeChanged));
         
-        _model.OnFinalize();
         base.OnFinalize();
     }
 
@@ -61,7 +58,7 @@ public sealed partial class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryV
     {
         if (ViewModel == null) return;
 
-        ViewModel.PropertyChanged += SPInventoryVM_PropertyChanged;
+        //ViewModel.PropertyChanged += SPInventoryVM_PropertyChanged;
         ViewModel.PropertyChangedWithValue += SPInventoryVM_PropertyChangedWithValue;
 
         Game.Current.EventManager.RegisterEvent(
@@ -77,18 +74,12 @@ public sealed partial class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryV
         Update();
     }
 
-    /// <summary>
-    ///     SPInventoryVM the event of property value change
-    /// </summary>
-    /// <param name="sender">SPInventoryVM</param>
-    /// <param name="e">Property name</param>
-    private void SPInventoryVM_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        _model.OnPropertyChanged(e.PropertyName);
-    }
-
+    private bool _updateLocked;
+    
     private void Update()
     {
+        if (_updateLocked) return;
+        
         CoefficientsSettings.CloseClick();
         Task.Run(async () => await _model.UpdateBestItemsAsync());
     }
@@ -100,8 +91,6 @@ public sealed partial class SPInventoryVMMixin : BaseViewModelMixin<SPInventoryV
     /// <param name="e">Property name, value</param>
     private void SPInventoryVM_PropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
     {
-        _model.OnPropertyChangedWithValue(e.Value, e.PropertyName);
-
         switch (e.PropertyName)
         {
             case "IsRefreshed" when (bool) e.Value:

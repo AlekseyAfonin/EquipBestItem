@@ -83,7 +83,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isHeadButtonDisabled == value) return;
             _isHeadButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -96,7 +95,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isCapeButtonDisabled == value) return;
             _isCapeButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -109,7 +107,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isBodyButtonDisabled == value) return;
             _isBodyButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -122,7 +119,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isLegButtonDisabled == value) return;
             _isLegButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -135,7 +131,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isGlovesButtonDisabled == value) return;
             _isGlovesButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -148,7 +143,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isHorseButtonDisabled == value) return;
             _isHorseButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -161,7 +155,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isHorseHarnessButtonDisabled == value) return;
             _isHorseHarnessButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -174,7 +167,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isWeapon0ButtonDisabled == value) return;
             _isWeapon0ButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -187,7 +179,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isWeapon1ButtonDisabled == value) return;
             _isWeapon1ButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -200,7 +191,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isWeapon2ButtonDisabled == value) return;
             _isWeapon2ButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -213,7 +203,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isWeapon3ButtonDisabled == value) return;
             _isWeapon3ButtonDisabled = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -226,7 +215,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isLeftMenuVisible == value) return;
             _isLeftMenuVisible = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -239,7 +227,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isRightMenuVisible == value) return;
             _isRightMenuVisible = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
         }
     }
 
@@ -252,7 +239,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isLeftPanelLocked == value) return;
             _isLeftPanelLocked = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
             
             // Updating the visibility status of the lock buttons
             ViewModel!.OnPropertyChanged(nameof(LeftClosedLockIsHidden));
@@ -269,7 +255,6 @@ public sealed partial class SPInventoryVMMixin
             if (_isRightPanelLocked == value) return;
             _isRightPanelLocked = value;
             ViewModel!.OnPropertyChanged();
-            _model.OnPropertyChanged();
             
             // Updating the visibility status of the lock buttons
             ViewModel!.OnPropertyChanged(nameof(RightClosedLockIsHidden));

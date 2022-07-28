@@ -57,10 +57,15 @@ public sealed partial class SPInventoryVMMixin
     {
         _model.ExecuteShowFilterSettings(equipmentIndexName);
     }
-
+    
     [DataSourceMethod]
     public void ExecuteResetTranstactions()
     {
+        // Block the update until the transaction reset operation is complete to avoid the problem of changing the
+        // collection during item retrieval.
+        _updateLocked = true;
         ViewModel?.ExecuteResetTranstactions();
+        _updateLocked = false;
+        Update();
     }
 }

@@ -13,12 +13,11 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
-using TaleWorlds.Library;
 using TaleWorlds.ScreenSystem;
 
 namespace EquipBestItem.Models;
 
-internal class SPInventoryMixin : ViewModel
+internal class SPInventoryMixin
 {
     private readonly BestItemManager _bestItemManager;
     private readonly CharacterCoefficientsRepository _coefficientsRepository;
@@ -145,7 +144,6 @@ internal class SPInventoryMixin : ViewModel
             _originVM.OnPropertyChanged($"{index}BestItem");
         }
     }
-
 
     /// <summary>
     ///     Add missing characters coefficients.
