@@ -1,10 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EquipBestItem.Extensions;
+using EquipBestItem.Models.BestItemCalculator;
 using EquipBestItem.Models.Entities;
 using Helpers;
-using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
@@ -12,37 +12,61 @@ using TaleWorlds.Library;
 
 namespace EquipBestItem.Models;
 
-internal class BestItemManager
+public sealed class BestItemManager
 {
-    private readonly InventoryLogic _inventoryLogic;
-    private readonly SPInventoryVM _originVM;
+    private readonly List<IBestItemCalculator> _calculators;
+    private int _selectedIndex;
 
-    internal BestItemManager(SPInventoryVM originVM)
+    private BestItemManager()
     {
-        _originVM = originVM;
-        _inventoryLogic = InventoryManager.InventoryLogic;
+        _calculators = new List<IBestItemCalculator>();
+    }
+    
+    private static readonly BestItemManager instance = new BestItemManager();
+    
+    private IBestItemCalculator Calculator => _calculators[_selectedIndex];
+    
+    public static BestItemManager Instance()
+    {
+        return instance;
     }
 
-    internal void EquipBestItem(EquipmentIndex equipmentIndex, CharacterObject character, ref SPItemVM? item)
+    public void AddCalculator(IBestItemCalculator calculator)
+    {
+        _calculators.Add(calculator);
+    }
+
+    public IEnumerable<string> GetCalculatorsNames()
+    {
+        return _calculators.Select(calculator => calculator.Name);
+    }
+
+    public void SelectCalculator(int selectedIndex)
+    {
+        _selectedIndex = selectedIndex;
+    }
+
+    public void EquipBestItem(CalculatorContext context, SPItemVM? item)
     {
         if (item is null) return;
-
-        UnequipItem(equipmentIndex, character);
-        EquipItem(equipmentIndex, character, item);
+        
+        UnequipItem(context);
+        EquipItem(context, item);
         item = null;
     }
 
-    internal SPItemVM? GetBestItem(CharacterObject character, EquipmentIndex index, Coefficients[] coefficients,
-        params MBBindingList<SPItemVM>?[] itemsLists)
+    public SPItemVM? GetBestItem(CalculatorContext context, params MBBindingList<SPItemVM>?[] itemsLists)
     {
         SPItemVM? bestItem = null;
 
+        var index = context.EquipmentIndex;
+        var character = context.Character;
+        var equipment = context.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
+
         try
         {
-            var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
-            var bestItemValue = equipment[index].IsEmpty || IsWeaponClassNotUndefinedAndNotEqual(equipment[index])
-                ? 0f
-                : equipment[index].GetItemValue(coefficients[(int) index]);
+            var bestItemValue = equipment[index].IsEmpty || Calculator.IsSlotItemNotValid(equipment[index], context)
+                ? 0f : Calculator.GetItemValue(equipment[index], context);
 
             var validItems = itemsLists
                 .Where(items => items is not null)
@@ -51,7 +75,7 @@ internal class BestItemManager
 
             Parallel.ForEach(validItems, item =>
             {
-                var itemValue = item.ItemRosterElement.EquipmentElement.GetItemValue(coefficients[(int) index]);
+                var itemValue = Calculator.GetItemValue(item.ItemRosterElement.EquipmentElement, context);
 
                 if (bestItemValue >= itemValue) return;
 
@@ -61,7 +85,7 @@ internal class BestItemManager
 
             bool IsValidItem(SPItemVM item)
             {
-                if (!_originVM.IsInWarSet && !item.IsCivilianItem) return false;
+                if (!context.IsInWarSet && !item.IsCivilianItem) return false;
                 
                 if (!item.IsEquipableItem) return false;
                 
@@ -76,63 +100,9 @@ internal class BestItemManager
                    
                 if (IsItemNotWeapon()) return item.ItemType == index;
 
-                if (IsWeaponNotValid()) return false;
+                if (_calculators[_selectedIndex].IsItemNotValid(item, context)) return false;
 
-                if (IsShieldNotValid()) return false;
-                
                 return item.ItemType <= index;
-
-                bool IsShieldNotValid()
-                {
-                    if (!IsShield(coefficients[(int) index].WeaponClass)) return false;
-
-                    // Exclude shields from the search if the shield is already on
-                    for (var i = EquipmentIndex.Weapon0; i <= EquipmentIndex.ExtraWeaponSlot; i++)
-                        if (IsShield(equipment[i].Item?.PrimaryWeapon?.WeaponClass)) return true;
-                    
-                    return false;
-
-                    bool IsShield(WeaponClass? weaponClass)
-                    {
-                        return weaponClass is WeaponClass.SmallShield or WeaponClass.LargeShield;
-                    }
-                }
-                
-                bool IsWeaponNotValid()
-                {
-                    var itemPrimaryWeapon = item.ItemRosterElement.EquipmentElement.Item?.PrimaryWeapon;
-                    var currentPrimaryWeapon = equipment[index].Item?.PrimaryWeapon;
-
-                    // If the selected weapon class is not defined, we look at the weapon class from the slot,
-                    // otherwise by the selected
-                    if (coefficients[(int) index].WeaponClass == WeaponClass.Undefined)
-                    {
-                        // If the classes do not match, we skip
-                        if (itemPrimaryWeapon?.WeaponClass != currentPrimaryWeapon?.WeaponClass) return true;
-
-                        // Additional filter for short and long bows
-                        if (currentPrimaryWeapon?.WeaponClass == WeaponClass.Bow &&
-                            itemPrimaryWeapon?.ItemUsage != currentPrimaryWeapon.ItemUsage) return true;
-
-                        var currentWeaponComponents = item.ItemRosterElement.EquipmentElement.Item?.Weapons;
-                        var itemWeaponComponents = equipment[index].Item?.Weapons;
-
-                        // If they differ in the number of components skip
-                        if (itemWeaponComponents?.Count != currentWeaponComponents?.Count)
-                            return true;
-
-                        // If they have the same number of components, then we enumerate each one and compare by class
-                        for (var i = 0; i < itemWeaponComponents?.Count; i++)
-                            if (currentWeaponComponents?[i].ItemUsage != itemWeaponComponents?[i].ItemUsage)
-                                return true;
-                    }
-                    else
-                    {
-                        if (coefficients[(int) index].WeaponClass != itemPrimaryWeapon?.WeaponClass) return true;
-                    }
-
-                    return false;
-                }
 
                 bool IsHorseHarnessNotValid()
                 {
@@ -155,13 +125,6 @@ internal class BestItemManager
                     return item.ItemType != EquipmentIndex.Weapon0 || index > EquipmentIndex.Weapon4;
                 }
             }
-
-            // Checking the compliance of the slot's weapon class, if a weapon class other than WeaponClass.Undefined
-            bool IsWeaponClassNotUndefinedAndNotEqual(EquipmentElement item)
-            {
-                return item.Item?.PrimaryWeapon?.WeaponClass != coefficients[(int) index].WeaponClass &&
-                       coefficients[(int) index].WeaponClass != WeaponClass.Undefined;
-            }
         }
         catch (Exception e)
         {
@@ -171,9 +134,14 @@ internal class BestItemManager
         return bestItem;
     }
 
-    private void UnequipItem(EquipmentIndex equipmentIndex, CharacterObject character)
+    private void UnequipItem(CalculatorContext context)
     {
-        var equipment = _originVM.IsInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
+        var equipmentIndex = context.EquipmentIndex;
+        var character = context.Character;
+        var isInWarSet = context.IsInWarSet;
+        var inventoryLogic = InventoryManager.InventoryLogic;
+        
+        var equipment = isInWarSet ? character.FirstBattleEquipment : character.FirstCivilianEquipment;
 
         if (equipment[equipmentIndex].IsEmpty) return;
 
@@ -185,25 +153,30 @@ internal class BestItemManager
             equipmentIndex,
             EquipmentIndex.None,
             character,
-            !_originVM.IsInWarSet);
+            !isInWarSet);
 
-        _inventoryLogic.AddTransferCommand(unequipCommand);
+        inventoryLogic.AddTransferCommand(unequipCommand);
     }
 
-    private void EquipItem(EquipmentIndex equipmentIndex, CharacterObject? character, SPItemVM? item)
+    private void EquipItem(CalculatorContext context, SPItemVM? item)
     {
         if (item is null) return;
 
+        var equipmentIndex = context.EquipmentIndex;
+        var character = context.Character;
+        var isInWarSet = context.IsInWarSet;
+        var inventoryLogic = InventoryManager.InventoryLogic;
+        
         var equipCommand = TransferCommand.Transfer(
             1,
             item.InventorySide,
             InventoryLogic.InventorySide.Equipment,
-            item.ItemRosterElement,
+            new ItemRosterElement(item.ItemRosterElement.EquipmentElement, 1),
             EquipmentIndex.None,
             equipmentIndex,
             character,
-            !_originVM.IsInWarSet);
+            !isInWarSet);
 
-        _inventoryLogic.AddTransferCommand(equipCommand);
+        inventoryLogic.AddTransferCommand(equipCommand);
     }
 }

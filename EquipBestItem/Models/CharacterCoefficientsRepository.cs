@@ -4,7 +4,7 @@ using EquipBestItem.XmlRepository;
 
 namespace EquipBestItem.Models;
 
-internal class CharacterCoefficientsRepository
+public class CharacterCoefficientsRepository
 {
     private readonly IRepository<CharacterCoefficients> _repository;
 

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EquipBestItem.Extensions;
 using EquipBestItem.Layers;
+using EquipBestItem.Models.BestItemCalculator;
 using EquipBestItem.Models.Entities;
 using EquipBestItem.Models.Enums;
 using EquipBestItem.UIExtenderEx;
@@ -19,7 +20,6 @@ namespace EquipBestItem.Models;
 
 internal class SPInventoryMixin
 {
-    private readonly BestItemManager _bestItemManager;
     private readonly CharacterCoefficientsRepository _coefficientsRepository;
     private readonly SPInventoryVMMixin _mixinVM;
     private readonly SPInventoryVM _originVM;
@@ -43,8 +43,9 @@ internal class SPInventoryMixin
         _coefficientsRepository = new CharacterCoefficientsRepository(charCoefficientsRepository);
 
         _settings = _settingsRepository.ReadAll().ToList();
-        _bestItemManager = new BestItemManager(originVM);
 
+        AddCalculators();
+        
         UpdateCharacters();
     }
 
@@ -56,6 +57,13 @@ internal class SPInventoryMixin
     public bool IsRightPanelLocked => _settings.First(x => x.Key == Settings.IsRightPanelLocked).Value;
     public bool IsLeftMenuVisible => _settings.First(x => x.Key == Settings.IsLeftMenuVisible).Value;
     public bool IsRightMenuVisible => _settings.First(x => x.Key == Settings.IsRightMenuVisible).Value;
+
+    private void AddCalculators()
+    {
+        BestItemManager.Instance().AddCalculator(new CoefficientsCalculator("Coefficients", _coefficientsRepository)); 
+        BestItemManager.Instance().AddCalculator(new EffectivenessCalculator("Effectiveness"));
+        BestItemManager.Instance().SelectCalculator(1);
+    }
     
     public void UpdateCurrentCharacter(CharacterObject currentCharacter)
     {
@@ -69,7 +77,13 @@ internal class SPInventoryMixin
     public void ExecuteEquipBestItem(string equipmentIndexName)
     {
         var equipmentIndex = Helper.ParseEnum<EquipmentIndex>(equipmentIndexName);
-        _bestItemManager.EquipBestItem(equipmentIndex, CurrentCharacter, ref BestItems[(int) equipmentIndex]);
+        var context = new CalculatorContext()
+        {
+            Character = CurrentCharacter,
+            EquipmentIndex = equipmentIndex,
+            IsInWarSet = IsInWarSet
+        };
+        BestItemManager.Instance().EquipBestItem(context, BestItems[(int) equipmentIndex]);
         _originVM.ExecuteRemoveZeroCounts();
         _originVM.RefreshValues();
         _originVM.GetMethod("UpdateCharacterEquipment");
@@ -82,7 +96,6 @@ internal class SPInventoryMixin
     public void ExecuteShowFilterSettings(string equipmentIndexName)
     {
         var equipmentIndex = Helper.ParseEnum<EquipmentIndex>(equipmentIndexName);
-
         OpenCloseCoefficientsSettingsLayer(equipmentIndex);
     }
 
@@ -102,11 +115,6 @@ internal class SPInventoryMixin
 
         try
         {
-            var coefficients = _originVM.IsInWarSet
-                ? _coefficientsRepository.Read(CurrentCharacterName)
-                    .WarCoefficients
-                : _coefficientsRepository.Read(CurrentCharacterName)
-                    .CivilCoefficients;
             var rightItems = _settingsRepository.Read(Settings.IsRightPanelLocked).Value
                 ? null
                 : _originVM.RightItemListVM;
@@ -117,8 +125,15 @@ internal class SPInventoryMixin
             var bestItems = new SPItemVM?[12];
             for (var index = EquipmentIndex.WeaponItemBeginSlot; index < EquipmentIndex.NumEquipmentSetSlots; index++)
             {
-                bestItems[(int) index] = await Task.Run(() =>
-                    _bestItemManager.GetBestItem(CurrentCharacter, index, coefficients, rightItems, leftItems), token);
+                var context = new CalculatorContext()
+                {
+                    Character = CurrentCharacter,
+                    EquipmentIndex = index,
+                    IsInWarSet = IsInWarSet
+                };
+                
+                bestItems[(int) index] = await Task.Run(() => 
+                    BestItemManager.Instance().GetBestItem(context, rightItems, leftItems), token);
 
                 if (token.IsCancellationRequested) return;
             }
@@ -172,7 +187,7 @@ internal class SPInventoryMixin
         }
     }
 
-    private void OpenCloseCoefficientsSettingsLayer(EquipmentIndex equipmentIndex)
+    private void OpenCloseCoefficientsSettingsLayer(EquipmentIndex equipIndex)
     {
         var inventoryScreen = ScreenManager.TopScreen as InventoryGauntletScreen;
 
@@ -184,7 +199,7 @@ internal class SPInventoryMixin
             return;
         }
 
-        if (coefficientsSettingsLayer.EquipmentIndex == equipmentIndex)
+        if (coefficientsSettingsLayer.EquipmentIndex == equipIndex)
         {
             CloseCoefficientSettings();
         }
@@ -196,8 +211,7 @@ internal class SPInventoryMixin
 
         void OpenCoefficientSettings()
         {
-            coefficientsSettingsLayer =
-                new CoefficientsSettingsLayer(17, equipmentIndex, _coefficientsRepository, this);
+            coefficientsSettingsLayer = new CoefficientsSettingsLayer(17, equipIndex, _coefficientsRepository, this);
             inventoryScreen?.AddLayer(coefficientsSettingsLayer);
             coefficientsSettingsLayer.InputRestrictions.SetInputRestrictions();
         }
@@ -210,9 +224,6 @@ internal class SPInventoryMixin
 
     private void EquipCharacter(CharacterObject character)
     {
-        var coefficients = IsInWarSet
-            ? _coefficientsRepository.Read(character.Name.ToString()).WarCoefficients
-            : _coefficientsRepository.Read(character.Name.ToString()).CivilCoefficients;
         var rightItems = _settingsRepository.Read(Settings.IsRightPanelLocked).Value
             ? null
             : _originVM.RightItemListVM;
@@ -222,9 +233,15 @@ internal class SPInventoryMixin
 
         for (var index = EquipmentIndex.WeaponItemBeginSlot; index < EquipmentIndex.NumEquipmentSetSlots; index++)
         {
-            var bestItem = _bestItemManager.GetBestItem(character, index, coefficients, rightItems, leftItems);
-
-            _bestItemManager.EquipBestItem(index, character, ref bestItem);
+            var context = new CalculatorContext()
+            {
+                Character = character,
+                EquipmentIndex = index,
+                IsInWarSet = IsInWarSet
+            };
+            
+            var bestItem = BestItemManager.Instance().GetBestItem(context, rightItems, leftItems);
+            BestItemManager.Instance().EquipBestItem(context, bestItem);
         }
     }
 
