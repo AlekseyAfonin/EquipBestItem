@@ -7,82 +7,19 @@ using EquipBestItem.Models.Entities;
 
 namespace EquipBestItem.XmlRepository;
 
-internal sealed class XmlRepository<T> : RepositoryBase<T> where T : BaseEntity, new()
+internal sealed class XmlRepository<T> : RepositoryBase<T> where T : BaseEntity
 {
     private readonly string _storagePath;
     private readonly string _storageFolder;
 
     internal XmlRepository(string storageFolder)
     {
-        Entities = new List<T>();
         _storageFolder = storageFolder;
         _storagePath = $"{_storageFolder}{TypeName}.xml";
         LoadItems();
     }
-
-    private List<T> Entities { get; set; }
-
-    public override void Create(T entity)
-    {
-        Entities.Add(entity);
-        SaveChanges();
-    }
-
-    public override T Read(string key)
-    {
-        return Entities.First(e => e.Key == key);
-    }
-
-    public override IEnumerable<T> ReadAll()
-    {
-        return Entities;
-    }
-
-    public override void Update(T entity)
-    {
-        var index = Entities.FindIndex(x => x.Key == entity.Key);
-        
-        if (index >= 0) Entities[index] = entity;
-
-        SaveChanges();
-    }
-
-    public override void Delete(string key)
-    {
-        var index = Entities.FindIndex(x => x.Key == key);
-        
-        if (index < 0) return;
-        
-        Entities.RemoveAt(index);
-        SaveChanges();
-    }
-
-    public override bool Exists(string key)
-    {
-        return Entities.Exists(x => x.Key == key);
-    }
-
-    public override void Create(IEnumerable<T> entities)
-    {
-        try
-        {
-            if (entities == null) throw new ArgumentNullException();
-
-            foreach (var entity in entities)
-            {
-                Entities.Add(entity);
-            }
-            
-            SaveChanges();
-        }
-        catch (Exception e)
-        {
-            Helper.ShowMessage($"Entities create exception: {e.Message}");
-            throw;
-        }
-    }
-
-    private void LoadItems()
+    
+    protected override void LoadItems()
     {
         try
         {
@@ -98,7 +35,7 @@ internal sealed class XmlRepository<T> : RepositoryBase<T> where T : BaseEntity,
         }
     }
 
-    private void SaveChanges()
+    protected override void SaveChanges()
     {
         if (!Directory.Exists(_storageFolder)) Directory.CreateDirectory(_storageFolder);
     

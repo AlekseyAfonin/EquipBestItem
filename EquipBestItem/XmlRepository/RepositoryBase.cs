@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using EquipBestItem.Models.Entities;
 
 namespace EquipBestItem.XmlRepository;
@@ -7,23 +9,75 @@ internal abstract class RepositoryBase<T> : IRepository<T> where T : BaseEntity
 {
     internal RepositoryBase()
     {
+        Entities = new List<T>();
         var type = typeof(T);
         TypeName = type.Name;
     }
 
+    protected List<T> Entities { get; set; }
     protected string TypeName { get; }
 
-    public abstract void Create(T entity);
+    public virtual void Create(T entity)
+    {
+        Entities.Add(entity);
+        SaveChanges();
+    }
 
-    public abstract T Read(string key);
+    public virtual T Read(string key)
+    {
+        return Entities.First(e => e.Key == key);
+    }
 
-    public abstract void Update(T entity);
+    public virtual void Update(T entity)
+    {
+        var index = Entities.FindIndex(x => x.Key == entity.Key);
+        
+        if (index >= 0) Entities[index] = entity;
 
-    public abstract void Delete(string key);
+        SaveChanges();
+    }
 
-    public abstract IEnumerable<T> ReadAll();
+    public virtual void Delete(string key)
+    {
+        var index = Entities.FindIndex(x => x.Key == key);
+        
+        if (index < 0) return;
+        
+        Entities.RemoveAt(index);
+        SaveChanges();
+    }
 
-    public abstract void Create(IEnumerable<T> entities);
+    public virtual IEnumerable<T> ReadAll()
+    {
+        return Entities;
+    }
 
-    public abstract bool Exists(string key);
+    public virtual void Create(IEnumerable<T> entities)
+    {
+        try
+        {
+            if (entities == null) throw new ArgumentNullException();
+
+            foreach (var entity in entities)
+            {
+                Entities.Add(entity);
+            }
+            
+            SaveChanges();
+        }
+        catch (Exception e)
+        {
+            Helper.ShowMessage($"Entities create exception: {e.Message}");
+            throw;
+        }
+    }
+
+    public virtual bool Exists(string key)
+    {
+        return Entities.Exists(x => x.Key == key);
+    }
+
+    protected abstract void LoadItems();
+
+    protected abstract void SaveChanges();
 }
