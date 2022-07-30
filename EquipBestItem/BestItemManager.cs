@@ -8,6 +8,7 @@ using Helpers;
 using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
+using TaleWorlds.Diamond.HelloWorld;
 using TaleWorlds.Library;
 
 namespace EquipBestItem;
@@ -71,17 +72,17 @@ public sealed class BestItemManager
                 .Where(items => items is not null)
                 .SelectMany(items => items)
                 .Where(IsValidItem);
-
-            Parallel.ForEach(validItems, item =>
+            
+            foreach (var item in validItems)
             {
                 var itemValue = Calculator.GetItemValue(item.ItemRosterElement.EquipmentElement, context);
-
-                if (bestItemValue >= itemValue) return;
-
+                
+                if (bestItemValue >= itemValue) continue;
+                
                 bestItem = item;
                 bestItemValue = itemValue;
-            });
-
+            }
+            
             bool IsValidItem(SPItemVM item)
             {
                 if (!context.IsInWarSet && !item.IsCivilianItem) return false;
