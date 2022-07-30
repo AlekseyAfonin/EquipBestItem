@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using EquipBestItem.Models;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
@@ -109,69 +110,35 @@ internal partial class CoefficientsSettingsVM
     private bool _weaponClassIsDefault;
     private bool _weaponClassIsHidden = true;
     
-    private string _maxDataValueText = new TextObject("{=aCkzVUCR}Hit Points: ").ToString();
-    private string _thrustSpeedText = new TextObject("{=VPYazFVH}Thrust Speed: ").ToString();
+    private string _maxDataValueText = ModTexts.HitPoints;
+    private string _thrustSpeedText = ModTexts.ThrustSpeed;
 
-    [DataSourceProperty]
-    public HintViewModel ButtonDefaultHint { get; } = new(new TextObject("{=ebi_hint_default}Reset to default values"));
+    [DataSourceProperty] public HintViewModel ButtonDefaultHint { get; } = new(ModTexts.ButtonDefaultHint);
+    [DataSourceProperty] public HintViewModel ButtonLockHint { get; } = new(ModTexts.ButtonLockHint);
+    [DataSourceProperty] public HintViewModel CheckboxHint { get; } = new(ModTexts.CheckboxHint);
+    [DataSourceProperty] public HintViewModel PercentHint { get; } = new(ModTexts.PercentHint);
 
-    [DataSourceProperty]
-    public HintViewModel ButtonLockHint { get; } = new(new TextObject("{=ebi_hint_lock}Disable search for this slot"));
-
-    [DataSourceProperty]
-    public HintViewModel CheckboxHint { get; } = new(new TextObject("{=ebi_hint_checkbox}Set to default value"));
-
-    [DataSourceProperty]
-    public HintViewModel PercentHint { get; } =
-        new(new TextObject("{=ebi_hint_percent}How much does the parameter affect the value of the item"));
-
-    [DataSourceProperty] public string ButtonDefaultText { get; } = new TextObject("{=ebi_default}Default").ToString();
-    [DataSourceProperty] public string ButtonLockText { get; } = new TextObject("{=ebi_lock}Lock").ToString();
+    [DataSourceProperty] public string ButtonDefaultText { get; } = ModTexts.ButtonDefault;
+    [DataSourceProperty] public string ButtonLockText { get; } = ModTexts.ButtonLock;
     
-    [DataSourceProperty] public string HeadArmorText { get; } = GameTexts.FindText("str_head_armor").ToString();
-    [DataSourceProperty] public string BodyArmorText { get; } = GameTexts.FindText("str_body_armor").ToString();
-    [DataSourceProperty] public string LegArmorText { get; } = GameTexts.FindText("str_leg_armor").ToString();
-
-    [DataSourceProperty]
-    public string ArmArmorText { get; } =
-        new TextObject("{=cf61cce254c7dca65be9bebac7fb9bf5}Arm Armor: ").ToString();
-
-    [DataSourceProperty] public string WeightText { get; } = GameTexts.FindText("str_weight_text").ToString();
-    
-    [DataSourceProperty]
-    public string HitPointsText { get; } = new TextObject("{=aCkzVUCR}Hit Points: ").ToString();
-
-    [DataSourceProperty]
-    public string ChargeDamageText { get; } =
-        new TextObject("{=c7638a0869219ae845de0f660fd57a9d}Charge Damage: ").ToString();
-
-    [DataSourceProperty]
-    public string ManeuverText { get; } = new TextObject("{=3025020b83b218707499f0de3135ed0a}Maneuver: ").ToString();
-
-    [DataSourceProperty]
-    public string SpeedText { get; } = new TextObject("{=74dc1908cb0b990e80fb977b5a0ef10d}Speed: ").ToString();
-
-    [DataSourceProperty] public string SwingSpeedText { get; } = new TextObject("{=nfQhamAF}Swing Speed: ").ToString();
-
-    [DataSourceProperty]
-    public string MissileSpeedText { get; } = new TextObject("{=YukbQgHJ}Missile Speed: ").ToString();
-
-    [DataSourceProperty]
-    public string MissileDamageText { get; } = new TextObject("{=c9c5dfed2ca6bcb7a73d905004c97b23}Damage: ").ToString();
-
-    [DataSourceProperty] public string WeaponLengthText { get; } = new TextObject("{=XUtiwiYP}Length: ").ToString();
-
-    [DataSourceProperty]
-    public string ThrustDamageText { get; } = new TextObject("{=7sUhWG0E}Thrust Damage: ").ToString();
-
-    [DataSourceProperty]
-    public string SwingDamageText { get; } = new TextObject("{=fMmlUHyz}Swing Damage: ").ToString();
-
-    [DataSourceProperty] public string AccuracyText { get; } = new TextObject("{=xEWwbGVK}Accuracy: ").ToString();
-    [DataSourceProperty] public string HandlingText { get; } = new TextObject("{=YOSEIvyf}Handling: ").ToString();
-
-    [DataSourceProperty]
-    public string WeaponBodyArmorText { get; } = new TextObject("{=bLWyjOdS}Body Armor: ").ToString();
+    [DataSourceProperty] public string HeadArmorText { get; } = ModTexts.HeadArmor;
+    [DataSourceProperty] public string BodyArmorText { get; } = ModTexts.BodyArmor;
+    [DataSourceProperty] public string LegArmorText { get; } = ModTexts.LegArmor;
+    [DataSourceProperty] public string ArmArmorText { get; } = ModTexts.ArmArmor;
+    [DataSourceProperty] public string WeightText { get; } = ModTexts.Weight;
+    [DataSourceProperty] public string HitPointsText { get; } = ModTexts.HitPoints;
+    [DataSourceProperty] public string ChargeDamageText { get; } = ModTexts.ChargeDamage;
+    [DataSourceProperty] public string ManeuverText { get; } = ModTexts.Maneuver;
+    [DataSourceProperty] public string SpeedText { get; } = ModTexts.Speed;
+    [DataSourceProperty] public string SwingSpeedText { get; } = ModTexts.SwingSpeed;
+    [DataSourceProperty] public string MissileSpeedText { get; } = ModTexts.MissileSpeed;
+    [DataSourceProperty] public string MissileDamageText { get; } = ModTexts.MissileDamage;
+    [DataSourceProperty] public string WeaponLengthText { get; } = ModTexts.WeaponLength;
+    [DataSourceProperty] public string ThrustDamageText { get; } = ModTexts.ThrustDamage;
+    [DataSourceProperty] public string SwingDamageText { get; } = ModTexts.SwingDamage;
+    [DataSourceProperty] public string AccuracyText { get; } = ModTexts.Accuracy;
+    [DataSourceProperty] public string HandlingText { get; } = ModTexts.Handling;
+    [DataSourceProperty] public string WeaponBodyArmorText { get; } = ModTexts.BodyArmor; //TODO
  
     [DataSourceProperty]
     public string MaxDataValueText

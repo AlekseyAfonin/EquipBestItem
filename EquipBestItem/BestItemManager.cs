@@ -10,7 +10,7 @@ using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 
-namespace EquipBestItem.Models;
+namespace EquipBestItem;
 
 public sealed class BestItemManager
 {
@@ -22,13 +22,13 @@ public sealed class BestItemManager
         _calculators = new List<IBestItemCalculator>();
     }
     
-    private static readonly BestItemManager instance = new BestItemManager();
+    private static readonly BestItemManager Instance = new ();
     
     private IBestItemCalculator Calculator => _calculators[_selectedIndex];
     
-    public static BestItemManager Instance()
+    public static BestItemManager GetInstance()
     {
-        return instance;
+        return Instance;
     }
 
     public void AddCalculator(IBestItemCalculator calculator)
@@ -52,7 +52,6 @@ public sealed class BestItemManager
         
         UnequipItem(context);
         EquipItem(context, item);
-        item = null;
     }
 
     public SPItemVM? GetBestItem(CalculatorContext context, params MBBindingList<SPItemVM>?[] itemsLists)
@@ -134,7 +133,7 @@ public sealed class BestItemManager
         return bestItem;
     }
 
-    private void UnequipItem(CalculatorContext context)
+    private static void UnequipItem(CalculatorContext context)
     {
         var equipmentIndex = context.EquipmentIndex;
         var character = context.Character;
@@ -158,7 +157,7 @@ public sealed class BestItemManager
         inventoryLogic.AddTransferCommand(unequipCommand);
     }
 
-    private void EquipItem(CalculatorContext context, SPItemVM? item)
+    private static void EquipItem(CalculatorContext context, SPItemVM? item)
     {
         if (item is null) return;
 

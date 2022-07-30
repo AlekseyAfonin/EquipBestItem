@@ -107,6 +107,7 @@ internal static class Seeds
     {
         var type = typeof(T);
         var test = Path.Combine($"{DefaultStoragePath}{type.Name}.xml");
+        
         if (!File.Exists(test))
                 repository.Create(entities);
         else

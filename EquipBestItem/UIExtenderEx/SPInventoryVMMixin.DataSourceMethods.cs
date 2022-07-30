@@ -49,13 +49,13 @@ public sealed partial class SPInventoryVMMixin
     [DataSourceMethod]
     public void ExecuteEquipBestItem(string equipmentIndexName)
     {
-        _model.ExecuteEquipBestItem(equipmentIndexName);
+        _model.EquipBestItem(equipmentIndexName);
     }
 
     [DataSourceMethod]
     public void ExecuteShowFilterSettings(string equipmentIndexName)
     {
-        _model.ExecuteShowFilterSettings(equipmentIndexName);
+        _model.ShowFilterSettings(equipmentIndexName);
     }
     
     [DataSourceMethod]

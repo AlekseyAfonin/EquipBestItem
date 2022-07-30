@@ -45,11 +45,11 @@ internal class SPInventoryMixin
         _settings = _settingsRepository.ReadAll().ToList();
 
         AddCalculators();
-        
         UpdateCharacters();
     }
 
-    public CharacterObject CurrentCharacter { get; private set; } = InventoryManager.InventoryLogic.InitialEquipmentCharacter;
+    public CharacterObject CurrentCharacter { get; private set; } =
+        InventoryManager.InventoryLogic.InitialEquipmentCharacter;
     public string CurrentCharacterName => _originVM.CurrentCharacterName;
     public bool IsInWarSet => _originVM.IsInWarSet;
 
@@ -60,9 +60,9 @@ internal class SPInventoryMixin
 
     private void AddCalculators()
     {
-        BestItemManager.Instance().AddCalculator(new CoefficientsCalculator("Coefficients", _coefficientsRepository)); 
-        BestItemManager.Instance().AddCalculator(new EffectivenessCalculator("Effectiveness"));
-        BestItemManager.Instance().SelectCalculator(1);
+        BestItemManager.GetInstance().AddCalculator(new CoefficientsCalculator("Coefficients", _coefficientsRepository)); 
+        BestItemManager.GetInstance().AddCalculator(new EffectivenessCalculator("Effectiveness"));
+        BestItemManager.GetInstance().SelectCalculator(1);
     }
     
     public void UpdateCurrentCharacter(CharacterObject currentCharacter)
@@ -74,7 +74,7 @@ internal class SPInventoryMixin
     ///     Equip buttons left click
     /// </summary>
     /// <param name="equipmentIndexName">Slot name</param>
-    public void ExecuteEquipBestItem(string equipmentIndexName)
+    public void EquipBestItem(string equipmentIndexName)
     {
         var equipmentIndex = Helper.ParseEnum<EquipmentIndex>(equipmentIndexName);
         var context = new CalculatorContext()
@@ -83,17 +83,15 @@ internal class SPInventoryMixin
             EquipmentIndex = equipmentIndex,
             IsInWarSet = IsInWarSet
         };
-        BestItemManager.Instance().EquipBestItem(context, BestItems[(int) equipmentIndex]);
-        _originVM.ExecuteRemoveZeroCounts();
-        _originVM.RefreshValues();
-        _originVM.GetMethod("UpdateCharacterEquipment");
+        BestItemManager.GetInstance().EquipBestItem(context, BestItems[(int) equipmentIndex]);
+        RefreshEquipmentState();
     }
 
     /// <summary>
     ///     Equip buttons right click with parameter
     /// </summary>
     /// <param name="equipmentIndexName">Slot name</param>
-    public void ExecuteShowFilterSettings(string equipmentIndexName)
+    public void ShowFilterSettings(string equipmentIndexName)
     {
         var equipmentIndex = Helper.ParseEnum<EquipmentIndex>(equipmentIndexName);
         OpenCloseCoefficientsSettingsLayer(equipmentIndex);
@@ -123,6 +121,7 @@ internal class SPInventoryMixin
                 : _originVM.LeftItemListVM;
 
             var bestItems = new SPItemVM?[12];
+            
             for (var index = EquipmentIndex.WeaponItemBeginSlot; index < EquipmentIndex.NumEquipmentSetSlots; index++)
             {
                 var context = new CalculatorContext()
@@ -133,7 +132,7 @@ internal class SPInventoryMixin
                 };
                 
                 bestItems[(int) index] = await Task.Run(() => 
-                    BestItemManager.Instance().GetBestItem(context, rightItems, leftItems), token);
+                    BestItemManager.GetInstance().GetBestItem(context, rightItems, leftItems), token);
 
                 if (token.IsCancellationRequested) return;
             }
@@ -240,18 +239,15 @@ internal class SPInventoryMixin
                 IsInWarSet = IsInWarSet
             };
             
-            var bestItem = BestItemManager.Instance().GetBestItem(context, rightItems, leftItems);
-            BestItemManager.Instance().EquipBestItem(context, bestItem);
+            var bestItem = BestItemManager.GetInstance().GetBestItem(context, rightItems, leftItems);
+            BestItemManager.GetInstance().EquipBestItem(context, bestItem);
         }
     }
 
     public void EquipCurrentCharacter()
     {
         EquipCharacter(CurrentCharacter);
-
-        _originVM.ExecuteRemoveZeroCounts();
-        _originVM.RefreshValues();
-        _originVM.GetMethod("UpdateCharacterEquipment");
+        RefreshEquipmentState();
     }
 
     public void EquipAllCharacters()
@@ -261,9 +257,7 @@ internal class SPInventoryMixin
         foreach (var rosterElement in roster.Where(rosterElement => rosterElement.Character.IsHero))
             EquipCharacter(rosterElement.Character);
 
-        _originVM.ExecuteRemoveZeroCounts();
-        _originVM.RefreshValues();
-        _originVM.GetMethod("UpdateCharacterEquipment");
+        RefreshEquipmentState();
     }
 
     public void SwitchLeftPanelLock()
@@ -294,5 +288,15 @@ internal class SPInventoryMixin
         var settings = _settingsRepository.Read(Settings.IsRightMenuVisible);
         settings.Value = !settings.Value;
         _settingsRepository.Update(settings);
+    }
+
+    /// <summary>
+    ///     Clear item collections from zero values, update current gear on 3d models
+    /// </summary>
+    private void RefreshEquipmentState()
+    {
+        _originVM.ExecuteRemoveZeroCounts();
+        _originVM.RefreshValues();
+        _originVM.GetMethod("UpdateCharacterEquipment");
     }
 }

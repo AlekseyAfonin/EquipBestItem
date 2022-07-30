@@ -32,7 +32,7 @@ public static class CommonExtensions
         }
     }
 
-    public static object GetPropValue<T>(this T @this, string propertyName)
+    internal static object GetPropValue<T>(this T @this, string propertyName)
     {
         var type = @this?.GetType();
         var property = type?.GetProperty(propertyName,
@@ -41,7 +41,7 @@ public static class CommonExtensions
         return property?.GetValue(@this, null) ?? throw new InvalidOperationException("Get property value exception");
     }
 
-    public static void SetPropValue<T>(this T @this, string propertyName, object value)
+    internal static void SetPropValue<T>(this T @this, string propertyName, object value)
     {
         var type = @this?.GetType();
         var property = type?.GetProperty(propertyName,

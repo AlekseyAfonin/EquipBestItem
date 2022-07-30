@@ -12,5 +12,5 @@ public interface IBestItemCalculator
 
     public bool IsItemNotValid(SPItemVM item, CalculatorContext context);
     
-    bool IsSlotItemNotValid(EquipmentElement equipmentElement, CalculatorContext context);
+    public bool IsSlotItemNotValid(EquipmentElement equipmentElement, CalculatorContext context);
 }

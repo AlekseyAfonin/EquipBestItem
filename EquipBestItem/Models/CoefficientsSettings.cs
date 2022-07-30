@@ -100,15 +100,15 @@ internal class CoefficientsSettings
     private void UpdateParamText(ItemParams[] visibleParams)
     {
         if (visibleParams.SequenceEqual(ItemTypes.Ammo) || visibleParams.SequenceEqual(ItemTypes.Thrown))
-            _vm.MaxDataValueText = new TextObject("{=05fdfc6e238429753ef282f2ce97c1f8}Stack Amount: ").ToString(); 
+            _vm.MaxDataValueText = ModTexts.StackAmount; 
         if (visibleParams.SequenceEqual(ItemTypes.Bow) || visibleParams.SequenceEqual(ItemTypes.Crossbow) || visibleParams.SequenceEqual(ItemTypes.Shield))
-            _vm.ThrustSpeedText = new TextObject("{=74dc1908cb0b990e80fb977b5a0ef10d}Speed: ").ToString();
+            _vm.ThrustSpeedText = ModTexts.Speed;
         if (visibleParams.SequenceEqual(ItemTypes.Crossbow))
-            _vm.MaxDataValueText = new TextObject("{=6adabc1f82216992571c3e22abc164d7}Ammo Limit: ").ToString();  
+            _vm.MaxDataValueText = ModTexts.AmmoLimit;  
         if (visibleParams.SequenceEqual(ItemTypes.Shield))
-            _vm.MaxDataValueText = new TextObject("{=aCkzVUCR}Hit Points: ").ToString(); 
+            _vm.MaxDataValueText = ModTexts.HitPoints; 
         if (visibleParams.SequenceEqual(ItemTypes.MeleeWeapon))
-            _vm.ThrustSpeedText = new TextObject("{=VPYazFVH}Thrust Speed: ").ToString();
+            _vm.ThrustSpeedText = ModTexts.ThrustSpeed;
     }
 
     private void OnPropertyChangedWithValue(object sender, PropertyChangedWithValueEventArgs e)
@@ -243,14 +243,14 @@ internal class CoefficientsSettings
     {
         return equipmentIndex switch
         {
-            var index and < EquipmentIndex.Head => $"{new TextObject("{=2RIyK1bp}Weapons")} {(int)index + 1}",
-            EquipmentIndex.Head => GameTexts.FindText("str_inventory_helm_slot").ToString(),
-            EquipmentIndex.Body => GameTexts.FindText("str_inventory_armor_slot").ToString(),
-            EquipmentIndex.Leg => GameTexts.FindText("str_inventory_boot_slot").ToString(),
-            EquipmentIndex.Gloves => GameTexts.FindText("str_inventory_glove_slot").ToString(),
-            EquipmentIndex.Cape => GameTexts.FindText("str_inventory_cloak_slot").ToString(),
-            EquipmentIndex.Horse => GameTexts.FindText("str_inventory_mount_slot").ToString(),
-            EquipmentIndex.HorseHarness => GameTexts.FindText("str_inventory_mount_armor_slot").ToString(),
+            var index and < EquipmentIndex.Head => $"{ModTexts.Weapons} {(int)index + 1}",
+            EquipmentIndex.Head => ModTexts.Head,
+            EquipmentIndex.Body => ModTexts.Body,
+            EquipmentIndex.Leg => ModTexts.Leg,
+            EquipmentIndex.Gloves => ModTexts.Gloves,
+            EquipmentIndex.Cape => ModTexts.Cape,
+            EquipmentIndex.Horse => ModTexts.Horse,
+            EquipmentIndex.HorseHarness => ModTexts.HorseHarness,
             _ => throw new ArgumentOutOfRangeException(nameof(equipmentIndex), equipmentIndex, null)
         };
     }
