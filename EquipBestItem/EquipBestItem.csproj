@@ -21,8 +21,8 @@
     <PropertyGroup>
         <HarmonyVersion>2.2.1</HarmonyVersion>
         <UIExtenderExVersion>2.2.1</UIExtenderExVersion>
-        <!--<ButterLibVersion>2.1.5</ButterLibVersion>
-        <MCMVersion>4.7.3</MCMVersion>-->
+        <ButterLibVersion>2.1.5</ButterLibVersion>
+        <MCMVersion>4.7.3</MCMVersion>
     </PropertyGroup>
 
     <ItemGroup>

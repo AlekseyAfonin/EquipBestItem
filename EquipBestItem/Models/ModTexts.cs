@@ -51,6 +51,10 @@ internal static class ModTexts
 
     public static readonly string AmmoLimit =
         new TextObject("{=6adabc1f82216992571c3e22abc164d7}Ammo Limit: ").ToString();
+
+    public static readonly string ButtonDefault = new TextObject("{=ebi_default}Default").ToString();
+    
+    public static readonly string ButtonLock = new TextObject("{=ebi_lock}Lock").ToString();
     
     public static readonly string Weapons = new TextObject("{=2RIyK1bp}Weapons").ToString();
     
@@ -76,10 +80,25 @@ internal static class ModTexts
 
     public static readonly TextObject PercentHint =
         new("{=ebi_hint_percent}How much does the parameter affect the value of the item");
-
-    public static readonly string ButtonDefault = new TextObject("{=ebi_default}Default").ToString();
     
-    public static readonly string ButtonLock = new TextObject("{=ebi_lock}Lock").ToString();
+    public static readonly TextObject ButtonEquipCurrentHint = 
+        new TextObject("{=ebi_hint_equip_current}Equip current character");
 
+    public static readonly TextObject ButtonEquipAllHint = new TextObject("{=ebi_hint_equip_all}Equip all characters");
+
+    public static readonly TextObject ButtonLeftPanelLockHint = 
+        new TextObject("{=ebi_hint_left_panel_lock}Disable search in left-hand items");
+
+    public static readonly TextObject ButtonLeftPanelUnlockHint = 
+        new TextObject("{=ebi_hint_left_panel_unlock}Enable search in the left-hand items");
     
+    public static readonly TextObject ButtonRightPanelLockHint = 
+        new TextObject("{=ebi_hint_right_panel_lock}Disable search in right-hand items");
+
+    public static readonly TextObject ButtonRightPanelUnlockHint = 
+        new TextObject("{=ebi_hint_right_panel_unlock}Enable search in right-hand items");
+
+    public static readonly TextObject ButtonMenuHideHint = new TextObject("{=ebi_hint_menu_hide}Hide buttons panel");
+    
+    public static readonly TextObject ButtonMenuShowHint = new TextObject("{=ebi_hint_menu_show}Show buttons panel");
 }
