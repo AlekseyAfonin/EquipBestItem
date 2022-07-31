@@ -166,7 +166,7 @@
                                                                              HeightSizePolicy="Fixed"
                                                                              VerticalAlignment="Bottom"
                                                                              SuggestedWidth="!Extension.Width"
-                                                                             SuggestedHeight="380"
+                                                                             SuggestedHeight="175"
                                                                              HorizontalAlignment="Center"
                                                                              Brush="!DropdownListBackgroundBrush">
                                                                     <Children>
@@ -179,14 +179,14 @@
                                                                                          MarginBottom="20"
                                                                                          VerticalAlignment="Bottom"
                                                                                          InnerPanel="ClipRect\PrimaryUsageSelectorList"
-                                                                                         MaxHeight="355"
+                                                                                         MaxHeight="150"
                                                                                          VerticalScrollbar="..\VerticalScrollbar">
                                                                             <Children>
                                                                                 <Widget Id="ClipRect"
                                                                                         WidthSizePolicy="StretchToParent"
                                                                                         HeightSizePolicy="CoverChildren"
                                                                                         ClipContents="true"
-                                                                                        MaxHeight="355">
+                                                                                        MaxHeight="150">
                                                                                     <Children>
 
                                                                                         <ListPanel
