@@ -27,7 +27,9 @@ public class Coefficients
     public float SwingDamage { get; set; }
     public float Accuracy { get; set; }
     public float Handling { get; set; }
+    
     public WeaponClass WeaponClass { get; set; }
+    public string? Culture { get; set; }
 
     public float Weight { get; set; } = 0f;
 }

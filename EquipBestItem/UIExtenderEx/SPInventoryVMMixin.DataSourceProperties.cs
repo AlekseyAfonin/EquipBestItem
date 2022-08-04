@@ -1,7 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
+using EquipBestItem.Models;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
+using TaleWorlds.CampaignSystem.ViewModelCollection.Inventory;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
+using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
@@ -45,34 +48,28 @@ public sealed partial class SPInventoryVMMixin
     [DataSourceProperty] public SPItemVM? HorseHarnessBestItem => _model.BestItems[(int) EquipmentIndex.HorseHarness];
     
     [DataSourceProperty]
-    public HintViewModel ButtonEquipCurrentHint { get; } =
-        new(new TextObject("{=ebi_hint_equip_current}Equip current character"));
+    public HintViewModel ButtonEquipCurrentHint { get; } = new(ModTexts.ButtonEquipCurrentHint);
+
+    [DataSourceProperty] 
+    public HintViewModel ButtonEquipAllHint { get; } = new(ModTexts.ButtonEquipAllHint);
+
+    [DataSourceProperty] 
+    public HintViewModel ButtonLeftPanelLockHint { get; } = new(ModTexts.ButtonLeftPanelLockHint);
+
+    [DataSourceProperty] 
+    public HintViewModel ButtonLeftPanelUnlockHint { get; } = new(ModTexts.ButtonLeftPanelUnlockHint);
+
+    [DataSourceProperty] 
+    public HintViewModel ButtonRightPanelLockHint { get; } = new(ModTexts.ButtonRightPanelLockHint);
 
     [DataSourceProperty]
-    public HintViewModel ButtonEquipAllHint { get; } =
-        new(new TextObject("{=ebi_hint_equip_all}Equip all characters"));
+    public HintViewModel ButtonRightPanelUnlockHint { get; } = new(ModTexts.ButtonRightPanelUnlockHint);
 
     [DataSourceProperty]
-    public HintViewModel ButtonLeftPanelLockHint { get; } =
-        new(new TextObject("{=ebi_hint_left_panel_lock}Disable search in left-hand items"));
+    public HintViewModel ButtonMenuHideHint { get; } = new(ModTexts.ButtonMenuHideHint);
 
     [DataSourceProperty]
-    public HintViewModel ButtonLeftPanelUnlockHint { get; } =
-        new(new TextObject("{=ebi_hint_left_panel_unlock}Enable search in the left-hand items"));
-
-    [DataSourceProperty]
-    public HintViewModel ButtonRightPanelLockHint { get; } =
-        new(new TextObject("{=ebi_hint_right_panel_lock}Disable search in right-hand items"));
-
-    [DataSourceProperty]
-    public HintViewModel ButtonRightPanelUnlockHint { get; } =
-        new(new TextObject("{=ebi_hint_right_panel_unlock}Enable search in right-hand items"));
-
-    [DataSourceProperty]
-    public HintViewModel ButtonMenuHideHint { get; } = new(new TextObject("{=ebi_hint_menu_hide}Hide buttons panel"));
-
-    [DataSourceProperty]
-    public HintViewModel ButtonMenuShowHint { get; } = new(new TextObject("{=ebi_hint_menu_show}Show buttons panel"));
+    public HintViewModel ButtonMenuShowHint { get; } = new(ModTexts.ButtonMenuShowHint);
     
     [DataSourceProperty]
     public bool IsHeadButtonDisabled
