@@ -9,15 +9,15 @@ internal static class ModTexts
     
     public static readonly string ThrustSpeed = new TextObject("{=VPYazFVH}Thrust Speed: ").ToString();
     
-    public static readonly string HeadArmor = GameTexts.FindText("str_head_armor").ToString();
+    public static readonly string HeadArmor = new TextObject("{=EUzxzL9s}Head Armor: ").ToString();
     
-    public static readonly string BodyArmor = GameTexts.FindText("str_body_armor").ToString();
+    public static readonly string BodyArmor = new TextObject("{=bLWyjOdS}Body Armor: ").ToString();
     
-    public static readonly string LegArmor = GameTexts.FindText("str_leg_armor").ToString();
+    public static readonly string LegArmor = new TextObject("{=U8VHRdwF}Leg Armor: ").ToString();
     
     public static readonly string ArmArmor = new TextObject("{=cf61cce254c7dca65be9bebac7fb9bf5}Arm Armor: ").ToString();
    
-    public static readonly string Weight = GameTexts.FindText("str_weight_text").ToString();
+    public static readonly string Weight = new TextObject("{=YvwQL9aa}Weight: ").ToString();
    
     public static readonly string ChargeDamage = new TextObject("{=c7638a0869219ae845de0f660fd57a9d}Charge Damage: ").ToString();
     
@@ -53,19 +53,19 @@ internal static class ModTexts
     
     public static readonly string Weapons = new TextObject("{=2RIyK1bp}Weapons").ToString();
     
-    public static readonly string Head = GameTexts.FindText("str_inventory_helm_slot").ToString();
+    public static readonly string Head = new TextObject("{=bg6x6Hbv}Helm").ToString();
     
-    public static readonly string Body = GameTexts.FindText("str_inventory_armor_slot").ToString();
+    public static readonly string Body = new TextObject("{=ahiBhAqU}Armor").ToString();
     
-    public static readonly string Leg = GameTexts.FindText("str_inventory_boot_slot").ToString();
+    public static readonly string Leg = new TextObject("{=Xx9EbSwG}Boot").ToString();
     
-    public static readonly string Gloves = GameTexts.FindText("str_inventory_glove_slot").ToString();
+    public static readonly string Gloves = new TextObject("{=3ZRTekjS}Glove").ToString();
     
-    public static readonly string Cape = GameTexts.FindText("str_inventory_cloak_slot").ToString();
+    public static readonly string Cape = new TextObject("{=QAv3upYr}Cloak").ToString();
     
-    public static readonly string Horse = GameTexts.FindText("str_inventory_mount_slot").ToString();
+    public static readonly string Horse = new TextObject("{=mountnoun}Mount").ToString();
     
-    public static readonly string HorseHarness = GameTexts.FindText("str_inventory_mount_armor_slot").ToString();
+    public static readonly string HorseHarness = new TextObject("{=0GZ19XHb}Harness").ToString();
     
     public static readonly TextObject ButtonDefaultHint = new("{=ebi_hint_default}Reset to default values");
     
@@ -94,4 +94,8 @@ internal static class ModTexts
     public const string SearcherMethodOption = "{=search_method_option}Search method";
     
     public const string CultureOption = "{=culture_option}Enable culture";
+    
+    public static readonly string Coefficients = new TextObject("{=coefficients}Coefficients").ToString();
+    
+    public static readonly string Effectiveness = new TextObject("{=effectiveness}Effectiveness").ToString();
 }

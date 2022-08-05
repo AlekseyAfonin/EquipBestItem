@@ -14,7 +14,7 @@
         <Company>EquipBestItem</Company>
         <Product>EquipBestItem</Product>
         <!-- Module manually override GameVersion -->
-        <!-- <OverrideGameVersion>e1.8.0</OverrideGameVersion> -->
+        <OverrideGameVersion>e1.7.2</OverrideGameVersion>
     </PropertyGroup>
 
     <!-- Development Variables -->

@@ -1,12 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using EquipBestItem.Models;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
-using TaleWorlds.CampaignSystem.ViewModelCollection.Inventory;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
-using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
-using TaleWorlds.Localization;
 
 namespace EquipBestItem.UIExtenderEx;
 

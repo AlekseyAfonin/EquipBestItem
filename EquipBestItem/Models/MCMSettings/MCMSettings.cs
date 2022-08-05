@@ -14,12 +14,12 @@ internal class MCMSettings : AttributeGlobalSettings<MCMSettings>
     public override string FolderName => "EquipBestItem";
     public override string FormatType => "json";
 
-    private static readonly IEnumerable<BestItemCalculatorBase> Calculators = Helper.GetEnumerableOfType<BestItemCalculatorBase>(new object[1]);
+    private static readonly IEnumerable<SearcherBase> Searchers = 
+        Helper.GetEnumerableOfType<SearcherBase>(new object[] { null! });
     
-    [SettingPropertyDropdown("Search method", RequireRestart = false)]
-    public DropdownDefault<string> SearchMethod { get; set; } =
-        new(Calculators.Select(c => c.Name), selectedIndex: 0);
+    [SettingPropertyDropdown(ModTexts.SearcherMethodOption, RequireRestart = false)]
+    public DropdownDefault<string> SearchMethod { get; set; } = new(Searchers.Select(c => c.Name), selectedIndex: 0);
 
-    [SettingPropertyDropdown("Enable culture", RequireRestart = false)]
+    [SettingPropertyDropdown(ModTexts.CultureOption, RequireRestart = false)]
     public bool IsCultureEnabled { get; set; } = true;
 }

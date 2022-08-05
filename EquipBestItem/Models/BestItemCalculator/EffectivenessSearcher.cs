@@ -4,18 +4,23 @@ using TaleWorlds.Core;
 
 namespace EquipBestItem.Models.BestItemCalculator;
 
-public class EffectivenessCalculator : BestItemCalculatorBase
+public class EffectivenessSearcher : SearcherBase
 {
-    public EffectivenessCalculator(string name) : base(name)
+    private readonly CharacterCoefficientsRepository _repository;
+    
+    public EffectivenessSearcher(CharacterCoefficientsRepository repository) : base(repository)
     {
+        _repository = repository;
     }
 
-    public override float GetItemValue(EquipmentElement equipmentElement, CalculatorContext context)
+    public override string Name => ModTexts.Effectiveness;
+
+    public override float GetItemValue(EquipmentElement equipmentElement, SearcherContext context)
     {
         return equipmentElement.Item.Effectiveness;
     }
 
-    public override bool IsItemNotValid(SPItemVM item, CalculatorContext context)
+    protected override bool IsItemNotValid(SPItemVM item, SearcherContext context)
     {
         var index = context.EquipmentIndex;
         var character = context.Character;
@@ -36,7 +41,7 @@ public class EffectivenessCalculator : BestItemCalculatorBase
         return false;
     }
 
-    public override bool IsSlotItemNotValid(EquipmentElement equipmentElement, CalculatorContext context)
+    public override bool IsSlotItemNotValid(EquipmentElement equipmentElement, SearcherContext context)
     {
         return false;
     }

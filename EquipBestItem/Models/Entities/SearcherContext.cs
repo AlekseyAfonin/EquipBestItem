@@ -3,7 +3,7 @@ using TaleWorlds.Core;
 
 namespace EquipBestItem.Models.Entities;
 
-public class CalculatorContext
+public class SearcherContext
 {
     public EquipmentIndex EquipmentIndex;
     public CharacterObject Character = null!;
